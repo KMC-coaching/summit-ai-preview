@@ -2,7 +2,7 @@
 """
 Audit a website the way our launch gate does, and say plainly what it found.
 
-    python3 scripts/grade_site.py <url> [--label "Your website"] [--profile real-estate|general]
+    python3 scripts/grade_site.py <url> [--label "Your website"] [--profile real-estate|lender|general]
                                         [--local] [--out app/data/grade.json]
 
 THIS IS THE SEED'S PROCESS, PORTED
@@ -26,7 +26,8 @@ THIS IS THE SEED'S PROCESS, PORTED
   NOT MEASURED, never as passed. Silence must never read as success.
 
   Fair Housing, licence and Equal Housing checks run only with --profile
-  real-estate: Fair Housing does not apply to a plumber.
+  real-estate; fair lending, NMLS, Equal Housing Lender and Regulation Z claims only
+  with --profile lender. Fair Housing does not apply to a plumber.
 
 POLITE BY DESIGN
   This may be somebody's live website. Read-only, one request at a time, a pause
@@ -146,6 +147,23 @@ BUSINESS = re.compile(
     r"^(LocalBusiness|Organization|Corporation|ProfessionalService)$|"
     r"(Business|Agent|Store|Shop|Service|Practice|Office|Clinic|Agency|Dentist|Physician|Attorney|Restaurant)$", re.I)
 RE_TYPES = ["Organization", "WebSite", "RealEstateAgent", "Person"]  # validate-schema.mjs:32-37
+# Lending ads (Regulation Z, ECOA, UDAAP): the claims that get a loan officer in trouble.
+LENDING = [
+    (r"\bguaranteed (approval|loan|to (be )?approved)\b", "approval can never be guaranteed"),
+    (r"\bno credit check\b|\bno credit\W+no problem\b|\bbad credit (ok|okay|welcome)\b", "misleading for a mortgage"),
+    (r"\beveryone (qualifies|is approved|gets approved)\b", "approval can never be promised"),
+    (r"\b(you('re| are)|you've been) (pre-?approved|pre-?qualified)\b", "a pre-approval needs an application"),
+    (r"\d+(\.\d+)?\s?(%|percent)\s*(apr|rate|interest|down|fixed)?\b(?=[^.]{0,40}\b(apr|rate|interest|loan|mortgage|down)\b)|\b(apr|rate)s?\s+(of|at|from|starting at|as low as)\s+\d", "a rate or percentage triggers full Regulation Z disclosure"),
+    (r"\bpayments?\s+(of|as low as|from|starting at|under)\s+\$?\d|\$\d[\d,]*\s*(/|per)\s*(mo|month)\b", "a payment amount triggers full Regulation Z disclosure"),
+    (r"\b(zero|no|0%?)\s+down\b|\blow(est)? rates?\b", "a terms claim that needs the full disclosure"),
+]
+# Fair lending (ECOA, Fair Housing Act): targeting by a protected class, beyond FH_FAIL.
+FAIR_LENDING = [
+    (r"\b(under|over)\s+(\d{2})\b(?=[^.]{0,30}\b(buyers?|borrowers?|homeowners?|applicants?)\b)", "age targeting"),
+    (r"\byoung (buyers|borrowers|couples|families|professionals)\b", "age or family targeting"),
+    (r"\b(buyers?|borrowers?|homeowners?|applicants?|families)\s+(under|over|aged?)\s+\d{2}\b", "age targeting"),
+    (r"\b(seniors|retirees) only\b|\b(adults|singles|couples) only\b", "protected-class restriction"),
+]
 
 # --------------------------------------------------------------------- fetching
 _ctx = ssl.create_default_context()
@@ -419,7 +437,13 @@ def read_lighthouse(lh, result):
             a = audits.get(ref.get("id")) or {}
             if a.get("score") is not None and a.get("score") < 1 and a.get("scoreDisplayMode") not in ("informative", "notApplicable", "manual") and ref.get("weight", 0) > 0:
                 items = ((a.get("details") or {}).get("items") or [])
-                out.append({"id": a.get("id"), "title": A11Y_PLAIN.get(a.get("id"), a.get("title")), "count": len(items)})
+                where = []
+                for it in items[:4]:
+                    node = it.get("node") or {}
+                    label = node.get("nodeLabel") or node.get("selector") or ""
+                    if label:
+                        where.append(label[:60])
+                out.append({"id": a.get("id"), "title": A11Y_PLAIN.get(a.get("id"), a.get("title")), "count": len(items), "where": where})
         return out
 
     result.update({
@@ -456,6 +480,7 @@ def lighthouse_local(url, result):
         tail = err.splitlines()[-1][:200] if err else type(e).__name__
         hint = " (Google Chrome looks missing)" if "chrome" in err.lower() and "not" in err.lower() else ""
         result["_error"] = "Lighthouse could not run here%s: %s" % (hint, tail)
+        result["_log"] = "\n".join(err.splitlines()[-40:])  # Lighthouse's own words, for whoever fixes it
         return False
     read_lighthouse(lh, result)
     result["_source"] = "Google Lighthouse, run on this computer"
@@ -520,7 +545,7 @@ def audit(url, label, profile, local):
     lh = {}
     lh_thread = threading.Thread(target=lighthouse_any, args=(url, lh, local), daemon=True)
     lh_thread.start()
-    log("Running Google Lighthouse (speed, accessibility, SEO) in the background...")
+    log("Checking %s (Lighthouse runs alongside)..." % url)
 
     status, final, html = fetch(url)
     if status == 0 or not html:
@@ -590,6 +615,7 @@ def audit(url, label, profile, local):
 
     R = Report()
     re_profile = profile == "real-estate"
+    lender_profile = profile == "lender"
     paths = lambda ps: [p["path"] for p in ps]
 
     # ---- 1. Google Lighthouse
@@ -604,7 +630,8 @@ def audit(url, label, profile, local):
             st = "pass" if v >= BAR[k] else ("local" if excused else "fail")
             R.add(G, nm, st, "%d out of 100 (our bar: %d%s)" % (v, BAR[k], "+" if BAR[k] < 100 else ""))
     for f in lh.get("a11yFailed", []):
-        R.add(G, f["title"], "fail", "%s found" % (f["count"] or "Some"), why="Checked by axe-core inside Lighthouse, the same engine the seed's browser audit uses.")
+        R.add(G, f["title"], "fail", "%s found%s" % (f["count"] or "Some", (": " + "; ".join('"%s"' % w for w in f.get("where", []))) if f.get("where") else ""),
+              why="Checked by axe-core inside Lighthouse, the same engine the seed's browser audit uses.")
 
     # ---- 2. Findable by Google and AI
     G = "Can Google and AI assistants find it"
@@ -780,6 +807,28 @@ def audit(url, label, profile, local):
         R.add(G, "Equal Housing Opportunity on every page", "pass" if not eho else "fail", "On %d of %d pages" % (len(ok) - len(eho), len(ok)), pages=paths(eho),
               why="The words must be on the page. A logo image alone is invisible to screen readers and to the seed's gate.")
 
+    # ---- 6b. Lender rules
+    if lender_profile:
+        G = "Lending rules (fair lending and NMLS)"
+        fh = scan(FH_FAIL + FAIR_LENDING, mains)
+        R.add(G, "Fair lending language", "pass" if not fh else "fail",
+              "; ".join('"%s": %s' % (h["phrase"], h["why"]) for h in fh[:5]), count=len(fh), pages=[h["page"] for h in fh],
+              why="The Fair Housing Act and ECOA apply to lending ads too: describe loans, never who should apply.")
+        ln = scan(LENDING, mains)
+        R.add(G, "Lending claims", "pass" if not ln else "fail",
+              "; ".join('"%s": %s' % (h["phrase"], h["why"]) for h in ln[:5]), count=len(ln), pages=[h["page"] for h in ln])
+        bare = lambda p: BRACKET.sub(" ", p["visible"])
+        blank = lambda ps, word: ps and all(re.search(r"\[[^\]]*" + word, p["visible"], re.I) for p in ps)
+        nm = [p for p in ok if not re.search(r"\bNMLS\s*(#|ID|No\.?)?\s*:?\s*\d{3,}", bare(p), re.I)]
+        co = [p for p in ok if len(re.findall(r"\bNMLS\s*(?:#|ID|No\.?)?\s*:?\s*\d{3,}", bare(p), re.I)) < 2]
+        ehl = [p for p in ok if not re.search(r"equal housing (lender|opportunity)", p["visible"], re.I)]
+        R.add(G, "NMLS number on every page", "pass" if not nm else ("todo" if blank(nm, "nmls") else "fail"),
+              "On %d of %d pages" % (len(ok) - len(nm), len(ok)) + ("; the blank for it is there, waiting for your number" if blank(nm, "nmls") else ""), pages=paths(nm),
+              why="Federal and state rules require the NMLS number on mortgage advertising, including websites.")
+        R.add(G, "Company NMLS number on every page", "pass" if not co else ("todo" if blank(co, "company nmls") else "fail"),
+              "On %d of %d pages" % (len(ok) - len(co), len(ok)) + ("; the blank for it is there, waiting for the number" if blank(co, "company nmls") else ""), pages=paths(co))
+        R.add(G, "Equal Housing Lender on every page", "pass" if not ehl else "fail", "On %d of %d pages" % (len(ok) - len(ehl), len(ok)), pages=paths(ehl))
+
     # ---- 7. Privacy
     G = "Privacy"
     found_trackers = set()
@@ -846,7 +895,7 @@ def audit(url, label, profile, local):
         "measuredAt": datetime.now().isoformat(timespec="minutes"), "seconds": round(time.time() - started),
         "overall": overall, "letter": cap_letter(letter(overall), below_bar), "belowBar": below_bar, "categories": categories, "checks": R.checks, "totals": totals,
         "lighthouse": {k: lh.get(k) for k in ("performance", "accessibility", "bestPractices", "seo", "lcp", "cls")},
-        "lighthouseSource": lh.get("_source"), "screenshot": lh.get("screenshot"), "lighthouseError": lh.get("_error") if lh.get("performance") is None else None,
+        "lighthouseSource": lh.get("_source"), "screenshot": lh.get("screenshot"), "lighthouseLog": lh.get("_log"), "lighthouseError": lh.get("_error") if lh.get("performance") is None else None,
         "bar": BAR,
         "facts": {"pagesChecked": len(pages), "pagesOk": len(ok), "linksChecked": len(to_check),
                   "pagesWithSchema": len(ok) - len(no_ld), "brokenPages": broken_pages, "brokenLinks": broken_links[:20],
@@ -873,7 +922,7 @@ def main():
     ap = argparse.ArgumentParser(description="Audit a website the way the seed's launch gate does.")
     ap.add_argument("url")
     ap.add_argument("--label", default="Your website")
-    ap.add_argument("--profile", default="general", choices=["general", "real-estate"])
+    ap.add_argument("--profile", default="general", choices=["general", "real-estate", "lender"])
     ap.add_argument("--local", action="store_true", help="the preview site on this computer")
     ap.add_argument("--out", default="")
     a = ap.parse_args()

@@ -4,8 +4,8 @@
  * Brand colors arrive as --brand / --accent (plus contrast-safe variants
  * computed at build time) on <html style>.
  */
-@font-face { font-family: "Inter Local"; src: url("fonts/Inter-latin.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
-@font-face { font-family: "Fraunces Local"; src: url("fonts/Fraunces-latin.woff2") format("woff2"); font-weight: 300 700; font-display: swap; }
+@font-face { font-family: "Inter Local"; src: url("fonts/Inter-latin.woff2") format("woff2"); font-weight: 100 900; font-display: optional; }
+@font-face { font-family: "Fraunces Local"; src: url("fonts/Fraunces-latin.woff2") format("woff2"); font-weight: 300 700; font-display: optional; }  /* optional: no late re-paint of the largest text (LCP); on localhost they load instantly anyway */
 
 :root {
   --brand: #1f4e79; --accent: #c9a24b;
@@ -115,7 +115,7 @@ body.menu-open .header { background: var(--dark) !important; color: #fff !import
 .pagehero__img { position: absolute; inset: 0; }
 .pagehero__img img { width: 100%; height: 100%; object-fit: cover; }
 .pagehero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.74), rgba(0,0,0,.46) 52%, rgba(0,0,0,.2)); }
-.pagehero__inner { position: relative; z-index: 2; padding-block: calc(var(--header-h) + 40px) clamp(44px, 8vh, 80px); width: 100%; }
+.pagehero__inner { position: relative; z-index: 2; padding-block: calc(var(--header-h) + 40px) clamp(44px, 8vh, 80px); }
 .pagehero .hero__sub { max-width: 640px; }
 
 /* ---------------------------------------------------------- sections */

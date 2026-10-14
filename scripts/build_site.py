@@ -146,7 +146,10 @@ def lift_until(h, against, need, toward="#000000"):
 def palette(brand_colors):
     brand = brand_colors.get("primary") or "#1f4e79"
     accent = brand_colors.get("accent") or "#c9a24b"
-    bg, alt, dark = "#fbfaf7", "#f5f1ea", "#121418"
+    bg, dark = "#fbfaf7", "#121418"
+    # The alt band is the accent mixed into warm white (site.css --alt). Compute it here
+    # and hand it to the page, so contrast is checked against the color actually painted.
+    alt = mix("#f8f5f0", accent, 0.07)
     on_accent = "#111111" if contrast("#111111", accent) >= contrast("#ffffff", accent) else "#ffffff"
     # A light brand color (bright yellow, mint) keeps its color and gets dark text on
     # it, instead of being darkened to olive so white text fits. They asked for yellow.
@@ -156,7 +159,8 @@ def palette(brand_colors):
         "--accent": accent,                                    # decoration only (underlines, rules)
         "--on-accent": on_accent,                              # text on an accent-filled button
         "--brand-ink": lift_until(brand, alt, 4.5),
-        "--accent-ink": lift_until(accent, alt, 4.6),          # eyebrows on light and alt bands
+        "--accent-ink": lift_until(lift_until(accent, alt, 4.6), bg, 4.6),  # eyebrows on light and alt bands
+        "--alt": alt,
         "--accent-on-dark": lift_until(accent, dark, 4.6, toward="#ffffff"),  # eyebrows on dark bands and photos
         "--on-brand": "#111111" if light_brand else "#ffffff",
     }
@@ -172,6 +176,9 @@ def color_notes(brand_colors, pal):
     if acc and contrast(acc, "#fbfaf7") < 1.6:
         notes.append("Your accent %s is very close to the page background, so it is used only for small touches." % acc)
     return notes
+
+
+CSS_INLINE = (APP / "assets" / "site.css").read_text(encoding="utf-8").replace('url("fonts/', 'url("../assets/fonts/')
 
 
 # ------------------------------------------------------------------ images
@@ -246,10 +253,14 @@ def schema_graph(c, profile, base, page_url, page_name, faq=None):
                 stype = typ
                 break
     home = base + "/site/"
-    org = {"@type": "Organization", "@id": home + "#org", "name": plain(b.get("brokerage") or b.get("name")), "url": home}
+    org = {"@type": "Organization", "@id": home + "#org", "name": plain(b.get("brokerage") or b.get("company") or b.get("name")), "url": home}
+    if b.get("companyNmls") and not PH.search(str(b["companyNmls"])):
+        org["identifier"] = {"@type": "PropertyValue", "propertyID": "NMLS", "value": plain(b["companyNmls"])}
     site = {"@type": "WebSite", "@id": home + "#website", "name": plain(b.get("name")), "url": home, "publisher": {"@id": home + "#org"}}
     person = {"@type": "Person", "@id": home + "#person", "name": plain(b.get("person")), "jobTitle": plain(b.get("profession")),
               "worksFor": {"@id": home + "#business"}}
+    if b.get("nmls") and not PH.search(str(b["nmls"])):
+        person["identifier"] = {"@type": "PropertyValue", "propertyID": "NMLS", "value": plain(b["nmls"])}
     biz = {"@type": stype, "@id": home + "#business", "name": plain(b.get("name")), "description": plain(b.get("oneLiner")),
            "url": home, "areaServed": [plain(a) for a in (b.get("areas") or [b.get("market")]) if a],
            "founder": {"@id": home + "#person"}, "parentOrganization": {"@id": home + "#org"}}
@@ -300,9 +311,15 @@ class Site:
 <meta property="og:url" content="%s">
 <meta name="theme-color" content="%s">
 <link rel="preload" href="../assets/fonts/Fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../assets/site.css">
+%s
+<style>%s</style>
 """ % (style, esc(title), esc(desc), self.url(f), esc(title), esc(desc),
-            "%s/assets/img/library/%s" % (self.base, og_img["file"]), self.url(f), self.pal["--brand"])
+            "%s/assets/img/library/%s" % (self.base, og_img["file"]), self.url(f), self.pal["--brand"],
+            ('<link rel="preload" as="image" fetchpriority="high" imagesrcset="../assets/img/library/%s 640w, ../assets/img/library/%s 960w, ../assets/img/library/%s 1280w" imagesizes="100vw">'
+             % (og_img["small"], og_img.get("medium", og_img["small"]), og_img["file"])),
+            # Inlined: one less request in front of the first paint. Font URLs are relative
+            # to the stylesheet, so they are rewritten for a page in site/.
+            CSS_INLINE)
 
     def header(self, f):
         nav = "".join('<a href="%s"%s>%s</a>' % (h, ' aria-current="page"' if h == f else "", esc(lbl))
@@ -322,11 +339,15 @@ class Site:
 
     def footer(self):
         b = self.b
-        re_profile = self.p.get("requireDisclosure")
+        kind = self.p.get("disclosure")
         lic = ""
-        if re_profile:
+        if kind == "real-estate":
             lic = '<p>%s<br>License # %s<br>%s</p>' % (esc(b.get("person")), t(b.get("license") or "[Your license number]"),
                                                      t(b.get("brokerage") or "[Your brokerage]"))
+        elif kind == "lender":
+            lic = '<p>%s, NMLS # %s<br>%s, NMLS # %s</p>' % (
+                esc(b.get("person")), t(b.get("nmls") or "[Your NMLS number]"),
+                t(b.get("company") or b.get("brokerage") or "[Your company]"), t(b.get("companyNmls") or "[Your company NMLS number]"))
         explore = "".join('<li><a href="%s">%s</a></li>' % (h, esc(lbl)) for h, lbl in self.pages)
         explore += "".join('<li><a href="%s">%s</a></li>' % (fr, esc(plain(m.get("navLabel") or m.get("title"))))
                            for m, fr, _ in self.magnets()[1:])
@@ -334,7 +355,7 @@ class Site:
             ('<a href="tel:%s">%s</a>' % (esc(re.sub(r"[^0-9+]", "", b["phone"])), esc(b["phone"]))) if b.get("phone") and not PH.search(b["phone"]) else "",
             ('<a href="mailto:%s">%s</a>' % (esc(b["email"]), esc(b["email"]))) if b.get("email") and not PH.search(b["email"]) else "",
             t(b.get("market"))) if x)
-        eho = '<span class="eho">%sEqual Housing Opportunity</span>' % EHO_SVG if re_profile else ""
+        eho = ('<span class="eho">%s%s</span>' % (EHO_SVG, "Equal Housing Lender" if kind == "lender" else "Equal Housing Opportunity")) if kind else ""
         return """<footer class="footer"><div class="wrap">
 <div class="cols">
 <div><p class="h3" style="margin-bottom:14px">%s</p><p style="color:var(--dark-muted);max-width:420px">%s</p>%s</div>
@@ -414,24 +435,25 @@ class Site:
 
         statement = """<section class="section"><div class="wrap"><p class="eyebrow reveal">%s</p>
 <p class="statement reveal d1">%s</p>
-<div class="links reveal d2"><a class="tlink" href="about.html">About %s</a><a class="tlink" href="contact.html">Get in touch</a></div></div></section>""" % (esc(plain(self.b.get("person")).split(" ")[0] or "us"), 
-            t(h.get("statementEyebrow") or "Hello"), t(h.get("statement")))
+<div class="links reveal d2"><a class="tlink" href="about.html">About %s</a><a class="tlink" href="contact.html">Get in touch</a></div></div></section>""" % (
+            t(h.get("statementEyebrow") or "Hello"), t(h.get("statement")), esc(plain(self.b.get("person")).split(" ")[0] or "us"))
 
         video = self.p.get("video") or {}
         video_band = ""
         if video.get("src") and not re.search(r"\bonline\b|remote|virtual", str(self.b.get("market", "")), re.I):
             poster = self.pick.slot("video")[0]
-            video_band = """<section class="video reveal" aria-label="%s"><video muted loop playsinline preload="none" poster="../assets/img/library/%s" data-src="%s" aria-label="%s"></video>
+            video_band = """<section class="video reveal" aria-label="%s"><video muted loop playsinline preload="none" data-poster="../assets/img/library/%s" data-src="%s" aria-label="%s"></video>
 <div class="video__cap"><div class="wrap"><p class="label">%s</p></div></div></section>""" % (
                 esc(video["label"]), poster["small"], esc(video["src"]), esc(video["label"]), t(self.b.get("market")))
 
         stats = [s for s in (self.b.get("stats") or []) if isinstance(s.get("value"), (int, float))]
         stat_band = ""
-        if len(stats) >= 2:
+        if stats:
             cells = "".join('<div class="stat reveal d%d"><p class="stat__num" data-count="%s" data-suffix="%s">%s%s</p><p class="label">%s</p></div>'
                             % (i % 3, s["value"], esc(s.get("suffix", "")), "{:,}".format(s["value"]), esc(s.get("suffix", "")), t(s.get("label")))
                             for i, s in enumerate(stats[:3]))
-            stat_band = '<section class="section"><div class="wrap"><p class="eyebrow">By the numbers</p><div class="stats">%s</div></div></section>' % cells
+            stat_band = '<section class="section"><div class="wrap"><p class="eyebrow">By the numbers</p><div class="stats"%s>%s</div></div></section>' % (
+                ' style="grid-template-columns:1fr"' if len(stats) == 1 else "", cells)
 
         diff_img = self.pick.slot("difference")[0]
         d = c.get("differentiator", {})
@@ -503,8 +525,8 @@ class Site:
                   plain(s.get("sub") or s.get("intro"))[:160], im, body)
 
     def build_services(self, pg):
-        s = get(self.c, "site.services", {})
-        im = self.pick.slot("services")[0]
+        s = get(self.c, "site." + pg["key"], {})
+        im = self.pick.slot(pg["key"])[0]
         items = s.get("items") or []
         card_imgs = self.pick.slot("ticker", len(items)) if items else []
         cards = "".join('<article class="card reveal d%d"><div class="frame">%s</div><p class="for">For %s</p><h3>%s</h3><p>%s</p><p><strong>%s</strong></p></article>'
@@ -514,7 +536,7 @@ class Site:
                              '<div class="links"><a class="pill pill--white" href="contact.html">Talk with us</a></div>') + \
             '<section class="section"><div class="wrap"><div class="statement reveal" style="max-width:900px">%s</div><div class="cards cards--3">%s</div></div></section>' % (t(s.get("intro")), cards) + \
             self.magnet_band() + self.inquire(get(self.c, "site.home.closingHeadline"), get(self.c, "site.home.closingText"))
-        self.page("services.html", "%s | %s" % (plain(s.get("headline"))[:48], plain(self.b.get("name"))),
+        self.page(pg["file"], "%s | %s" % (plain(s.get("headline"))[:48], plain(self.b.get("name"))),
                   plain(s.get("sub") or s.get("intro"))[:160], im, body)
 
     def magnets(self):
@@ -546,12 +568,11 @@ class Site:
         self.page(free_file, "%s | %s" % (plain(m.get("title")), plain(self.b.get("name"))), plain(m.get("subtitle") or m.get("hook"))[:160], im, body)
 
         sections = "".join("<section><h3>%s</h3>%s</section>" % (t(s.get("heading")), paras(s.get("body"))) for s in (m.get("sections") or []))
-        mails = "".join('<div class="mail reveal"><p class="day">Day %s</p><div class="body"><p class="subj">%s</p>%s</div></div>' % (esc(e.get("day")), t(e.get("subject")), t(e.get("body")))
+        mails = "".join(  # shown on the dashboard, not on this public page; kept for reference
+'<div class="mail reveal"><p class="day">Day %s</p><div class="body"><p class="subj">%s</p>%s</div></div>' % (esc(e.get("day")), t(e.get("subject")), t(e.get("body")))
                         for e in (m.get("emails") or []))
         body = self.pagehero("Your free %s" % plain(m.get("format") or "guide"), m.get("title"), m.get("subtitle"), self.pick.slot("magnet")[0]) + \
             '<section class="section"><div class="wrap"><p class="body" style="margin-bottom:24px">Thanks, <span data-lead-name>there</span>. Here it is.</p><div class="doc">%s<p style="margin-top:30px"><strong>%s</strong></p></div></div></section>' % (sections, t(m.get("closing"))) + \
-            '<section class="section section--alt"><div class="wrap"><p class="eyebrow">What happens next, on its own</p><h2 class="h2">The follow-up that runs itself</h2><p class="body" style="margin-top:16px">On a live site, everyone who asks for this %s gets these emails automatically, in your voice.</p><div class="flow">%s</div></div></section>' % (
-                esc(m.get("format") or "guide"), mails) + \
             self.inquire(get(self.c, "site.home.closingHeadline"), get(self.c, "site.home.closingText"))
         self.page(guide_file, "%s, the full %s | %s" % (plain(m.get("title"))[:40], plain(m.get("format") or "guide"), plain(self.b.get("name"))),
                   plain(m.get("hook"))[:160], im, body)
@@ -571,7 +592,8 @@ class Site:
 <p>When you fill in a form on this site, %s receives your name, your email address, and anything you choose to write. That is used only to reply to you and, if you asked for a guide, to send it and a short series of follow-up emails. You can ask to stop at any time by replying to any email.</p>
 <p>This site does not use advertising trackers or sell personal information.</p>
 <p><span class="ph">[%s]</span></p>
-</div></section>""" % (n, "Have your broker or attorney review this page before the site goes live" if self.p.get("requireDisclosure")
+</div></section>""" % (n, "Have your broker or attorney review this page before the site goes live" if self.p.get("disclosure") == "real-estate"
+                                else "Have your compliance department review this page before the site goes live" if self.p.get("disclosure") == "lender"
                                 else "Have a professional review this page before the site goes live")
         self.page("privacy.html", "Privacy | %s" % plain(self.b.get("name")), "How %s uses the details you send through this website." % plain(self.b.get("name")), self.pick.slot("contact")[0], body)
 
@@ -611,6 +633,7 @@ class Site:
                         for m, fr, gd in self.magnets()],
             "palette": self.pal, "colorNotes": color_notes(brand_colors, self.pal),
             "images": self.pick.chosen,
+            "fullSite": self.p.get("fullSite"),
         }, indent=1), encoding="utf-8")
         return files
 

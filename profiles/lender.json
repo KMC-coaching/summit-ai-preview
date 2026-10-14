@@ -1,0 +1,131 @@
+{
+  "_contract": "Same keys as profiles/real-estate.json (pages, schemaType, disclosure, images, video, compliance); everything else is the shared engine. disclosure 'lender' puts NMLS numbers, the company and Equal Housing Lender in every footer, and turns on the lending checks in grade_site.py. fullSite: what the full seed site adds beyond the preview, shown on the report card; every line must be something the seed really ships.",
+  "id": "lender",
+  "label": "Lenders and mortgage professionals",
+  "pages": [
+    {
+      "key": "loans",
+      "file": "loans.html",
+      "nav": "Loans",
+      "kind": "services"
+    },
+    {
+      "key": "buy",
+      "file": "buy.html",
+      "nav": "Buying",
+      "kind": "steps"
+    }
+  ],
+  "schemaType": "FinancialService",
+  "disclosure": "lender",
+  "images": {
+    "hero": [
+      "re-exterior",
+      "re-exterior",
+      "re-exterior"
+    ],
+    "difference": [
+      "re-living"
+    ],
+    "pillars": [
+      "gen-docs",
+      "re-keys",
+      "re-door",
+      "re-kitchen"
+    ],
+    "ticker": [
+      "re-exterior",
+      "re-living",
+      "re-kitchen",
+      "re-townhome",
+      "re-street",
+      "re-patio"
+    ],
+    "split": [
+      "gen-notebook"
+    ],
+    "magnet": [
+      "re-keys"
+    ],
+    "about": [
+      "gen-office"
+    ],
+    "loans": [
+      "gen-docs"
+    ],
+    "buy": [
+      "re-keys"
+    ],
+    "contact": [
+      "re-community"
+    ],
+    "guide": [
+      "gen-notebook"
+    ],
+    "video": [
+      "re-aerial"
+    ]
+  },
+  "video": {
+    "src": "https://assets.mixkit.co/videos/48394/48394-720.mp4",
+    "license": "Mixkit Free License",
+    "label": "Aerial footage over a residential neighborhood",
+    "screened": "2026-10-14: rooftops and streets only, no faces, no readable signs"
+  },
+  "compliance": [
+    "Every page footer carries the NMLS number, the company name and the words Equal Housing Lender. Never invent an NMLS number: use [Your NMLS number].",
+    "Fair lending (Fair Housing Act and ECOA): never target or exclude by a protected class (age, family status, religion, national origin, sex, disability, and military status where state law protects it). Naming who a loan PROGRAM is designed for (first-time buyers, VA-eligible veterans) is fine; deciding who should apply is not.",
+    "No rate, APR or payment numbers without the full disclosure (Regulation Z triggering terms): leave rates out of the preview entirely.",
+    "No 'guaranteed approval', 'no credit check', 'everyone qualifies', 'lowest rates', or 'pre-approved' offers made to people who have not applied.",
+    "No testimonials, loan counts or awards that are not in their file."
+  ],
+  "fullSite": {
+    "intro": "This preview is the first few pages. When you build the full site, it also gets everything here, built to be found on Google and recommended by AI assistants.",
+    "items": [
+      {
+        "title": "A page for every service and every area",
+        "text": "Each thing you do gets its own page, with local pages where people want it nearby, the way people actually search."
+      },
+      {
+        "title": "Structured data on every page",
+        "text": "The code Google and AI assistants read to understand who you are, where you work and what you do. Generated from your details on every page and validated before every launch, never hand-written."
+      },
+      {
+        "title": "A brief written for AI assistants",
+        "text": "A page made for ChatGPT, Claude and the rest to read, so when someone asks an AI for help, your business is described the way you'd describe it."
+      },
+      {
+        "title": "Articles that get you recommended",
+        "text": "Ask for \"get me recommended by ChatGPT\" and articles are written in your voice for AI search, each linked into the rest of your site."
+      },
+      {
+        "title": "Your FAQs everywhere at once",
+        "text": "Tell it what people ask you all day. Those answers go on your pages, in your chat box and on your phone assistant, all saying the same thing."
+      },
+      {
+        "title": "Twenty to thirty blog posts in one go",
+        "text": "Written from those same questions, in your voice, all linked properly."
+      },
+      {
+        "title": "A chat box that knows your business",
+        "text": "Answers visitor questions at any hour from your real content, not made-up answers."
+      },
+      {
+        "title": "Reporting that tells you what to change",
+        "text": "Heatmaps, ad tracking and a weekly report in plain English: what's working, what isn't, and the one thing to change."
+      },
+      {
+        "title": "A safety net that refuses to launch bad pages",
+        "text": "The site won't go live with fake or unfinished content. It checks near-duplicate pages, that every form works, and that what the page says matches what it tells Google."
+      },
+      {
+        "title": "Your own address",
+        "text": "Moved onto yourname.com safely, with nothing lost."
+      },
+      {
+        "title": "You own all of it",
+        "text": "Your accounts, your domain, your files. Nobody can switch it off, raise your rent or hold it hostage. Roughly $25 to $40 a month, in your name."
+      }
+    ]
+  }
+}

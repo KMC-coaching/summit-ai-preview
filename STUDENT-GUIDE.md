@@ -1,27 +1,30 @@
-# Your Summit AI Preview — how to start
+# Your Summit AI Preview: how to start
 
 You'll need about 15 minutes, a computer (Mac or Windows), and Google Chrome.
 You will not type any commands. Claude does the work.
 
 ## Before you start
 
-1. **Finish the Summit workbook** and click its **download** button at the end.
-   Don't rename the file and don't move it. Claude finds it on its own.
-2. **Have the Claude desktop app, signed in.** If you went through Module 1, you
-   already do. If not: download it from claude.ai/download, open it, and sign in.
-   The part we use (the **Code** tab) needs a paid Claude plan.
+**Build your business brain first,** in your AI Agent Digital Revolution folder (say
+"build my business brain"). Your profile cards and Day 2 cards make the preview richer, but
+the brain is all it needs.
 
 ## Start it
 
-1. Open the Claude app and click the **Code** tab.
-2. Start a **new session**. If it asks you to pick a folder, pick **Documents**.
-3. Copy everything in the box below, paste it in, and press Enter.
+1. In your **AI Agent Digital Revolution** session, say: **build my AI preview**.
+   BOSS asks two or three quick things your workbook didn't (like your brand colors), saves
+   one file to your Downloads folder, and gives you a line to copy.
+2. In Claude, click **Code**, then **New session**. If it asks for a folder, pick your
+   **Sites** folder.
+3. Paste the line BOSS gave you and press Enter. It looks like this:
 
 ```text
-Set up my Summit AI Preview. Use curl to download
-https://raw.githubusercontent.com/KMC-coaching/summit-ai-preview/main/START-HERE.md
+Build my Summit AI Preview from my workbook file /Users/you/Downloads/summit-ai-brain.md.
+Use curl to download https://raw.githubusercontent.com/KMC-coaching/summit-ai-preview/main/START-HERE.md
 then read it and follow it exactly. I'm not technical, so never ask me to type commands.
 ```
+
+Use the line BOSS gives you, not this example: yours has your own file path in it.
 
 ## While it runs
 

@@ -145,6 +145,7 @@
     const shot = (rep) => rep && rep.screenshot ? `<img class="phone" src="${rep.screenshot}" alt="What ${esc(rep.local ? "your new site" : host(rep.url))} looks like on a phone">` : "";
     const side = (rep, who, cls, wait) => `<div class="side ${cls}">${shot(rep)}${rep ? ring(rep) : `<div class="ring"><div><span><b>…</b></span></div></div>`}
       <div><p class="who">${esc(who)}</p><h2>${rep ? esc(rep.local ? "Your new site" : host(rep.url)) : esc(wait)}</h2>
+      ${rep && (rep.belowBar || []).length && rep.letter !== "A" && rep.overall >= 90 ? `<p class="muted" style="margin-top:6px">Held to ${esc(rep.letter)}: ${esc(rep.belowBar.map((k) => ({ performance: "speed", accessibility: "accessibility", bestPractices: "best practices", seo: "SEO" }[k] || k)).join(", "))} is just under our launch bar.</p>` : ""}
       <p class="muted" style="margin-top:6px">${rep ? `${rep.totals.pass} passed · ${rep.totals.fail} to fix${rep.totals.todo ? " · " + rep.totals.todo + " for you to fill in" : ""} · ${rep.facts.pagesChecked} pages read` : "Measuring now. This takes about a minute."}</p></div></div>`;
     const cats = (gp || g) ? `<div class="cats"><div class="cat"><span class="cat-head">What we checked</span><span class="cat-head">${esc(have ? host(g.url) : "")}</span><span class="cat-head">Your new site</span></div>
       ${((gp || g).categories || []).map((cat) => {
@@ -170,13 +171,32 @@
     }).join("");
 
     const ex = ((D.settings || {}).exampleSites || []).filter((e) => e.url);
+    const fs = D.s && D.s.fullSite;
+    // One slide per thing the full site adds, over the student's own photos. A slideshow by
+    // default; "See all" lays every slide out at once for anyone who would rather skim.
+    const photos = [...new Set(Object.values((D.s && D.s.images) || {}).flat())];
+    const n = fs ? (fs.items || []).length : 0;
+    const full = n ? `<section class="fs" aria-roledescription="carousel" aria-label="What your full site also gets">
+      <p class="kicker">Beyond this preview</p><h2 class="fs-h">What your full site also gets</h2>
+      <p class="fs-intro">${esc(fs.intro || "")}</p>
+      <div class="fs-deck" data-deck tabindex="0">
+        <div class="fs-track">${fs.items.map((it, k) => `<article class="fs-slide${k ? "" : " on"}" role="group" aria-roledescription="slide" aria-label="${k + 1} of ${n}"${k ? ' aria-hidden="true"' : ""}>
+          ${photos.length ? `<img src="assets/img/library/${esc(photos[k % photos.length])}-md.webp" alt="" loading="${k ? "lazy" : "eager"}">` : ""}
+          <div class="fs-body"><span class="fs-num">${String(k + 1).padStart(2, "0")}<i>/ ${String(n).padStart(2, "0")}</i></span>
+          <h3>${esc(it.title)}</h3><p>${esc(it.text)}</p></div></article>`).join("")}</div>
+        <div class="fs-bar"><div class="fs-dots">${fs.items.map((it, k) => `<button type="button" class="fs-dot${k ? "" : " on"}" data-go="${k}" aria-label="Show ${k + 1}: ${esc(it.title)}"></button>`).join("")}</div>
+          <div class="fs-nav"><button type="button" class="fs-arrow" data-step="-1" aria-label="Previous">&larr;</button><button type="button" class="fs-arrow" data-step="1" aria-label="Next">&rarr;</button>
+          <button type="button" class="btn ghost sm" data-all>See all ${n}</button></div></div>
+        <div class="fs-progress"><i></i></div>
+      </div></section>` : "";
     return topbar("report") + `<section class="view"><div class="wrap">
       <p class="kicker">Your website report card</p><h1>${have ? `${esc(host(g.url))}, against what we just built` : "Your new site, measured"}</h1>
-      <p class="lede">The same checks a site has to pass before we let it launch: Google's own Lighthouse test, how AI assistants read it, broken pages, the words on the page${D.c.profile === "real-estate" ? ", Fair Housing and licensing rules" : ""}, and privacy. Nothing here is estimated: every number was measured today.</p>
+      <p class="lede">The same checks a site has to pass before we let it launch: Google's own Lighthouse test, how AI assistants read it, broken pages, the words on the page${D.c.profile === "real-estate" ? ", Fair Housing and licensing rules" : D.c.profile === "lender" ? ", fair lending and NMLS rules" : ""}, and privacy. Nothing here is estimated: every number was measured today.</p>
       ${g && !g.reachable ? `<div class="notice">We tried to check ${esc(host(g.url))} and it did not answer. If the address is wrong, tell Claude the right one and say <b>&nbsp;grade my website again</b>.</div>` : ""}
-      ${have ? `<div class="notice">${esc(g.label || "This site")}: ${esc(host(g.url))}. ${g.label && /admire|competitor/i.test(g.label) ? "You do not have a site of your own yet, so we measured this one instead." : ""}</div>` : ""}
+      ${have ? `<div class="notice">${esc(g.label || "This site")}: ${esc(host(g.url))}. ${g.label && /competitor/i.test(g.label) ? "A competitor in your area, measured the same way. This is who you are up against." : g.label && /admire/i.test(g.label) ? "You do not have a site of your own yet, so we measured this one instead." : ""}</div>` : ""}
       <div class="duel">${have ? side(g, g.label || "Your current website", "", "") : ""}${side(gp, "Your new site, built just now", "side--new", "Your new site")}</div>
       ${cats}
+      ${full}
       <h2 style="margin-top:34px;font-size:1.6rem">Every check, side by side</h2>
       <p class="muted" style="margin-top:6px">Open any section. "Fill in" means a blank only you can complete, like your license number. "After launch" means it can only pass on a published site.</p>
       ${groupHtml}
@@ -248,8 +268,45 @@
     let i = 0;
     const next = () => { if (i >= frames.length) return; const f = frames[i++]; f.addEventListener("load", next, { once: true }); f.src = f.dataset.src; setTimeout(next, 2500); };
     next();
+    app.querySelectorAll("[data-deck]").forEach(deck);
     const h = app.querySelector("h1");
     if (h && key) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
+  }
+
+  // The full-site slideshow: arrows, dots, swipe and arrow keys; moves on by itself every
+  // 6 seconds unless the pointer is over it, it has focus, or the viewer prefers less motion.
+  function deck(el) {
+    const slides = [...el.querySelectorAll(".fs-slide")], dots = [...el.querySelectorAll(".fs-dot")];
+    const bar = el.querySelector(".fs-progress i");
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let at = 0, timer = null, held = false;
+    const show = (k) => {
+      at = (k + slides.length) % slides.length;
+      slides.forEach((s, j) => { s.classList.toggle("on", j === at); s.setAttribute("aria-hidden", j === at ? "false" : "true"); });
+      dots.forEach((d, j) => d.classList.toggle("on", j === at));
+      restart();
+    };
+    const restart = () => {
+      clearTimeout(timer);
+      if (bar) { bar.style.transition = "none"; bar.style.width = "0"; }
+      if (still || held || el.classList.contains("all")) return;
+      requestAnimationFrame(() => { if (bar) { bar.style.transition = "width 6s linear"; bar.style.width = "100%"; } });
+      timer = setTimeout(() => { if (document.body.contains(el)) show(at + 1); }, 6000);
+    };
+    const hold = (v) => { held = v; restart(); };
+    el.addEventListener("click", (e) => {
+      const b = e.target.closest("button"); if (!b) return;
+      if (b.dataset.step) show(at + Number(b.dataset.step));
+      else if (b.dataset.go) show(Number(b.dataset.go));
+      else if (b.hasAttribute("data-all")) { const all = el.classList.toggle("all"); b.textContent = all ? "Show as slides" : "See all " + slides.length; slides.forEach((s, j) => s.setAttribute("aria-hidden", all || j === at ? "false" : "true")); restart(); }
+    });
+    el.addEventListener("keydown", (e) => { if (e.key === "ArrowRight") show(at + 1); if (e.key === "ArrowLeft") show(at - 1); });
+    el.addEventListener("mouseenter", () => hold(true)); el.addEventListener("mouseleave", () => hold(false));
+    el.addEventListener("focusin", () => hold(true)); el.addEventListener("focusout", () => hold(false));
+    let x0 = null;
+    el.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; held = true; clearTimeout(timer); }, { passive: true });
+    el.addEventListener("touchend", (e) => { held = false; if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 40) show(at + (dx < 0 ? 1 : -1)); else restart(); });
+    restart();
   }
 
   function toast(msg) {

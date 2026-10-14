@@ -100,6 +100,7 @@
     const load = () => {
       if (v.getBoundingClientRect().top > window.innerHeight * 1.5) return;
       window.removeEventListener("scroll", load);
+      if (v.dataset.poster) v.poster = v.dataset.poster;
       v.src = v.dataset.src;
       v.removeAttribute("data-src");
       if (!reduced) v.play().catch(() => {});

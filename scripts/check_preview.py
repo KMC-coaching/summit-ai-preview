@@ -40,11 +40,12 @@ COMMON = [
 BY_PROFILE = {
     "real-estate": ["business.areas", "site.sell.headline", "site.sell.intro", "site.sell.steps", "site.buy.headline", "site.buy.intro", "site.buy.steps"],
     "general": ["site.services.headline", "site.services.intro", "site.services.items"],
+    "lender": ["business.areas", "site.loans.headline", "site.loans.intro", "site.loans.items", "site.buy.headline", "site.buy.intro", "site.buy.steps"],
 }
 COUNTS = {
     "differentiator.pillars": (3, 4), "site.home.tickerCaptions": (6, 6), "leadMagnet.emails": (3, 3),
     "site.faq": (4, 6), "audit.opportunities": (2, 3), "audit.plan": (3, 5), "prompts": (5, 10),
-    "leadMagnet.sections": (4, 7), "site.services.items": (2, 6), "site.sell.steps": (3, 5), "site.buy.steps": (3, 5),
+    "leadMagnet.sections": (4, 7), "site.services.items": (2, 6), "site.loans.items": (2, 6), "site.sell.steps": (3, 5), "site.buy.steps": (3, 5),
     "site.about.values": (3, 3), "leadMagnet.bullets": (3, 5),
 }
 HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
@@ -84,7 +85,7 @@ def main() -> int:
     problems = []
     profile = c.get("profile")
     if profile not in BY_PROFILE:
-        problems.append('profile must be "real-estate" or "general"')
+        problems.append('profile must be "real-estate", "lender" or "general"')
     for p in COMMON + BY_PROFILE.get(profile, []):
         if dig(c, p) in (None, "", [], {}):
             problems.append("empty: " + p)
@@ -166,6 +167,8 @@ def main() -> int:
 
     # The audit's own rules, run on every word before anything is built.
     rules = [(G.CLAIMS, "FTC claim"), (G.INVENTED, "invented proof"), (G.SLOP, "reads like AI")]
+    if profile == "lender":
+        rules += [(G.FH_FAIL + G.FAIR_LENDING, "Fair lending"), (G.LENDING, "Lending claim")]
     if profile == "real-estate":
         rules += [(G.FH_FAIL, "Fair Housing"), (G.FH_WARN, "Fair Housing risk"), (G.COMMISSION, "commission wording")]
     for path, text in strings(c):
@@ -192,7 +195,7 @@ def main() -> int:
         for p in problems:
             print("  - " + p)
         return 1
-    print("OK: content is complete and passes the %s rules." % ("real estate" if profile == "real-estate" else "general"))
+    print("OK: content is complete and passes the %s rules." % {"real-estate": "real estate", "lender": "lending"}.get(profile, "general"))
     for w in warnings:
         print("  note: " + w)
     return 0
