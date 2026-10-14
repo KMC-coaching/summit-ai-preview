@@ -138,9 +138,14 @@ def main():
         g = json.loads(gp.read_text(encoding="utf-8"))
         lh = g.get("lighthouse") or {}
         print("      overall %s %s, lighthouse %s, source %s" % (g.get("overall"), g.get("letter"), lh, g.get("lighthouseSource")), flush=True)
-        if not step("Lighthouse ran", lh.get("performance") is not None, g.get("lighthouseError") or ""):
-            print("----- Lighthouse said -----\n%s\n---------------------------" % (g.get("lighthouseLog") or "(nothing)"), flush=True)
-        step("accessibility 100", lh.get("accessibility") == 100, str(lh.get("accessibility")))
+        if g.get("lighthouseLimit") == "windows" and lh.get("performance") is None:
+            # Known Windows limit: the report card says so in plain words; check that it does.
+            step("Windows: speed test shown as a Windows limit, not an error", "Windows limit" in (g.get("lighthouseError") or ""),
+                 g.get("lighthouseError") or "")
+        else:
+            if not step("Lighthouse ran", lh.get("performance") is not None, g.get("lighthouseError") or ""):
+                print("----- Lighthouse said -----\n%s\n---------------------------" % (g.get("lighthouseLog") or "(nothing)"), flush=True)
+            step("accessibility 100", lh.get("accessibility") == 100, str(lh.get("accessibility")))
         step("structured data 100", any(c["name"].startswith("Structured") and c["score"] == 100 for c in g["categories"]))
 
     # 7. Stop and restart: same address.

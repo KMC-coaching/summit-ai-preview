@@ -132,6 +132,12 @@ answers. Check in every minute or so.
 
 From here on **`PY` = `/usr/bin/python3` on a Mac**, always, or the Windows Python above.
 
+**Windows and the speed test:** on Windows, Google's speed test often can't start from
+here, and the report card shows the new site's speed as "Not measured" with a note that it
+is a Windows limit. That is expected, not an error. Say once at the end: *"On Windows,
+Google's speed test can't run from here, so speed shows as not measured. Everything else
+was checked."*
+
 **Chrome missing:** do not install it. The preview opens in their default browser, and
 the report card's speed test may say "not measured". Mention it once at the end.
 
