@@ -1,5 +1,5 @@
 {
-  "_contract": "See profiles/real-estate.json. Same keys, everything else is shared.",
+  "_contract": "See profiles/real-estate.json. Same keys, everything else is shared. fullSite: what the full seed site adds beyond the preview, shown on the report card; every line must be something the seed really ships. competitorSearch: the query shape and the domains to block when START-HERE looks for a local competitor (portals, directories, press releases, national brands), so the business's own sites rise to the top.",
   "id": "general",
   "label": "Any other business",
   "pages": [
@@ -26,7 +26,6 @@
     "financial|advis|wealth|mortgage|loan": "FinancialService",
     "restaurant|cafe|coffee|bakery": "FoodEstablishment"
   },
-  "requireDisclosure": false,
   "images": {
     "hero": [
       "gen-office",
@@ -88,5 +87,93 @@
     "No testimonials, client counts, rankings, awards or results that are not in their file.",
     "No medical, legal or financial outcome promises. Describe the service, not a guaranteed result.",
     "FTC: no '#1', 'best in town', 'guaranteed', 'risk-free', 'cheapest' unless their file proves it."
-  ]
+  ],
+  "disclosure": null,
+  "fullSite": {
+    "intro": "This preview is the first few pages. When you build the full site, it also gets everything here, built to be found on Google and recommended by AI assistants.",
+    "items": [
+      {
+        "title": "A page for every service and every area",
+        "text": "Each thing you do gets its own page, with local pages where people want it nearby, the way people actually search."
+      },
+      {
+        "title": "Structured data on every page",
+        "text": "The code Google and AI assistants read to understand who you are, where you work and what you do. Generated from your details on every page and validated before every launch, never hand-written."
+      },
+      {
+        "title": "A brief written for AI assistants",
+        "text": "A page made for ChatGPT, Claude and the rest to read, so when someone asks an AI for help, your business is described the way you'd describe it."
+      },
+      {
+        "title": "Articles that get you recommended",
+        "text": "Ask for \"get me recommended by ChatGPT\" and articles are written in your voice for AI search, each linked into the rest of your site."
+      },
+      {
+        "title": "Your FAQs everywhere at once",
+        "text": "Tell it what people ask you all day. Those answers go on your pages, in your chat box and on your phone assistant, all saying the same thing."
+      },
+      {
+        "title": "Twenty to thirty blog posts in one go",
+        "text": "Written from those same questions, in your voice, all linked properly."
+      },
+      {
+        "title": "A chat box that knows your business",
+        "text": "Answers visitor questions at any hour from your real content, not made-up answers."
+      },
+      {
+        "title": "Reporting that tells you what to change",
+        "text": "Heatmaps, ad tracking and a weekly report in plain English: what's working, what isn't, and the one thing to change."
+      },
+      {
+        "title": "A safety net that refuses to launch bad pages",
+        "text": "The site won't go live with fake or unfinished content. It checks near-duplicate pages, that every form works, and that what the page says matches what it tells Google."
+      },
+      {
+        "title": "Your own address",
+        "text": "Moved onto yourname.com safely, with nothing lost."
+      },
+      {
+        "title": "You own all of it",
+        "text": "Your accounts, your domain, your files. Nobody can switch it off, raise your rent or hold it hostage. Roughly $25 to $40 a month, in your name."
+      }
+    ]
+  },
+  "competitorSearch": {
+    "query": "<profession> <area> <city>",
+    "block": [
+      "yelp.com",
+      "facebook.com",
+      "instagram.com",
+      "linkedin.com",
+      "youtube.com",
+      "tiktok.com",
+      "x.com",
+      "twitter.com",
+      "nextdoor.com",
+      "mapquest.com",
+      "yellowpages.com",
+      "bbb.org",
+      "provenexpert.com",
+      "newswire.com",
+      "accessnewswire.com",
+      "prnewswire.com",
+      "einpresswire.com",
+      "globenewswire.com",
+      "businesswire.com",
+      "finance.yahoo.com",
+      "wikipedia.org",
+      "angi.com",
+      "homeadvisor.com",
+      "thumbtack.com",
+      "houzz.com",
+      "healthgrades.com",
+      "zocdoc.com",
+      "vitals.com",
+      "tripadvisor.com",
+      "groupon.com",
+      "porch.com",
+      "expertise.com",
+      "birdeye.com"
+    ]
+  }
 }

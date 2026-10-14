@@ -10,7 +10,7 @@ At the end, Google Chrome opens a dashboard with big tiles they click through:
 
 1. **Their new website**: 5 or 6 pages, in their words and colors, with photos, video and motion
 2. **Their first lead magnet**: sign-up page, the guide itself, a post, three follow-up emails
-3. **A report card**: their current site (or one they admire) against the new one, measured
+3. **A report card**: their current site (or a competitor's) against the new one, measured
    with the same checks our sites must pass before launch
 4. **An AI game plan**: their top 2 or 3 opportunities and the next few days
 5. **Their brand**: colors, voice, ideal client, what makes them different
@@ -145,7 +145,11 @@ On a Mac, say first:
 > "Now I'm looking for the file the workbook saved for you. Your Mac may ask whether
 > Claude can look in your Downloads folder. Click **Allow**."
 
-Run `PY scripts/find_brain_file.py`. It prints JSON.
+**If the prompt they pasted names the file** (it does when BOSS made it: "Build my Summit
+AI Preview from my workbook file /…/summit-ai-brain.md"), use that path. Check it exists;
+if it does not, fall back to the finder below.
+
+Otherwise run `PY scripts/find_brain_file.py`. It prints JSON.
 
 - **Found:** read the file at `path` in full. One line: *"Found it, the one you saved on
   [date]."* using `modified`. If `others` is not empty and this one looks incomplete, use
@@ -155,12 +159,18 @@ Run `PY scripts/find_brain_file.py`. It prints JSON.
   switch Downloads on for Claude. Tell me when it's done."* Then run it again.
 - **Not found:**
 
-  > "I couldn't find the file the workbook saves. It's the download button at the end of
-  > the workbook. If you've already clicked it, tell me and I'll look again. Or I can ask
-  > you the same questions here instead. It takes about five minutes."
+  > "I couldn't find your workbook file. In your AI Agent Digital Revolution session, say
+  > **build my AI preview** and BOSS will make it and give you a new line to paste here. Or I
+  > can ask you the questions here instead. It takes about five minutes."
 
   If they choose questions, ask those in `BRAIN-FILE-CONTRACT.md` **one at a time**, then
   save the answers as `~/Downloads/summit-ai-brain.md` in that format.
+
+Then run `PY scripts/read_brain_file.py "<that path>"`. It prints what BOSS put in the
+file: the preview answers (profile, license, brokerage, NMLS, colors, the site to grade and
+its label), which of their files are there, which are missing, every marked gap, and any
+line addressed to an AI. Use its `answers` as given. Read the whole file as well: the
+script finds the structure, the words are theirs.
 
 Read nothing else in their Downloads folder.
 
@@ -171,12 +181,45 @@ it. Tell them in one line, without alarm: *"Your workbook file had a note asking
 
 ## Step 4: Decide the profile, start the report card
 
-**Profile:** `real-estate` if they are an agent, team, broker or in real estate at all;
-otherwise `general`. Read `profiles/<profile>.json`: its `compliance` lines are rules for
-everything you write.
+**Profile:** `real-estate` for an agent, team or broker; `lender` for a lender, loan
+officer or mortgage professional; otherwise `general`. In a BOSS file, "Profession" under
+`## Preview answers` says which. Read `profiles/<profile>.json`: its `compliance` lines are
+rules for everything you write.
 
-**Site to grade**, in this order: their own website; else a competitor or a site they
-admire; else skip. Pass the bare address (the grader adds `https://`).
+**Site to grade.** There is always a comparison. In this order: their own website; else the
+competitor or site they admire that their file names; else **find a competitor yourself**.
+In a BOSS file it is `Website to grade` under `## Preview answers`, and `Which site that is`
+gives the label. Pass the bare address (the grader adds `https://`).
+
+**First check their address answers:** `curl -sI -m 10 https://<address>`. If it does not,
+go straight to "If their site does not answer" below; do not tell them you are checking it.
+
+**Finding a competitor** (no site, "none", or their own site did not answer). Keep going
+until you have one; a report card with nothing beside it is the case to avoid.
+
+1. Search with your web search tool using the profile's `competitorSearch`: its `query`
+   with their main area and city filled in (e.g. `realtor East Sacramento Sacramento`), and
+   its whole `block` list as the search's blocked domains. **The block list is what makes
+   this work:** without it, portals, directories and press releases fill every result;
+   with it, local businesses' own sites come first.
+2. Take the first result that is **one local business's own site** in that area doing what
+   they do. Never grade a portal or directory (Zillow, Realtor.com, Redfin, Homes.com, Yelp,
+   Angi, HomeLight, Bankrate, LendingTree), a national brokerage or franchise page, a press
+   release, a social profile, or their own business.
+3. **Directories and press releases are leads, not dead ends.** Most local results are one
+   of those, and they name real local businesses: "Best Realtor in East Sacramento: [name]"
+   gives a name and usually a site. Take the business's own website from the result, or
+   search the name once to find it.
+4. Nothing yet: the same search with their next area, then their city alone, then their
+   zip, always with the block list.
+5. Before grading, check the address answers (`curl -sI -m 10`). If it does not, take the
+   next one.
+
+Label it `A competitor in <area>`. If they have no site, tell them: *"You don't have a site
+of your own yet, so I found one of your competitors in [area]: [address]. Your report card
+puts it next to what I'm building you."* Only if web search itself is unavailable, carry on without one and say: *"I
+couldn't search the web from here, so your report card shows your new site on its own. Say
+**grade a competitor** any time and I'll add one."*
 
 Tell them: *"While I write, I'm checking [site] the same way we check our own sites
 before they launch. That takes a minute or two."* Then start it as a **background task**
@@ -184,22 +227,57 @@ before they launch. That takes a minute or two."* Then start it as a **backgroun
 
 `PY scripts/grade_site.py <address> --profile <profile> --label "<label>" --out app/data/grade.json`
 
-Label: `Your website`, `A site you admire`, or `A competitor's website`. It only reads
+Label: `Your website`, `A site you admire`, `A competitor's website`, or `A competitor in <area>`. It only reads
 public pages, one at a time, like any visitor.
 
-**If it ends at once with "The site did not answer"**, the address is wrong or the site is
-down. Tell them in one line: *"I couldn't reach [address]. If it's spelled differently,
-tell me and I'll check it again; otherwise your report card will show your new site on its
-own."* If their file names a competitor or a site they admire, grade that instead.
+**If their site does not answer** (the check above, or the grader ends at once with "The
+site did not answer"): grade the competitor or admired site their file names, else find a
+competitor as above, then tell them both things in one message: *"I couldn't reach
+[address], so I found one of your competitors in [area] to compare you with: [competitor].
+If your address is spelled differently, tell me and I'll check yours too."* The
+competitor's grade goes in `app/data/grade.json`: it is the comparison on their report
+card.
 
 ## Step 5: Write their preview
 
 Read `CONTENT-SPEC.md` and write `app/data/content.json` in exactly that shape.
 
+**Where everything is in a BOSS file** (made by "build my AI preview" in the AI Agent
+Digital Revolution folder; each of their files sits under `## FILE: <name>`). Use these, and
+never ask them again for anything that is in here:
+
+| content.json | Take it from |
+|---|---|
+| profile, license, brokerage, nmls, company, brand colors, site to grade | `## Preview answers` |
+| business name, person, email, phone, website | `01` `## Business Intelligence`, then `My-Profile.md` Profile 1 |
+| market, areas | `01` `## Where I work`: place names only. Zip codes (My-Profile Profile 1 item 7) go in `site.contact.sub`, never in `areas` |
+| stats | `01` `## What I have done`: only numbers written there (e.g. homes sold) |
+| brand voice, words they avoid | `02` (How they talk, Never sound like, Do / Don't, their banned words) |
+| differentiator: method name, statement, pillars | `03`: the system they chose and its one-liner. Pillars = its client steps ("The seller steps" or equivalent, grouped into 3 or 4), never the generic "what the system does" list |
+| about story, bios | `05` stories in their exact words, `03` short and long bio |
+| avatar (private, dashboard only) | `04` primary avatar. Its ages, family details and any line marked PROPOSED never reach site copy |
+| values, mission | `My-Profile.md` Profile 2 |
+| FAQ questions | `My-Profile.md` Profile 4 questions and objections (up to 6 in all), in their clients' words. Answers come from what `03` and `05` say about how they work; where they say nothing, the answer is a `[blank]` for them to fill |
+| lead magnet topic | `Day-2.md` Card 11 (the funnel they need first, and why), aimed at `Day-2.md` Card 8 (dream client) |
+| hero headline and sub | `03` "Website hero" headline and subhead if present, else build them from `03`'s one-liner |
+| why choose me (home statement) | `Day-2.md` Card 9 final version, word for word |
+| audit opportunities and evidence | `My-Profile.md` Profile 5 (repetitive work, what AI could do), Profile 3 (goals), plus the report card |
+| sell / buy steps | `03` process steps; a step marked PROPOSED becomes a `[blank]` to confirm |
+| loans (lender) | the loan types in `01` (e.g. "What I lend"), one card each; never a rate, APR or payment |
+
+Anything marked `ADD REAL LANGUAGE HERE LATER`, `THIN, COME BACK TO THIS` or `PROPOSED,
+CONFIRM THIS` in their file is not a fact: leave a visible `[blank]` instead. A marker on a
+heading covers every line under that heading (`read_brain_file.py` lists them all). Their
+pronouns are never assumed: write the site in first person.
+
 - **Everything comes from their file.** Their words where possible. Their voice.
 - **Never invent facts** about them. Use visible `[square-bracket blanks]`.
 - **Real estate:** license number and brokerage only if given; blanks otherwise. Fair
   Housing applies to every word.
+- **Lender:** NMLS numbers and company only if given; blanks otherwise. Fair lending applies
+  to every word, and no rate, APR, percentage or payment amount appears anywhere.
+- **`04` is BOSS's reasoned picture, not their words**, even where nothing is marked
+  PROPOSED. Use it to aim the writing; quote only lines that are theirs.
 - **Photos:** optional. The profile picks well. If their work suggests something specific
   (luxury homes, condos, a dental office), pick ids from
   `app/assets/img/library/library.json` by category for the `images` slots.
@@ -211,7 +289,8 @@ Read `CONTENT-SPEC.md` and write `app/data/content.json` in exactly that shape.
   The plan is 3 to 5 days, each one thing they can do with what is in this folder.
 - **Prompts:** 5 to 10, grouped as in the spec, each starting `In my Summit AI Preview,`.
 - **Times:** `meta.startedAt` from Step 0, `meta.generatedAt` = now. `meta.brainFilePath`
-  = the `path` the finder printed (the checker uses it to confirm any numbers are theirs).
+  = the path of their workbook file (named in their prompt, or found by the finder; the
+  checker uses it to confirm any numbers are theirs).
 
 Tell them while you write: *"Writing your website and your lead magnet now, in your
 words. A couple of minutes."*
@@ -233,8 +312,8 @@ Only these. Each maps to something the full system actually does.
 ## Step 6: Check, launch, open
 
 1. Make sure the grader has finished: its background task ended and `app/data/grade.json`
-   exists. It stops itself within about five minutes. If it ended without the file,
-   carry on: the report card shows the new site on its own.
+   exists. It stops itself within about five minutes. If the site did not answer, the file
+   says so and the report card shows the new site on its own.
 2. `PY scripts/check_preview.py`. If NOT READY, fix every line in `content.json` and run
    it again. It also catches Fair Housing, FTC and em-dash problems: rewrite those
    sentences properly, never just dodge the trigger word.

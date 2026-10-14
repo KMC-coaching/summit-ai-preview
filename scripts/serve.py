@@ -172,7 +172,7 @@ def main() -> int:
         stop()
         return 0
     port = start()
-    url = "http://localhost:%d/" % port
+    url = "http://127.0.0.1:%d/" % port  # not "localhost": see launch.py
     if "--no-open" in sys.argv:
         print(json.dumps({"url": url}))
         return 0

@@ -4,8 +4,8 @@
  * Brand colors arrive as --brand / --accent (plus contrast-safe variants
  * computed at build time) on <html style>.
  */
-@font-face { font-family: "Inter Local"; src: url("fonts/Inter-latin.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
-@font-face { font-family: "Fraunces Local"; src: url("fonts/Fraunces-latin.woff2") format("woff2"); font-weight: 300 700; font-display: swap; }
+@font-face { font-family: "Inter Local"; src: url("fonts/Inter-latin.woff2") format("woff2"); font-weight: 100 900; font-display: optional; }
+@font-face { font-family: "Fraunces Local"; src: url("fonts/Fraunces-latin.woff2") format("woff2"); font-weight: 300 700; font-display: optional; }  /* optional: no late re-paint of the largest text (LCP); on localhost they load instantly anyway */
 
 :root {
   --brand: #1f4e79; --accent: #c9a24b;
@@ -65,6 +65,10 @@ a { color: inherit; }
 .previewbar { position: fixed; z-index: 60; left: 50%; bottom: 16px; transform: translateX(-50%); background: rgba(18,20,24,.92); color: #fff; font-size: 13px; padding: 10px 10px 10px 16px; border-radius: 999px; display: flex; gap: 12px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,.25); max-width: calc(100% - 24px); }
 .previewbar a { background: #fff; color: #111; padding: 8px 14px; border-radius: 999px; font-weight: 700; text-decoration: none; white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
 @media (max-width: 560px) { .previewbar span { display: none; } }
+/* Preview only: the way back to the dashboard, at the top of every page as well as the bottom */
+.dashlink { position: fixed; z-index: 45; left: 16px; top: calc(var(--header-h) + 12px); background: rgba(18,20,24,.92); color: #fff; font: 700 13px/1 var(--sans, system-ui), sans-serif; padding: 0 16px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 999px; text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,.25); transition: top .55s var(--ease); }
+.dashlink:hover { background: #000; }
+.header.is-down:not(.is-menu) ~ .dashlink { top: 12px; }
 
 /* ---------------------------------------------------------- header */
 .header { position: fixed; inset: 0 0 auto; z-index: 40; height: var(--header-h); display: flex; align-items: center; background: var(--bg); color: var(--fg); border-bottom: 1px solid transparent; transition: transform .55s var(--ease), background-color .45s, color .45s, border-color .45s; }
@@ -115,7 +119,7 @@ body.menu-open .header { background: var(--dark) !important; color: #fff !import
 .pagehero__img { position: absolute; inset: 0; }
 .pagehero__img img { width: 100%; height: 100%; object-fit: cover; }
 .pagehero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.74), rgba(0,0,0,.46) 52%, rgba(0,0,0,.2)); }
-.pagehero__inner { position: relative; z-index: 2; padding-block: calc(var(--header-h) + 40px) clamp(44px, 8vh, 80px); width: 100%; }
+.pagehero__inner { position: relative; z-index: 2; padding-block: calc(var(--header-h) + 40px) clamp(44px, 8vh, 80px); }
 .pagehero .hero__sub { max-width: 640px; }
 
 /* ---------------------------------------------------------- sections */
@@ -278,7 +282,7 @@ ul.ticks li::before { content: ""; position: absolute; left: 0; top: .5em; width
   .hero__slide.is-active { transition: none; }
 }
 
-.in-frame .previewbar { display: none; }
+.in-frame .previewbar, .in-frame .dashlink { display: none; }
 .in-frame .reveal { opacity: 1 !important; transform: none !important; }
 
 ul.checks { list-style: none; padding: 0; margin: 14px 0; display: grid; gap: 12px; }

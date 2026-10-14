@@ -23,7 +23,12 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
    "standard" or "customary" commission.
 6. **No medical, legal or financial promises.** Describe the service, not an outcome.
 
-`check_preview.py` runs rules 3 to 5 automatically with the same lists the audit uses.
+7. **Lender only (fair lending, Regulation Z):** no rate, APR, percentage or payment amount;
+   no "guaranteed approval", "no credit check", "you're pre-approved"; never target by age,
+   family or any protected class.
+
+`check_preview.py` runs rules 3 to 7 automatically with the same lists the audit uses, plus
+the invented-proof checks (testimonials, star ratings, stats not in their file).
 
 ## When their file is unsure
 
@@ -36,7 +41,8 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
 - **More than 4 steps in their process?** Group them into 3 or 4 pillars without dropping
   any. Fewer than 3? Use what they gave; never invent a step.
 - **Their own site, a competitor, or one they admire?** Label the report card by what
-  their file calls it: `Your website`, `A competitor's website`, else `A site you admire`.
+  their file calls it: `Your website`, `A competitor's website`, else `A site you admire`. A
+  competitor Claude found itself: `A competitor in <area>`.
 - **Blanks vs. email merge fields.** A blank the owner must fill is `[Like this]`, capital
   first letter. A merge field the email tool fills is `{first_name}` in curly braces, never
   square brackets.
@@ -52,6 +58,10 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
 
 - `"profile": "real-estate"` for agents, teams and brokers. Pages: Home, About, **Sell**,
   **Buy**, Free guide, Contact. Footer carries license, brokerage, Equal Housing.
+- `"profile": "lender"` for lenders, loan officers and mortgage professionals. Pages: Home,
+  About, **Loans** (`site.loans`, same shape as services), **Buying** (`site.buy` steps),
+  Free guide, Contact. Footer carries NMLS numbers, company and Equal Housing Lender. Fair
+  lending applies to every word, and no rates, APRs or payments anywhere.
 - `"profile": "general"` for everyone else. Pages: Home, About, **Services**, Free guide,
   Contact.
 
@@ -59,7 +69,7 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
 
 ```jsonc
 {
-  "profile": "real-estate",                      // or "general"
+  "profile": "real-estate",                      // or "lender" or "general"
   "meta": { "brainFile": "summit-ai-brain.md", "brainFilePath": "/Users/.../Downloads/summit-ai-brain.md",  // the path the finder printed
             "startedAt": "2026-10-20T10:02", "generatedAt": "2026-10-20T10:11" },
 
@@ -67,10 +77,11 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
     "name": "...", "person": "...", "profession": "...",       // required
     "oneLiner": "One sentence: what they do, for whom, where.",
     "market": "City, State",                                    // or "Online"
-    "areas": ["...", "..."],                                    // real estate: neighborhoods they named
+    "areas": ["...", "..."],                                    // real estate and lender: place names they named (never zip codes)
     "phone": "", "email": "",                                   // only if given
     "website": "",                                              // their own site, or ""
     "license": "", "brokerage": "",                             // real estate: ONLY if given. Blank = placeholder in footer
+    "nmls": "", "company": "", "companyNmls": "",               // lender: ONLY if given. Blank = placeholder in footer
     "schemaType": "",                                           // optional, e.g. "Dentist"; the profile has a default
     "stats": []                                                 // ONLY real numbers from their file: [{ "value": 120, "suffix": "+", "label": "homes sold" }]
   },
@@ -108,8 +119,9 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
     },
     "about": { "headline": "...", "sub": "...", "story": ["paragraphs; a [blank] for anything you do not know"], "values": [ { "title": "", "text": "" } ] },  // values: exactly 3
     "sell": { "eyebrow": "", "headline": "", "sub": "", "cta": "", "intro": "", "steps": [ { "title": "", "text": "" } ], "closingHeadline": "", "closing": "" },  // real estate, 3-5 steps
-    "buy":  { "...same as sell..." },                                                                                                                         // real estate
+    "buy":  { "...same as sell..." },                                                                                                                         // real estate and lender
     "services": { "eyebrow": "", "headline": "", "sub": "", "intro": "", "items": [ { "name": "", "for": "", "text": "", "outcome": "" } ] },                 // general, 2-6
+    "loans":    { "...same as services..." },                                                                                                             // lender, 2-6 loan types they named
     "faq": [ { "q": "Real questions their ideal client asks", "a": "..." } ],   // 4-6
     "contact": { "headline": "", "sub": "", "text": "" }
   },

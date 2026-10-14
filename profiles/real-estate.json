@@ -1,5 +1,5 @@
 {
-  "_contract": "A profile holds everything that differs by profession. The engine (scripts/build_site.py, scripts/grade_site.py, app/assets/*) is identical for every profile. Adding a profession means adding one file here. Keys: pages (the second and third content pages, in nav order), schemaType (the business node's schema.org type), images (library categories per slot, first unused photo wins), video (stand-in clip), compliance (shown to Claude in START-HERE, enforced by grade_site.py --profile).",
+  "_contract": "A profile holds everything that differs by profession. The engine (scripts/build_site.py, scripts/grade_site.py, app/assets/*) is identical for every profile. Adding a profession means adding one file here. Keys: pages (the second and third content pages, in nav order), schemaType (the business node's schema.org type), images (library categories per slot, first unused photo wins), video (stand-in clip), compliance (shown to Claude in START-HERE, enforced by grade_site.py --profile). fullSite: what the full seed site adds beyond the preview, shown on the report card; every line must be something the seed really ships. competitorSearch: the query shape and the domains to block when START-HERE looks for a local competitor (portals, directories, press releases, national brands), so the business's own sites rise to the top.",
   "id": "real-estate",
   "label": "Real estate",
   "pages": [
@@ -17,7 +17,6 @@
     }
   ],
   "schemaType": "RealEstateAgent",
-  "requireDisclosure": true,
   "images": {
     "hero": [
       "re-exterior",
@@ -77,5 +76,106 @@
     "License number, brokerage name, and the words Equal Housing Opportunity go in the footer of every page. Never invent a license number: use [Your license number].",
     "Never imply commission is set: no 'standard', 'customary' or 'typical' commission or fee.",
     "No testimonials, sales counts, rankings or awards that are not in their file."
-  ]
+  ],
+  "disclosure": "real-estate",
+  "fullSite": {
+    "intro": "This preview is the first few pages. When you build the full site, it also gets everything here, built to be found on Google and recommended by AI assistants.",
+    "items": [
+      {
+        "title": "A page for every neighborhood you serve",
+        "text": "Each area you work gets its own page, the way people actually search: \"realtor in [neighborhood].\""
+      },
+      {
+        "title": "Structured data on every page",
+        "text": "The code Google and AI assistants read to understand who you are, where you work and what you do. Generated from your details on every page and validated before every launch, never hand-written."
+      },
+      {
+        "title": "A brief written for AI assistants",
+        "text": "A page made for ChatGPT, Claude and the rest to read, so when someone asks an AI for help, your business is described the way you'd describe it."
+      },
+      {
+        "title": "Articles that get you recommended",
+        "text": "Ask for \"get me recommended by ChatGPT\" and articles are written in your voice for AI search, each linked into the rest of your site."
+      },
+      {
+        "title": "Your listings, added in a sentence",
+        "text": "\"Add a listing at 123 Oak Street\" and it's on the site with photos and a map. \"I just sold it\" and it's marked sold."
+      },
+      {
+        "title": "Lead magnet funnels, wired to your CRM",
+        "text": "Landing page, form and delivery for every free guide, so each lead lands in your CRM and your follow-up starts on its own."
+      },
+      {
+        "title": "A chat box that knows your business",
+        "text": "Answers visitor questions at any hour from your real content, not made-up answers."
+      },
+      {
+        "title": "Reporting that tells you what to change",
+        "text": "Heatmaps, ad tracking and a weekly report in plain English: what's working, what isn't, and the one thing to change."
+      },
+      {
+        "title": "A safety net that refuses to launch bad pages",
+        "text": "The site won't go live with fake or unfinished content. It checks Fair Housing language, your license number and Equal Housing statement, near-duplicate pages, and that every form actually works."
+      },
+      {
+        "title": "Your own address",
+        "text": "Moved onto yourname.com safely, with nothing lost."
+      },
+      {
+        "title": "You own all of it",
+        "text": "Your accounts, your domain, your files. Nobody can switch it off, raise your rent or hold it hostage. Roughly $25 to $40 a month, in your name."
+      }
+    ]
+  },
+  "competitorSearch": {
+    "query": "realtor <area> <city>",
+    "block": [
+      "yelp.com",
+      "facebook.com",
+      "instagram.com",
+      "linkedin.com",
+      "youtube.com",
+      "tiktok.com",
+      "x.com",
+      "twitter.com",
+      "nextdoor.com",
+      "mapquest.com",
+      "yellowpages.com",
+      "bbb.org",
+      "provenexpert.com",
+      "newswire.com",
+      "accessnewswire.com",
+      "prnewswire.com",
+      "einpresswire.com",
+      "globenewswire.com",
+      "businesswire.com",
+      "finance.yahoo.com",
+      "wikipedia.org",
+      "zillow.com",
+      "realtor.com",
+      "redfin.com",
+      "homes.com",
+      "trulia.com",
+      "homelight.com",
+      "fastexpert.com",
+      "ratemyagent.com",
+      "experience.com",
+      "rocket.com",
+      "rentcafe.com",
+      "libertyhomeguard.com",
+      "top10lists.us",
+      "neighborhoods.com",
+      "windermere.com",
+      "coldwellbanker.com",
+      "coldwellbankerhomes.com",
+      "kw.com",
+      "remax.com",
+      "compass.com",
+      "century21.com",
+      "bhhs.com",
+      "exprealty.com",
+      "sothebysrealty.com",
+      "activerain.com"
+    ]
+  }
 }

@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -59,6 +60,18 @@ def main():
     found = code == 0 and "summit-ai-brain (1).md" in out
     step("finds the workbook download", found, "" if found else out[-300:])
 
+    # 1b. The file BOSS writes ("build my AI preview"), read back into structure.
+    code, out = run(["scripts/read_brain_file.py", str(ROOT / "examples" / "summit-ai-brain-from-boss.md")], env)
+    try:
+        rb = json.loads(out)
+        a = rb["answers"]
+        ok = (rb["made_by_boss"] and a["profile"] == "real-estate" and a["license"] == "" and a["brokerage"] == ""
+              and a["brand_colors"] == "deep green and brass" and a["website"].startswith("https://")
+              and "My-Profile.md" in rb["files"] and not rb["planted"] and len(rb["gaps"]) > 0)
+    except Exception as e:
+        ok, a = False, str(e)
+    step("reads the file BOSS makes (answers, files, gaps)", ok, "" if ok else str(a)[:300])
+
     # 2. Node from nodejs.org into the home folder, no admin.
     t0 = time.time()
     code, out = run(["scripts/get_node.py"], env)
@@ -91,7 +104,7 @@ def main():
         url = json.loads(out.strip().splitlines()[-1])["url"]
     except Exception:
         pass
-    if not step("launch builds and serves", code == 0 and url.startswith("http://localhost:"), out[-400:]):
+    if not step("launch builds and serves", code == 0 and url.startswith("http://127.0.0.1:"), out[-400:]):
         return finish()
 
     site = json.loads((data / "site.json").read_text(encoding="utf-8"))
@@ -110,6 +123,11 @@ def main():
     step("dashboard reads the checked snapshot", s == 200)
     s, footer = get(url + "site/index.html")
     step("real estate footer: Equal Housing + license blank", "Equal Housing Opportunity" in footer and "License #" in footer)
+    import html as _html
+    stmt = json.loads((ROOT / "examples" / "content-realtor.json").read_text())["site"]["home"]["statement"]
+    m = re.search(r'<p class="statement[^"]*">(.*?)</p>', footer, re.S)
+    step("home statement is the big quote, not a link", bool(m) and _html.unescape(re.sub("<[^>]+>", "", m.group(1))).strip()[:40] == stmt[:40],
+         m.group(1)[:80] if m else "no statement found")
 
     # 6. The new site, measured by Lighthouse in this machine's Chrome.
     gp = data / "grade-preview.json"
@@ -120,7 +138,8 @@ def main():
         g = json.loads(gp.read_text(encoding="utf-8"))
         lh = g.get("lighthouse") or {}
         print("      overall %s %s, lighthouse %s, source %s" % (g.get("overall"), g.get("letter"), lh, g.get("lighthouseSource")), flush=True)
-        step("Lighthouse ran", lh.get("performance") is not None, g.get("lighthouseError") or "")
+        if not step("Lighthouse ran", lh.get("performance") is not None, g.get("lighthouseError") or ""):
+            print("----- Lighthouse said -----\n%s\n---------------------------" % (g.get("lighthouseLog") or "(nothing)"), flush=True)
         step("accessibility 100", lh.get("accessibility") == 100, str(lh.get("accessibility")))
         step("structured data 100", any(c["name"].startswith("Structured") and c["score"] == 100 for c in g["categories"]))
 

@@ -48,7 +48,9 @@ def main() -> int:
         (data / "grades" / "index.json").write_text(json.dumps(grades), encoding="utf-8")
 
     port = serve.start()
-    base = "http://localhost:%d" % port
+    # 127.0.0.1, not "localhost": Windows tries IPv6 (::1) first for "localhost" and
+    # waits about two seconds per request before falling back. The server is IPv4 only.
+    base = "http://127.0.0.1:%d" % port
     code, out = run(["scripts/build_site.py", "--base", base])
     if code != 0:
         print("BUILD FAILED:\n" + out)
@@ -62,7 +64,11 @@ def main() -> int:
     # Re-measure only when the site's content changed, and never delete the last
     # result first: the report card keeps showing it until the new one replaces it.
     import hashlib
-    digest = hashlib.sha1((ROOT / "app" / "data" / "content.json").read_bytes()).hexdigest()
+    # Their content AND the code that builds it: an updated folder must re-measure too.
+    h = hashlib.sha1()
+    for part in ("app/data/content.json", "scripts/build_site.py", "app/assets/site.css", "app/assets/site.js"):
+        h.update((ROOT / part).read_bytes())
+    digest = h.hexdigest()
     stamp = ROOT / "app" / "data" / ".measured"
     have = (ROOT / "app" / "data" / "grade-preview.json").exists()
     if have and stamp.exists() and stamp.read_text().strip() == digest + str(port):
