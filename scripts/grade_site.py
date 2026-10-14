@@ -458,53 +458,19 @@ def read_lighthouse(lh, result):
     })
 
 
-def chrome_path():
-    if sys.platform == "darwin":
-        for c in ("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-                  os.path.expanduser("~/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")):
-            if os.path.exists(c):
-                return c
-    elif os.name == "nt":
-        for c in (r"%ProgramFiles%\Google\Chrome\Application\chrome.exe",
-                  r"%ProgramFiles(x86)%\Google\Chrome\Application\chrome.exe",
-                  r"%LocalAppData%\Google\Chrome\Application\chrome.exe"):
-            c = os.path.expandvars(c)
-            if os.path.exists(c):
-                return c
-    else:
-        import shutil
-        for exe in ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser"):
-            if shutil.which(exe):
-                return shutil.which(exe)
-    return None
-
-
-def start_chrome(port):
-    """Start headless Chrome on a known port and wait until it answers. Lighthouse then
-    connects to it instead of launching its own: on Windows its own launch gives up before
-    a cold Chrome is ready ("Unable to connect to Chrome"). None if it cannot start."""
-    exe = chrome_path()
-    if not exe:
-        return None
-    profile = tempfile.mkdtemp(prefix="summit-chrome-")
-    proc = subprocess.Popen([exe, "--headless=new", "--no-sandbox", "--no-first-run", "--no-default-browser-check",
-                             "--disable-gpu", "--remote-debugging-port=%d" % port, "--user-data-dir=" + profile, "about:blank"],
-                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    for _ in range(120):
-        try:
-            with urlopen("http://127.0.0.1:%d/json/version" % port, timeout=2) as r:
-                if r.status == 200:
-                    return proc
-        except Exception:
-            pass
-        if proc.poll() is not None:
-            return None
-        time.sleep(0.5)
-    proc.kill()
-    return None
-
-
 def lighthouse_local(url, result):
+    # A cold Chrome can take longer to start than Lighthouse waits for it ("Unable to
+    # connect to Chrome", seen on Windows). The second start is warm, so try twice.
+    for attempt in (1, 2):
+        result.pop("_error", None)
+        if _lighthouse_once(url, result):
+            return True
+        if "connect to Chrome" not in result.get("_error", "") and "debugging port" not in result.get("_error", ""):
+            return False
+    return False
+
+
+def _lighthouse_once(url, result):
     node = find_node()
     if not node:
         result["_error"] = "Node is not installed here"
@@ -519,7 +485,6 @@ def lighthouse_local(url, result):
     with socket.socket() as sk:
         sk.bind(("127.0.0.1", 0))
         port = sk.getsockname()[1]
-    chrome = start_chrome(port)
     args = [npx, "--yes", LIGHTHOUSE, url, "--quiet", "--port=%d" % port, "--chrome-flags=--headless=new --no-sandbox",
             "--only-categories=performance,accessibility,best-practices,seo",
             "--output=json", "--output-path=" + out]
@@ -530,15 +495,11 @@ def lighthouse_local(url, result):
         with open(out, encoding="utf-8") as f:
             lh = json.load(f)
     except Exception as e:
-        if chrome:
-            chrome.kill()
         tail = err.splitlines()[-1][:200] if err else type(e).__name__
         hint = " (Google Chrome looks missing)" if "chrome" in err.lower() and "not" in err.lower() else ""
         result["_error"] = "Lighthouse could not run here%s: %s" % (hint, tail)
         result["_log"] = "\n".join(err.splitlines()[-40:])  # Lighthouse's own words, for whoever fixes it
         return False
-    if chrome:
-        chrome.kill()
     read_lighthouse(lh, result)
     result["_source"] = "Google Lighthouse, run on this computer"
     return result.get("performance") is not None
