@@ -49,19 +49,19 @@ def get(url):
 
 
 def main():
-    home = Path(tempfile.mkdtemp(prefix="summit-home-"))
+    home = Path(tempfile.mkdtemp(prefix="aipreview-home-"))
     (home / "Downloads").mkdir()
-    env = dict(os.environ, HOME=str(home), USERPROFILE=str(home), SUMMIT_FRESH_NODE="1")
+    env = dict(os.environ, HOME=str(home), USERPROFILE=str(home), AI_PREVIEW_FRESH_NODE="1")
     print("platform: %s, python %s, home %s" % (sys.platform, sys.version.split()[0], home), flush=True)
 
     # 1. The workbook file, as a browser saves a second download.
-    shutil.copy(ROOT / "examples" / "summit-ai-brain-realtor.md", home / "Downloads" / "summit-ai-brain (1).md")
+    shutil.copy(ROOT / "examples" / "ai-brain-realtor.md", home / "Downloads" / "ai-brain (1).md")
     code, out = run(["scripts/find_brain_file.py"], env)
-    found = code == 0 and "summit-ai-brain (1).md" in out
+    found = code == 0 and "ai-brain (1).md" in out
     step("finds the workbook download", found, "" if found else out[-300:])
 
     # 1b. The file BOSS writes ("build my AI preview"), read back into structure.
-    code, out = run(["scripts/read_brain_file.py", str(ROOT / "examples" / "summit-ai-brain-from-boss.md")], env)
+    code, out = run(["scripts/read_brain_file.py", str(ROOT / "examples" / "ai-brain-from-boss.md")], env)
     try:
         rb = json.loads(out)
         a = rb["answers"]

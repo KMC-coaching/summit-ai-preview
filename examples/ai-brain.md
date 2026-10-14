@@ -1,4 +1,4 @@
-# Summit AI Brain — Maria Lopez
+# AI Brain — Maria Lopez
 Saved: 2026-10-20
 
 ## About you

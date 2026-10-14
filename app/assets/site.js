@@ -123,10 +123,10 @@
     e.preventDefault();
     const data = { first: lead.first.value.trim(), email: lead.email.value.trim(), at: new Date().toISOString() };
     try {
-      localStorage.setItem("summit.lastLead", JSON.stringify(data));
-      const all = JSON.parse(localStorage.getItem("summit.leads") || "[]");
+      localStorage.setItem("aipreview.lastLead", JSON.stringify(data));
+      const all = JSON.parse(localStorage.getItem("aipreview.leads") || "[]");
       all.push(data);
-      localStorage.setItem("summit.leads", JSON.stringify(all));
+      localStorage.setItem("aipreview.leads", JSON.stringify(all));
     } catch (err) { /* private window: the guide still opens */ }
     lead.hidden = true;
     const done = document.getElementById("leadDone");
@@ -138,5 +138,5 @@
     toast("Preview only: nothing was sent. On your live site this lands in your inbox and your phone.");
   });
   const who = document.querySelector("[data-lead-name]");
-  if (who) { try { const d = JSON.parse(localStorage.getItem("summit.lastLead") || "{}"); if (d.first) who.textContent = d.first; } catch (e) { /* fine */ } }
+  if (who) { try { const d = JSON.parse(localStorage.getItem("aipreview.lastLead") || "{}"); if (d.first) who.textContent = d.first; } catch (e) { /* fine */ } }
 })();

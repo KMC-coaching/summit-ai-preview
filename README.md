@@ -1,9 +1,9 @@
-# Summit AI Preview
+# AI Preview
 
-The VIP / fast-action piece for Summit, from the Oct 13 strategy call (Jerry, Chelsea,
+The VIP / fast-action piece for Krista's three-day events, from the Oct 13 strategy call (Jerry, Chelsea,
 Hailey, Krista).
 
-**One set of answers in, a working preview out.** The person fills in Krista's Summit
+**One set of answers in, a working preview out.** The person fills in Krista's
 workbook, which downloads one file. They paste a three-line prompt into the Claude app's
 Code tab. Claude prepares their computer (Module 1's pre-setup, minus GitHub), finds that
 file on its own, and about ten minutes later Google Chrome opens a dashboard where they
@@ -63,7 +63,7 @@ is built, so a Fair Housing or FTC problem never reaches a page.
 | `CONTENT-SPEC.md` | The shape of `app/data/content.json`, which Claude writes |
 | `profiles/*.json` | Per-profession pages, photos, schema, compliance |
 | `scripts/find_brain_file.py` | Finds the newest workbook download |
-| `scripts/get_node.py` | Private Node in `~/.summit-preview/node` for Lighthouse (no admin) |
+| `scripts/get_node.py` | Private Node in `~/.ai-preview/node` for Lighthouse (no admin) |
 | `scripts/grade_site.py` | The audit (above) |
 | `scripts/check_preview.py` | Completeness + rule gate on content.json |
 | `scripts/build_site.py` | Builds the real HTML site, sitemap, robots.txt, llms.txt |
@@ -86,7 +86,7 @@ hotlinked rather than bundled.
 ## Run it locally (team)
 
 ```bash
-cp examples/summit-ai-brain-realtor.md ~/Downloads/summit-ai-brain.md
+cp examples/ai-brain-realtor.md ~/Downloads/ai-brain.md
 ```
 
 Then open a Claude Code session in this folder and say "build my preview".
@@ -103,7 +103,7 @@ No secrets live in this repo, and none are needed.
 
 ## Still open
 
-- Krista's workbook must download `summit-ai-brain.md` per `BRAIN-FILE-CONTRACT.md`.
+- Krista's workbook must download `ai-brain.md` per `BRAIN-FILE-CONTRACT.md`.
 - Example student sites in `app/config/settings.json` (Ronnie, Doug, Alisha Collins,
   Chris Vanette): URLs to confirm and grade first.
 - What's-next video and call-to-action link in `app/config/settings.json`.

@@ -1,10 +1,22 @@
 {
-  "_readme": "Ours, not theirs. Ships with the repo. exampleSites: top students' sites, shown under the report card (Krista named Ronnie, Doug, Alisha Collins, Chris Vanette; URLs still to be confirmed and graded before they go in). next: the 'what's next' panel.",
+  "_readme": "Ours, not theirs. Ships with the repo. exampleSites: top students' sites, shown under the report card (Krista named Ronnie, Doug, Alisha Collins, Chris Vanette; URLs still to be confirmed and graded before they go in). next: the 'what's next' panel. vipGifts: the VIP & Fast Action gifts menu, from Chelsea's list (Slack, 2026-10-14). Every url must open without a login; Top Producer Secrets is left out until its Drive file is shared publicly (it returned 401).",
   "exampleSites": [
-    { "name": "Ronnie", "url": "" },
-    { "name": "Doug", "url": "" },
-    { "name": "Alisha Collins", "url": "" },
-    { "name": "Chris Vanette", "url": "" }
+    {
+      "name": "Ronnie",
+      "url": ""
+    },
+    {
+      "name": "Doug",
+      "url": ""
+    },
+    {
+      "name": "Alisha Collins",
+      "url": ""
+    },
+    {
+      "name": "Chris Vanette",
+      "url": ""
+    }
   ],
   "next": {
     "headline": "This is a glimpse. Not the system.",
@@ -13,5 +25,32 @@
     "videoPlaceholder": "A short video from Krista goes here.",
     "ctaText": "",
     "ctaUrl": ""
-  }
+  },
+  "vipGifts": [
+    {
+      "title": "The Thinking Effect",
+      "kind": "Book \u00b7 PDF",
+      "url": "https://drive.google.com/file/d/1G5sp8RUckj5ebLSpVgbWTYg6LyEIuBzx/view?usp=sharing"
+    },
+    {
+      "title": "Be Known or Go Broke",
+      "kind": "Book \u00b7 PDF",
+      "url": "https://drive.google.com/file/d/18yAiZeGvsMO55NWs-0MGOW6jAsDMhIgf/view?usp=sharing"
+    },
+    {
+      "title": "Sell 100+ Homes",
+      "kind": "Book \u00b7 PDF",
+      "url": "https://drive.google.com/file/d/1HlcdvlcXt90iOrVj9WfqI7jmkWxc7iUq/view?usp=sharing"
+    },
+    {
+      "title": "Stop, Snap & Switch",
+      "kind": "Book \u00b7 PDF",
+      "url": "https://drive.google.com/file/d/1IqgzKORqmkFudOGCgFvb2ONDVZpFYhgl/view?usp=sharing"
+    },
+    {
+      "title": "Mindset companion tools",
+      "kind": "Web page",
+      "url": "https://kristamashore.com/Mindset"
+    }
+  ]
 }

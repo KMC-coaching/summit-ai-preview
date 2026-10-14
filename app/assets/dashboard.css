@@ -246,3 +246,28 @@ footer.foot { color: var(--muted); font-size: 13px; text-align: center; padding:
   .fs-bar { flex-direction: column; align-items: flex-start; }
 }
 @media (prefers-reduced-motion: reduce) { .fs-slide, .fs-slide img, .fs-slide.on .fs-body > * { transition: none; animation: none; transform: none; } }
+
+/* ------------------------------------------------ VIP gifts */
+.tile--gifts { grid-column: span 6; min-height: 150px; background: linear-gradient(120deg, #1d2a22, var(--panel)); }
+.tile--half { grid-column: span 6; }
+@media (max-width: 1000px) { .tile--gifts, .tile--half { grid-column: span 12; } }
+.gift-stack { position: absolute; right: 22px; top: 18px; width: 150px; height: 110px; z-index: 1; }
+.gift-stack span { position: absolute; right: calc(var(--k) * 26px); top: calc(var(--k) * 8px); width: 74px; height: 96px; border-radius: 4px 8px 8px 4px; padding: 8px; font: 400 11px/1.15 var(--serif); color: #f4f1ea; background: linear-gradient(160deg, hsl(calc(150 + var(--k) * 40) 30% 26%), hsl(calc(150 + var(--k) * 40) 30% 16%)); box-shadow: 0 10px 24px rgba(0,0,0,.45); transform: rotate(calc(var(--k) * -5deg + 6deg)); transition: transform .5s var(--ease); overflow: hidden; }
+.tile--gifts:hover .gift-stack span { transform: rotate(0) translateY(-4px); }
+@media (max-width: 640px) { .gift-stack { opacity: .35; } }
+.gifts { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 22px; margin-top: 28px; }
+.gift { text-decoration: none; color: var(--fg); display: flex; flex-direction: column; gap: 12px; }
+.gift-cover { aspect-ratio: 3 / 4; border-radius: 6px 14px 14px 6px; padding: 22px 20px; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(160deg, hsl(calc(150 + var(--k) * 47) 32% 28%), hsl(calc(150 + var(--k) * 47) 32% 14%)); box-shadow: inset 6px 0 0 rgba(0,0,0,.25), 0 22px 50px -20px rgba(0,0,0,.8); transition: transform .5s var(--ease), box-shadow .5s var(--ease); }
+.gift:hover .gift-cover, .gift:focus-visible .gift-cover { transform: translateY(-6px) rotate(-1deg); box-shadow: inset 6px 0 0 rgba(0,0,0,.25), 0 30px 60px -20px rgba(0,0,0,.9); }
+.gift-cover .tag { align-self: flex-start; background: var(--gold); color: #141414; border-radius: 999px; padding: 5px 10px; font: 700 11px/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; }
+.gift-cover .t { font: 400 clamp(1.5rem, 1.2rem + .9vw, 2rem)/1.08 var(--serif); }
+.gift-cover .by { font-size: 13px; color: rgba(244,241,234,.75); }
+.gift .go { font: 700 12px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--gold); min-height: 44px; display: flex; align-items: center; }
+@media (prefers-reduced-motion: reduce) { .gift-cover, .gift-stack span { transition: none; } }
+.gift-stack span:not(:last-child) { color: transparent; }
+@media (max-width: 640px) {
+  .gifts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .gift-cover { padding: 14px 12px; }
+  .gift-cover .t { font-size: 1.15rem; }
+  .gift-cover .tag { font-size: 10px; padding: 4px 8px; }
+}

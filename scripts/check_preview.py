@@ -22,7 +22,7 @@ import grade_site as G  # noqa: E402  one list of rules, not two
 
 CONTENT = ROOT / "app" / "data" / "content.json"
 LIB = ROOT / "app" / "assets" / "img" / "library" / "library.json"
-PREFIX = "In my Summit AI Preview,"
+PREFIX = "In my AI Preview,"
 
 COMMON = [
     "profile", "business.name", "business.person", "business.profession", "business.oneLiner", "business.market",

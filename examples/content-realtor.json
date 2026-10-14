@@ -1,7 +1,7 @@
 {
   "profile": "real-estate",
   "meta": {
-    "brainFile": "summit-ai-brain-realtor.md",
+    "brainFile": "ai-brain-realtor.md",
     "generatedAt": "2026-10-14T09:10",
     "brainFilePath": ""
   },
@@ -319,25 +319,25 @@
         "day": 1,
         "title": "Make your checklist yours",
         "do": "Read your checklist and change one section to something only you would say.",
-        "prompt": "In my Summit AI Preview, rewrite section 3 of my checklist in my own voice and leave a [blank] where a real example from my listings should go."
+        "prompt": "In my AI Preview, rewrite section 3 of my checklist in my own voice and leave a [blank] where a real example from my listings should go."
       },
       {
         "day": 2,
         "title": "Post it once",
         "do": "Copy your social post and put it in one neighborhood group.",
-        "prompt": "In my Summit AI Preview, write two more versions of my social post: one for Nextdoor and one for Instagram."
+        "prompt": "In my AI Preview, write two more versions of my social post: one for Nextdoor and one for Instagram."
       },
       {
         "day": 3,
         "title": "Check a competitor",
         "do": "Grade the site of one agent you compete with and compare it to yours.",
-        "prompt": "In my Summit AI Preview, grade this website and compare it to my sample site: "
+        "prompt": "In my AI Preview, grade this website and compare it to my sample site: "
       },
       {
         "day": 4,
         "title": "Plan a second magnet",
         "do": "Make a second free guide for first-time buyers in Elk Grove.",
-        "prompt": "In my Summit AI Preview, make a second lead magnet for first-time buyers in Elk Grove and add it to my site."
+        "prompt": "In my AI Preview, make a second lead magnet for first-time buyers in Elk Grove and add it to my site."
       }
     ]
   },
@@ -345,42 +345,42 @@
     {
       "group": "Change your website",
       "label": "New headline",
-      "prompt": "In my Summit AI Preview, change my home page headline to something that speaks to people downsizing."
+      "prompt": "In my AI Preview, change my home page headline to something that speaks to people downsizing."
     },
     {
       "group": "Change your website",
       "label": "New colors",
-      "prompt": "In my Summit AI Preview, try my site in navy and copper instead."
+      "prompt": "In my AI Preview, try my site in navy and copper instead."
     },
     {
       "group": "Change your website",
       "label": "Different photos",
-      "prompt": "In my Summit AI Preview, swap my home page photos for more modern homes."
+      "prompt": "In my AI Preview, swap my home page photos for more modern homes."
     },
     {
       "group": "Change your website",
       "label": "Warmer tone",
-      "prompt": "In my Summit AI Preview, rewrite my About page to sound a little warmer and more personal."
+      "prompt": "In my AI Preview, rewrite my About page to sound a little warmer and more personal."
     },
     {
       "group": "Make more lead magnets",
       "label": "A buyer guide",
-      "prompt": "In my Summit AI Preview, make a lead magnet for first-time buyers in Elk Grove and add it to my site."
+      "prompt": "In my AI Preview, make a lead magnet for first-time buyers in Elk Grove and add it to my site."
     },
     {
       "group": "Create content",
       "label": "Posts for Nextdoor and Instagram",
-      "prompt": "In my Summit AI Preview, write a Nextdoor and an Instagram version of my checklist post."
+      "prompt": "In my AI Preview, write a Nextdoor and an Instagram version of my checklist post."
     },
     {
       "group": "Check any website",
       "label": "Grade a competitor",
-      "prompt": "In my Summit AI Preview, grade this website and compare it to my sample site: "
+      "prompt": "In my AI Preview, grade this website and compare it to my sample site: "
     },
     {
       "group": "Create content",
       "label": "A week of posts",
-      "prompt": "In my Summit AI Preview, write a week of social posts that send people to my checklist."
+      "prompt": "In my AI Preview, write a week of social posts that send people to my checklist."
     }
   ],
   "moreMagnets": [
