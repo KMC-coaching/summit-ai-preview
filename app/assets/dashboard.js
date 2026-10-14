@@ -33,7 +33,7 @@
 
   function topbar(active) {
     return `<div class="topbar"><div class="wrap">
-      <a class="btn ghost sm" href="#/">&larr; Everything you built</a>
+      <a class="btn ghost sm" href="#/">&larr; Dashboard</a>
       <nav class="tabs" aria-label="Sections">${VIEWS.map(([k, l]) => `<a href="#/${k}"${k === active ? ' aria-current="page"' : ""}>${l}</a>`).join("")}</nav>
     </div></div>`;
   }

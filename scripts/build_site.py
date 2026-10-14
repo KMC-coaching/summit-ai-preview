@@ -364,6 +364,7 @@ class Site:
 </div>
 <div class="legal"><span>&copy; %s</span>%s</div>
 </div></footer>
+<a class="dashlink" href="../index.html">&larr; Dashboard</a>
 <div class="previewbar" role="note"><span>Preview: this site lives only on your computer.</span><a href="../index.html">Back to your dashboard</a></div>
 <script src="../assets/site.js" defer></script>
 </body></html>
