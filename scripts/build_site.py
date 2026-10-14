@@ -365,7 +365,7 @@ class Site:
 <div class="legal"><span>&copy; %s</span>%s</div>
 </div></footer>
 <a class="dashlink" href="../index.html">&larr; Dashboard</a>
-<div class="previewbar" role="note"><span>Preview: this site lives only on your computer.</span><a href="../index.html">Back to your dashboard</a></div>
+<div class="previewbar" role="note"><span>Demo: what your website could look like. It lives only on your computer.</span><a href="../index.html">Back to your dashboard</a></div>
 <script src="../assets/site.js" defer></script>
 </body></html>
 """ % (esc(b.get("name")), t(get(self.c, "brand.tagline") or b.get("oneLiner")), lic, explore, reach, esc(b.get("name")), eho)

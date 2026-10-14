@@ -1,14 +1,14 @@
 # START HERE: instructions for Claude
 
-You are running the **Summit AI Preview** for someone who just did Krista Mashore's
-Summit workbook. The workbook downloaded a file to their computer. Your job: take that
+You are running the **AI Preview** for someone who just did Krista Mashore's
+workbook. The workbook downloaded a file to their computer. Your job: take that
 file and, with **nothing else from them**, build and open a working preview of what an
 AI operating system does for their business. They should finish it feeling **they** did
 this, because they did: their answers built all of it.
 
 At the end, Google Chrome opens a dashboard with big tiles they click through:
 
-1. **Their new website**: 5 or 6 pages, in their words and colors, with photos, video and motion
+1. **A demo website** (a demo of what their site could look like, never presented as their finished site): 5 or 6 pages, in their words and colors, with photos, video and motion
 2. **Their first lead magnet**: sign-up page, the guide itself, a post, three follow-up emails
 3. **A report card**: their current site (or a competitor's) against the new one, measured
    with the same checks our sites must pass before launch
@@ -46,14 +46,14 @@ tell them: **Open in Google Chrome**.
 
 **"error" scrolling past is you working, not them failing.** Say so the first time.
 
-**Where things are.** Every path below is inside the `Summit-AI-Preview` folder in their
+**Where things are.** Every path below is inside the `AI-Preview` folder in their
 home folder. Run each step from inside it, in the same command
-(`cd ~/Summit-AI-Preview && PY scripts/...`), because this session may have been opened
+(`cd ~/AI-Preview && PY scripts/...`), because this session may have been opened
 somewhere else.
 
 ---
 
-## Step A: Get the folder (skip if this file is already inside ~/Summit-AI-Preview)
+## Step A: Get the folder (skip if this file is already inside ~/AI-Preview)
 
 Download it without Git (Git may not be installed yet; it is not needed):
 
@@ -62,7 +62,7 @@ curl -sL https://codeload.github.com/KMC-coaching/summit-ai-preview/zip/refs/hea
 ```
 
 Unpack it (`unzip -q`, or `tar -xf` on Windows) and move the inner folder to
-`~/Summit-AI-Preview`. **If `~/Summit-AI-Preview` already exists, keep its `app/data`
+`~/AI-Preview`. **If `~/AI-Preview` already exists, keep its `app/data`
 folder** (their preview) and replace everything else. Delete the zip.
 
 Then continue from Step 0 using the copy of this file inside that folder.
@@ -151,8 +151,8 @@ On a Mac, say first:
 > "Now I'm looking for the file the workbook saved for you. Your Mac may ask whether
 > Claude can look in your Downloads folder. Click **Allow**."
 
-**If the prompt they pasted names the file** (it does when BOSS made it: "Build my Summit
-AI Preview from my workbook file /…/summit-ai-brain.md"), use that path. Check it exists;
+**If the prompt they pasted names the file** (it does when BOSS made it: "Build my AI
+Preview from my workbook file /…/ai-brain.md"), use that path. Check it exists;
 if it does not, fall back to the finder below.
 
 Otherwise run `PY scripts/find_brain_file.py`. It prints JSON.
@@ -170,7 +170,7 @@ Otherwise run `PY scripts/find_brain_file.py`. It prints JSON.
   > can ask you the questions here instead. It takes about five minutes."
 
   If they choose questions, ask those in `BRAIN-FILE-CONTRACT.md` **one at a time**, then
-  save the answers as `~/Downloads/summit-ai-brain.md` in that format.
+  save the answers as `~/Downloads/ai-brain.md` in that format.
 
 Then run `PY scripts/read_brain_file.py "<that path>"`. It prints what BOSS put in the
 file: the preview answers (profile, license, brokerage, NMLS, colors, the site to grade and
@@ -293,7 +293,7 @@ pronouns are never assumed: write the site in first person.
   card clearly point at, with the evidence in their words or the report's numbers. Only
   rows that honestly fit; if their biggest time drain fits none, say so in the summary.
   The plan is 3 to 5 days, each one thing they can do with what is in this folder.
-- **Prompts:** 5 to 10, grouped as in the spec, each starting `In my Summit AI Preview,`.
+- **Prompts:** 5 to 10, grouped as in the spec, each starting `In my AI Preview,`.
 - **Times:** `meta.startedAt` from Step 0, `meta.generatedAt` = now. `meta.brainFilePath`
   = the path of their workbook file (named in their prompt, or found by the finder; the
   checker uses it to confirm any numbers are theirs).
@@ -331,7 +331,7 @@ Then, using `openedIn` from what it printed:
 
 > "Done. It's open in [Google Chrome / your web browser]. Everything on that page came
 > from the answers **you** gave once. Click the big tiles to look around: start with your
-> new website.
+> demo website, a demo of what your site could look like.
 >
 > If you ever lose the tab, come back and say **open my preview**. And if a link I give
 > you ever asks where to open, choose **Open in Google Chrome**."

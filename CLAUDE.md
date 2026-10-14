@@ -1,12 +1,12 @@
-# Summit AI Preview
+# AI Preview
 
-This folder is someone's **Summit AI Preview**. They are not technical and they never
+This folder is someone's **AI Preview**. They are not technical and they never
 type commands. `PY` below is `/usr/bin/python3` on a Mac (Windows: see START-HERE Step 2).
 
 - **First run, or "build my preview":** follow `START-HERE.md` exactly, top to bottom.
 - **"Open my preview"** (or anything like it): `PY scripts/launch.py` from this folder.
   It rebuilds, starts the preview if needed, and opens it in Google Chrome.
-- **A prompt starting "In my Summit AI Preview,"**: they copied it from their dashboard.
+- **A prompt starting "In my AI Preview,"**: they copied it from their dashboard.
   1. Do what it asks by editing `app/data/content.json` (shape in `CONTENT-SPEC.md`).
      - Another lead magnet: add it to `moreMagnets` (never replace the first).
      - Posts: add them to `posts`.

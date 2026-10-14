@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Find the file the Summit workbook downloaded, without asking the person where it is.
+Find the file the workbook downloaded, without asking the person where it is.
 
 The workbook saves one file, named per BRAIN-FILE-CONTRACT.md. Browsers do not
-keep that name exactly: a second download becomes "summit-ai-brain (1).md", and
+keep that name exactly: a second download becomes "ai-brain (1).md", and
 Safari sometimes adds ".txt". So this looks for the name loosely, in the places
 a download actually lands.
 
@@ -25,9 +25,9 @@ from pathlib import Path
 
 # The contracted name first, then looser shapes of it, most specific first.
 PATTERNS = [
-    re.compile(r"^summit-ai-brain", re.I),
+    re.compile(r"^ai-brain", re.I),
     re.compile(r"ai[-_ ]?brain", re.I),
-    re.compile(r"summit.*(brain|workbook)", re.I),
+    re.compile(r"summit.*(brain|workbook)", re.I),   # the old name, still accepted
     re.compile(r"(brain|workbook).*summit", re.I),
 ]
 EXTENSIONS = {".md", ".txt", ".json", ".pdf", ".docx", ".markdown"}

@@ -24,7 +24,7 @@
   const copies = {};
   const copyBtn = (text, label) => { const id = "c" + ++copyId; copies[id] = text; return `<button class="btn sm" data-copy="${id}">${esc(label || "Copy")}</button>`; };
 
-  const VIEWS = [["site", "Your website"], ["magnet", "Lead magnet"], ["report", "Report card"], ["plan", "Game plan"], ["brand", "Your brand"], ["play", "Make it yours"]];
+  const VIEWS = [["site", "Demo site"], ["magnet", "Lead magnet"], ["report", "Report card"], ["plan", "Game plan"], ["brand", "Your brand"], ["gifts", "VIP gifts"], ["play", "Make it yours"]];
 
   function first() {
     const p = String(D.c.business.person || "").replace(/^(dr|mr|mrs|ms)\.?\s+/i, "").split(/\s+/)[0];
@@ -43,7 +43,7 @@
   /* ---------------------------------------------------------- reveal */
   function reveal() {
     let seen = false;
-    try { seen = localStorage.getItem("summit.revealed") === "1"; localStorage.setItem("summit.revealed", "1"); } catch (e) { /* private window */ }
+    try { seen = localStorage.getItem("aipreview.revealed") === "1"; localStorage.setItem("aipreview.revealed", "1"); } catch (e) { /* private window */ }
     if (seen || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const c = D.c, m = c.leadMagnet || {};
     const pages = D.s ? D.s.pages.filter((p) => p.file !== "privacy.html").length : 0;
@@ -81,17 +81,19 @@
       <div class="tiles">
         <a class="tile tile--site" href="#/site"><div class="thumb"><iframe src="site/index.html" title="" tabindex="-1" aria-hidden="true" loading="eager"></iframe></div><div class="shade"></div>
           <span class="badge">New · built just now</span>
-          <h2>Your new website</h2><p>${D.s ? D.s.pages.filter((p) => p.file !== "privacy.html").length : 6} pages in your words and your colors, with photos, video and motion. Click to see every page.</p><span class="go">See your website &rarr;</span></a>
+          <h2>Your demo website</h2><p>A demo of what your website could look like: ${D.s ? D.s.pages.filter((p) => p.file !== "privacy.html").length : 6} pages in your words and your colors, with photos, video and motion. Click to see every page.</p><span class="go">See your website &rarr;</span></a>
         <a class="tile tile--magnet" href="#/magnet"><div class="mini-cover" aria-hidden="true"><em>FREE</em>${t(m.title)}</div><div class="shade"></div>
           <span class="badge">Your first lead magnet</span>
           <h2>${t(m.title)}</h2><p>The free ${esc(m.format || "guide")}, the sign-up page, the post that promotes it, and ${(m.emails || []).length} follow-up emails.${(c.moreMagnets || []).length ? ` Plus ${(c.moreMagnets || []).length} more you made.` : ""}</p><span class="go">See your lead magnet &rarr;</span></a>
         <a class="tile tile--report" href="#/report">
           <div class="vs">${g && g.reachable ? `<div class="g" style="background:${color(g.overall)};color:#111">${esc(g.letter)}</div><span class="arrow">&rarr;</span>` : ""}<div class="g" style="background:${gp ? color(gp.overall) : "rgba(255,255,255,.1)"};color:#111">${gp ? esc(gp.letter) : "…"}</div></div>
-          <h2>Your website report card</h2><p>${g && g.reachable ? `${esc(host(g.url))} against your new site, on every check our sites must pass.` : "Your new site, measured on every check our sites must pass."}</p><span class="go">See the report &rarr;</span></a>
+          <h2>Your website report card</h2><p>${g && g.reachable ? `${esc(host(g.url))} against your demo site, on every check our sites must pass.` : "Your demo site, measured on every check our sites must pass."}</p><span class="go">See the report &rarr;</span></a>
         <a class="tile tile--plan" href="#/plan"><h2>Your AI game plan</h2><p>${t(a.summary)}</p><span class="go">${(a.opportunities || []).length} opportunities &rarr;</span></a>
         <a class="tile tile--brand" href="#/brand"><div class="swatch-row">${["primary", "accent"].filter((k) => col[k]).map((k) => `<span style="background:${esc(col[k])}"></span>`).join("")}</div>
           <h2>Your brand</h2><p>Your colors, your voice, your ideal client and what makes you different.</p><span class="go">See your brand &rarr;</span></a>
-        <a class="tile tile--play" href="#/play"><div><h2>Now make it yours</h2><p>Change your headline, swap your colors, make another lead magnet. Paste one line into Claude and watch it happen.</p></div><span class="btn">Show me what I can do &rarr;</span></a>
+        ${gifts().length ? `<a class="tile tile--gifts" href="#/gifts"><div class="gift-stack" aria-hidden="true">${gifts().slice(0, 3).map((x, k) => `<span style="--k:${k}">${esc(x.title)}</span>`).join("")}</div>
+          <h2>Your VIP gifts</h2><p>${gifts().length} gifts: Krista's books and tools.</p><span class="go">Open your gifts &rarr;</span></a>` : ""}
+        <a class="tile tile--play${gifts().length ? " tile--half" : ""}" href="#/play"><div><h2>Now make it yours</h2><p>Change your headline, swap your colors, make another lead magnet. Paste one line into Claude and watch it happen.</p></div><span class="btn">Show me what I can do &rarr;</span></a>
       </div></div></section>
       <footer class="foot">Everything here lives only on your computer. Nothing has been published or sent anywhere.</footer>`;
   }
@@ -102,9 +104,9 @@
     const g = D.g;
     const label = (p) => p.label;
     return topbar("site") + `<section class="view"><div class="wrap">
-      <p class="kicker">Your new website</p><h1>Built just now, in your words</h1>
+      <p class="kicker">Your demo website</p><h1>A demo of what your website could look like</h1>
       <p class="lede">Every page below was written from your answers and built a few minutes ago. Click any page to walk through it. Scroll slowly: things move.</p>
-      ${g && g.reachable ? `<div class="notice">This is the new site your AI just built. ${esc(host(g.url))} is a different site: you will find it on your report card.</div>` : ""}
+      ${g && g.reachable ? `<div class="notice">This is a demo site your AI just built from your answers. ${esc(host(g.url))} is a different site: you will find it on your report card.</div>` : ""}
       <div class="pages">${pages.filter((p) => p.file !== "privacy.html").map((p, i) => `<a class="pagecard${i === 0 ? " pagecard--wide" : ""}" href="site/${esc(p.file)}">
         <div class="shot"><iframe data-src="site/${esc(p.file)}" title="" tabindex="-1" aria-hidden="true"></iframe></div>
         <div class="cap"><b>${esc(label(p))}</b><span>Open &rarr;</span></div></a>`).join("")}</div>
@@ -142,12 +144,12 @@
   function reportView() {
     const g = D.g, gp = D.gp;
     const have = g && g.reachable;
-    const shot = (rep) => rep && rep.screenshot ? `<img class="phone" src="${rep.screenshot}" alt="What ${esc(rep.local ? "your new site" : host(rep.url))} looks like on a phone">` : "";
+    const shot = (rep) => rep && rep.screenshot ? `<img class="phone" src="${rep.screenshot}" alt="What ${esc(rep.local ? "your demo site" : host(rep.url))} looks like on a phone">` : "";
     const side = (rep, who, cls, wait) => `<div class="side ${cls}">${shot(rep)}${rep ? ring(rep) : `<div class="ring"><div><span><b>…</b></span></div></div>`}
-      <div><p class="who">${esc(who)}</p><h2>${rep ? esc(rep.local ? "Your new site" : host(rep.url)) : esc(wait)}</h2>
+      <div><p class="who">${esc(who)}</p><h2>${rep ? esc(rep.local ? "Your demo site" : host(rep.url)) : esc(wait)}</h2>
       ${rep && (rep.belowBar || []).length && rep.letter !== "A" && rep.overall >= 90 ? `<p class="muted" style="margin-top:6px">Held to ${esc(rep.letter)}: ${esc(rep.belowBar.map((k) => ({ performance: "speed", accessibility: "accessibility", bestPractices: "best practices", seo: "SEO" }[k] || k)).join(", "))} is just under our launch bar.</p>` : ""}
       <p class="muted" style="margin-top:6px">${rep ? `${rep.totals.pass} passed · ${rep.totals.fail} to fix${rep.totals.todo ? " · " + rep.totals.todo + " for you to fill in" : ""} · ${rep.facts.pagesChecked} pages read` : "Measuring now. This takes about a minute."}</p></div></div>`;
-    const cats = (gp || g) ? `<div class="cats"><div class="cat"><span class="cat-head">What we checked</span><span class="cat-head">${esc(have ? host(g.url) : "")}</span><span class="cat-head">Your new site</span></div>
+    const cats = (gp || g) ? `<div class="cats"><div class="cat"><span class="cat-head">What we checked</span><span class="cat-head">${esc(have ? host(g.url) : "")}</span><span class="cat-head">Demo site</span></div>
       ${((gp || g).categories || []).map((cat) => {
         const o = have ? (g.categories.find((x) => x.name === cat.name) || {}) : {};
         const n = gp ? (gp.categories.find((x) => x.name === cat.name) || {}) : {};
@@ -165,7 +167,7 @@
       for (const rep of [gp, g]) for (const ch of ((rep && rep.checks) || [])) if (ch.group === gname && !names.some((n) => n.name === ch.name)) names.push(ch);
       const counts = (rep) => rep ? ["pass", "fail", "todo", "warn"].map((s) => { const k = (rep.checks || []).filter((x) => x.group === gname && x.status === s).length; return k ? `<span class="chip ${s}">${k} ${label[s]}</span>` : ""; }).join("") : "";
       return `<details class="group"${gname.startsWith("Not measured") ? "" : ""}><summary><span>${esc(gname)}</span><span class="counts">${counts(gp)}</span></summary>
-        <div class="check" style="font:700 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)"><span>Check</span><span>${esc(have ? host(g.url) : "")}</span><span>Your new site</span></div>
+        <div class="check" style="font:700 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)"><span>Check</span><span>${esc(have ? host(g.url) : "")}</span><span>Demo site</span></div>
         ${names.map((ch) => `<div class="check"><div class="name"><b>${esc(ch.name)}</b>${ch.why ? `<small>${esc(ch.why)}</small>` : ""}</div><div class="cell">${have ? cell(find(g, ch)) : ""}</div><div class="cell">${cell(find(gp, ch))}</div></div>`).join("")}
       </details>`;
     }).join("");
@@ -190,12 +192,12 @@
         <div class="fs-progress"><i></i></div>
       </div></section>` : "";
     return topbar("report") + `<section class="view"><div class="wrap">
-      <p class="kicker">Your website report card</p><h1>${have ? `${esc(host(g.url))}, against what we just built` : "Your new site, measured"}</h1>
+      <p class="kicker">Your website report card</p><h1>${have ? `${esc(host(g.url))}, against what we just built` : "Your demo site, measured"}</h1>
       <p class="lede">The same checks a site has to pass before we let it launch: Google's own Lighthouse test, how AI assistants read it, broken pages, the words on the page${D.c.profile === "real-estate" ? ", Fair Housing and licensing rules" : D.c.profile === "lender" ? ", fair lending and NMLS rules" : ""}, and privacy. Nothing here is estimated: every number was measured today.</p>
-      ${gp && gp.lighthouseLimit === "windows" ? `<div class="notice">On Windows, Google's speed test can't run from here, so your new site's speed shows as "Not measured". That is a Windows limit, not a problem with your site. Everything else was checked.</div>` : ""}
+      ${gp && gp.lighthouseLimit === "windows" ? `<div class="notice">On Windows, Google's speed test can't run from here, so your demo site's speed shows as "Not measured". That is a Windows limit, not a problem with your site. Everything else was checked.</div>` : ""}
       ${g && !g.reachable ? `<div class="notice">We tried to check ${esc(host(g.url))} and it did not answer. If the address is wrong, tell Claude the right one and say <b>&nbsp;grade my website again</b>.</div>` : ""}
       ${have ? `<div class="notice">${esc(g.label || "This site")}: ${esc(host(g.url))}. ${g.label && /competitor/i.test(g.label) ? "A competitor in your area, measured the same way. This is who you are up against." : g.label && /admire/i.test(g.label) ? "You do not have a site of your own yet, so we measured this one instead." : ""}</div>` : ""}
-      <div class="duel">${have ? side(g, g.label || "Your current website", "", "") : ""}${side(gp, "Your new site, built just now", "side--new", "Your new site")}</div>
+      <div class="duel">${have ? side(g, g.label || "Your current website", "", "") : ""}${side(gp, "A demo, built just now from your answers", "side--new", "Your demo site")}</div>
       ${cats}
       ${full}
       <h2 style="margin-top:34px;font-size:1.6rem">Every check, side by side</h2>
@@ -218,6 +220,18 @@
   }
 
   /* ---------------------------------------------------------- brand */
+  /* ---------------------------------------------------------- VIP gifts */
+  function gifts() { return ((D.settings || {}).vipGifts || []).filter((x) => x.title && x.url); }
+  function giftsView() {
+    return topbar("gifts") + `<section class="view"><div class="wrap">
+      <p class="kicker">VIP gifts</p><h1>Your VIP gifts</h1>
+      <p class="lede">Click any gift to open it. It opens in a new tab.</p>
+      <div class="gifts">${gifts().map((x, k) => `<a class="gift" href="${esc(x.url)}" target="_blank" rel="noopener">
+        <div class="gift-cover" style="--k:${k}"><span class="tag">${esc(x.kind || "Gift")}</span><span class="t">${esc(x.title)}</span><span class="by">Krista Mashore</span></div>
+        <span class="go">Open &rarr;</span></a>`).join("")}</div>
+    </div></section>`;
+  }
+
   function brandView() {
     const b = D.c.brand || {}, col = b.colors || {}, av = D.c.avatar || {}, d = D.c.differentiator || {};
     return topbar("brand") + `<section class="view"><div class="wrap">
@@ -254,7 +268,7 @@
   }
 
   /* ---------------------------------------------------------- router */
-  const VIEW_FN = { site: siteView, magnet: magnetView, report: reportView, plan: planView, brand: brandView, play: playView };
+  const VIEW_FN = { site: siteView, magnet: magnetView, report: reportView, plan: planView, brand: brandView, gifts: giftsView, play: playView };
   function render() {
     const key = (location.hash.match(/^#\/(\w+)/) || [])[1];
     const app = document.getElementById("app");

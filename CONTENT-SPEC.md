@@ -70,7 +70,7 @@ the invented-proof checks (testimonials, star ratings, stats not in their file).
 ```jsonc
 {
   "profile": "real-estate",                      // or "lender" or "general"
-  "meta": { "brainFile": "summit-ai-brain.md", "brainFilePath": "/Users/.../Downloads/summit-ai-brain.md",  // the path the finder printed
+  "meta": { "brainFile": "ai-brain.md", "brainFilePath": "/Users/.../Downloads/ai-brain.md",  // the path the finder printed
             "startedAt": "2026-10-20T10:02", "generatedAt": "2026-10-20T10:11" },
 
   "business": {
@@ -147,10 +147,10 @@ the invented-proof checks (testimonials, star ratings, stats not in their file).
   "audit": {
     "summary": "One or two sentences: the biggest thing holding them back right now.",
     "opportunities": [ { "title": "", "why": "", "evidence": "their words or the report's numbers", "whatChanges": "", "bossDoes": "" } ],  // 2-3
-    "plan": [ { "day": 1, "title": "", "do": "", "prompt": "In my Summit AI Preview, ..." } ]   // 3-5 days
+    "plan": [ { "day": 1, "title": "", "do": "", "prompt": "In my AI Preview, ..." } ]   // 3-5 days
   },
 
-  "prompts": [ { "group": "Change your website", "label": "New headline", "prompt": "In my Summit AI Preview, ..." } ]  // 5-10
+  "prompts": [ { "group": "Change your website", "label": "New headline", "prompt": "In my AI Preview, ..." } ]  // 5-10
 }
 ```
 
@@ -161,4 +161,4 @@ reviews, a booking system, or anything that would need facts they did not give: 
 
 Prompt groups, in this order: **Change your website**, **Make more lead magnets**,
 **Check any website**, **Create content**. Every prompt starts with
-`In my Summit AI Preview,` so it works in any Claude session later.
+`In my AI Preview,` so it works in any Claude session later.

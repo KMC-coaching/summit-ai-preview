@@ -11,14 +11,14 @@ When they say **"build my AI preview"** in that folder, its `preview-handoff` AI
 2. asks only what the preview needs and the workbook never asked: license number and
    brokerage (agents), NMLS number and company (lenders), brand colors, and a site to grade
    if they have no website of their own,
-3. writes **one file**, `summit-ai-brain.md`, to their Downloads folder,
+3. writes **one file**, `ai-brain.md`, to their Downloads folder,
 4. hands them a prompt, with that file's full path in it, to paste into a **new** Claude
    Code session. That session runs this repo's `START-HERE.md`.
 
 ## The file
 
 ```
-# Summit AI Brain: <name>, <business>
+# AI Brain: <name>, <business>
 Saved: <date>
 Made by BOSS from the AI Agent Digital Revolution folder: <path>
 
@@ -51,7 +51,7 @@ days.
 ## No workbook at all
 
 If there is no file, `START-HERE.md` offers to ask the essentials itself, one at a time, and
-saves them as `~/Downloads/summit-ai-brain.md` in the same shape: name, business,
+saves them as `~/Downloads/ai-brain.md` in the same shape: name, business,
 profession, where they work, website (or one to grade), how they want to come across,
 ideal client, what makes them different, their process, services, how clients find them,
 whether they have a free offer, how they follow up, what eats their week, brand colors, and

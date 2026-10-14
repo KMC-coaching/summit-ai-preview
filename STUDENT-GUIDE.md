@@ -1,4 +1,4 @@
-# Your Summit AI Preview: how to start
+# Your AI Preview: how to start
 
 You'll need about 15 minutes, a computer (Mac or Windows), and Google Chrome.
 You will not type any commands. Claude does the work.
@@ -19,7 +19,7 @@ the brain is all it needs.
 3. Paste the line BOSS gave you and press Enter. It looks like this:
 
 ```text
-Build my Summit AI Preview from my workbook file /Users/you/Downloads/summit-ai-brain.md.
+Build my AI Preview from my workbook file /Users/you/Downloads/ai-brain.md.
 Use curl to download https://raw.githubusercontent.com/KMC-coaching/summit-ai-preview/main/START-HERE.md
 then read it and follow it exactly. I'm not technical, so never ask me to type commands.
 ```

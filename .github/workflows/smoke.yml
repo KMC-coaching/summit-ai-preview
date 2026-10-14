@@ -67,6 +67,6 @@ jobs:
           echo "START-HERE.md: HTTP $code"; test "$code" = 200
           code=$(curl -sL -o preview.zip -w "%{http_code}" https://codeload.github.com/KMC-coaching/summit-ai-preview/zip/refs/heads/main)
           echo "folder zip: HTTP $code"; test "$code" = 200
-          unzip -q preview.zip && mv summit-ai-preview-main Summit-AI-Preview
+          unzip -q preview.zip && mv summit-ai-preview-main AI-Preview
       - name: Run the smoke test from the download
-        run: cd "$RUNNER_TEMP/Summit-AI-Preview" && python tests/smoke.py
+        run: cd "$RUNNER_TEMP/AI-Preview" && python tests/smoke.py

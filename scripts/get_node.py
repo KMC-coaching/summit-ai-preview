@@ -9,7 +9,7 @@ instead of through Google's free web service, which turns away anonymous
 requests when a room full of people use it at once (measured: HTTP 429).
 
 No admin rights, no password, no installer: the official build from
-nodejs.org is unpacked into ~/.summit-preview/node and nothing outside that
+nodejs.org is unpacked into ~/.ai-preview/node and nothing outside that
 folder is touched. Deleting the folder undoes it completely.
 """
 from __future__ import annotations
@@ -26,7 +26,7 @@ import zipfile
 from pathlib import Path
 from urllib.request import Request, urlopen
 
-HOME_DIR = Path.home() / ".summit-preview" / "node"
+HOME_DIR = Path.home() / ".ai-preview" / "node"
 MIN_MAJOR = 18
 
 
@@ -44,9 +44,9 @@ def works(node: str) -> bool:
 
 def existing():
     # Same order as grade_site.find_node(): our private copy first, then whatever is on PATH.
-    # SUMMIT_FRESH_NODE=1 (the CI smoke test) ignores a system Node, so the download a
+    # AI_PREVIEW_FRESH_NODE=1 (the CI smoke test) ignores a system Node, so the download a
     # student's bare machine depends on is exercised on every operating system.
-    system = None if os.environ.get("SUMMIT_FRESH_NODE") else shutil.which("node")
+    system = None if os.environ.get("AI_PREVIEW_FRESH_NODE") else shutil.which("node")
     for cand in [str(HOME_DIR / "bin" / "node"), str(HOME_DIR / "node.exe"), system]:
         if cand and Path(cand).exists() and works(cand):
             return cand
@@ -71,7 +71,7 @@ def main() -> int:
         return 0
 
     plat, ext = target()
-    with urlopen(Request("https://nodejs.org/dist/index.json", headers={"User-Agent": "summit-preview"}), timeout=30) as r:
+    with urlopen(Request("https://nodejs.org/dist/index.json", headers={"User-Agent": "ai-preview"}), timeout=30) as r:
         releases = json.loads(r.read().decode())
     version = next(x["version"] for x in releases if x.get("lts"))
     name = "node-%s-%s" % (version, plat)
@@ -80,7 +80,7 @@ def main() -> int:
 
     tmp = Path(tempfile.mkdtemp())
     archive = tmp / (name + ext)
-    with urlopen(Request(url, headers={"User-Agent": "summit-preview"}), timeout=300) as r, open(archive, "wb") as f:
+    with urlopen(Request(url, headers={"User-Agent": "ai-preview"}), timeout=300) as r, open(archive, "wb") as f:
         shutil.copyfileobj(r, f)
 
     if ext == ".zip":

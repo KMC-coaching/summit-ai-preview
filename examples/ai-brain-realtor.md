@@ -1,4 +1,4 @@
-# Summit AI Brain — Jordan Avery
+# AI Brain — Jordan Avery
 Saved: 2026-10-14
 (TEST FIXTURE: a fictional agent. The competitor site is real and is only read, never changed.)
 

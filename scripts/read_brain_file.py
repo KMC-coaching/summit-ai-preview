@@ -2,7 +2,7 @@
 """
 Read a workbook file made by BOSS's "build my AI preview" and say what is in it.
 
-    python3 scripts/read_brain_file.py <path to summit-ai-brain.md>
+    python3 scripts/read_brain_file.py <path to ai-brain.md>
 
 Prints one JSON object:
   {

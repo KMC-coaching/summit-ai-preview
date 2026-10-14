@@ -60,7 +60,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin, urlparse, urldefrag, quote
 from urllib.request import Request, urlopen
 
-UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36 SummitSiteGrader"
+UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36 AIPreviewSiteGrader"
 MAX_PAGES = 25
 MAX_LINKS = 60
 PAUSE = 0.35
@@ -415,7 +415,7 @@ A11Y_PLAIN = {
 
 
 def find_node():
-    home = os.path.join(os.path.expanduser("~"), ".summit-preview", "node")
+    home = os.path.join(os.path.expanduser("~"), ".ai-preview", "node")
     for cand in (os.path.join(home, "bin", "node"), os.path.join(home, "node.exe"), shutil.which("node")):
         if cand and os.path.exists(cand) and os.path.exists(
                 os.path.join(os.path.dirname(cand), "npx.cmd" if os.name == "nt" else "npx")):

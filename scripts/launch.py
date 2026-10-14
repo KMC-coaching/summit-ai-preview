@@ -80,7 +80,7 @@ def main() -> int:
     kwargs = {"creationflags": 0x00000008} if os.name == "nt" else {"start_new_session": True}
     with open(ROOT / ".preview-audit.log", "w") as log:
         subprocess.Popen([PY, "scripts/grade_site.py", base + "/site/", "--local", "--profile", profile,
-                          "--label", "Your new site", "--out", "app/data/grade-preview.json"],
+                          "--label", "Your demo site", "--out", "app/data/grade-preview.json"],
                          cwd=str(ROOT), stdout=log, stderr=log, stdin=subprocess.DEVNULL, **kwargs)
 
     url = base + "/"
