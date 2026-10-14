@@ -60,7 +60,8 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
 ```jsonc
 {
   "profile": "real-estate",                      // or "general"
-  "meta": { "brainFile": "...", "startedAt": "2026-10-20T10:02", "generatedAt": "2026-10-20T10:11" },
+  "meta": { "brainFile": "summit-ai-brain.md", "brainFilePath": "/Users/.../Downloads/summit-ai-brain.md",  // the path the finder printed
+            "startedAt": "2026-10-20T10:02", "generatedAt": "2026-10-20T10:11" },
 
   "business": {
     "name": "...", "person": "...", "profession": "...",       // required
@@ -114,7 +115,7 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
   },
 
   "leadMagnet": {
-    "navLabel": "Free checklist", "title": "...", "subtitle": "...", "format": "checklist",   // checklist | guide | quiz | scorecard
+    "navLabel": "Free checklist", "title": "...", "subtitle": "...", "format": "checklist",   // checklist | guide (quizzes are not built yet)
     "hook": "Why someone stops scrolling for this.", "bullets": ["3 to 5"],
     "formHeadline": "...", "buttonText": "Send me the ...", "thankYou": "...",
     "sections": [ { "heading": "...", "body": "The real content, not an outline" } ],   // 4-7
@@ -122,6 +123,14 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
     "socialPost": "A ready post that sends people to it.",
     "emails": [ { "day": 0, "subject": "", "body": "" }, { "day": 2 }, { "day": 5 } ]  // exactly 3
   },
+
+  "moreMagnets": [],   // optional: a second, third... lead magnet, when they ask for one. Same fields as
+                      // leadMagnet plus "slug" (short, unique, e.g. "first-time-buyers"). Each gets its own
+                      // sign-up and guide pages and appears on the dashboard. Never replace the first.
+
+  "posts": [],         // optional: posts they asked for (a week of posts, a Nextdoor version...).
+                       // [{ "platform": "Instagram", "day": "Monday", "text": "...", "magnet": "main" or a slug }]
+                       // Shown on the lead magnet page of the dashboard with Copy buttons.
 
   "audit": {
     "summary": "One or two sentences: the biggest thing holding them back right now.",
@@ -132,6 +141,11 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
   "prompts": [ { "group": "Change your website", "label": "New headline", "prompt": "In my Summit AI Preview, ..." } ]  // 5-10
 }
 ```
+
+**Prompts may only ask for things this file can hold**: a headline, colors, photos, a page's
+words, another lead magnet (`moreMagnets`), posts (`posts`), grading a site. Never a quiz,
+reviews, a booking system, or anything that would need facts they did not give: no
+"add a real example" or "add a client story" (write a `[blank]` for those instead).
 
 Prompt groups, in this order: **Change your website**, **Make more lead magnets**,
 **Check any website**, **Create content**. Every prompt starts with

@@ -39,6 +39,14 @@ def main() -> int:
         print(out)
         return 1
 
+    # The dashboard reads only content that passed the check, so a half-finished
+    # edit can never show as "not built yet" and send anyone back to the start.
+    data = ROOT / "app" / "data"
+    (data / "content.built.json").write_text((data / "content.json").read_text(encoding="utf-8"), encoding="utf-8")
+    grades = sorted(x.name for x in (data / "grades").glob("*.json") if x.name != "index.json") if (data / "grades").exists() else []
+    if grades:
+        (data / "grades" / "index.json").write_text(json.dumps(grades), encoding="utf-8")
+
     port = serve.start()
     base = "http://localhost:%d" % port
     code, out = run(["scripts/build_site.py", "--base", base])

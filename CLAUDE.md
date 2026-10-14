@@ -7,11 +7,19 @@ type commands. `PY` below is `/usr/bin/python3` on a Mac (Windows: see START-HER
 - **"Open my preview"** (or anything like it): `PY scripts/launch.py` from this folder.
   It rebuilds, starts the preview if needed, and opens it in Google Chrome.
 - **A prompt starting "In my Summit AI Preview,"**: they copied it from their dashboard.
-  1. Do what it asks by editing `app/data/content.json` (shape in `CONTENT-SPEC.md`), or
-     `scripts/grade_site.py <site> --profile <profile> --label "..." --out app/data/grade.json`
-     for a website.
+  1. Do what it asks by editing `app/data/content.json` (shape in `CONTENT-SPEC.md`).
+     - Another lead magnet: add it to `moreMagnets` (never replace the first).
+     - Posts: add them to `posts`.
+     - Grading their OWN site: `--out app/data/grade.json`. Any OTHER site (a competitor,
+       one they admire): `--out app/data/grades/<domain>.json`, so their own report card
+       is never overwritten. Use `--profile` from content.json and a plain `--label`.
+     - Anything the file cannot hold (reviews, a quiz, a booking system, publishing): say
+       plainly that the preview does not do that, and what the full system does instead.
+     - Reviews, stats or stories they did not give: never write them; add a `[blank]`.
   2. `PY scripts/check_preview.py`, fix anything it lists.
-  3. `PY scripts/launch.py --no-open`, then tell them to refresh their Chrome tab.
+  3. `PY scripts/launch.py --no-open`, then tell them to refresh their Chrome tab. If
+     `app/data/site.json` has `colorNotes`, tell them in one line (e.g. their yellow was
+     deepened so text stays readable).
   4. One honest line of credit naming what they did: *"Nice. You just added a second lead
      magnet by asking for it. That's how the full system works."*
 

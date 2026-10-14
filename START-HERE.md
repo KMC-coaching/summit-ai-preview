@@ -210,7 +210,8 @@ Read `CONTENT-SPEC.md` and write `app/data/content.json` in exactly that shape.
   rows that honestly fit; if their biggest time drain fits none, say so in the summary.
   The plan is 3 to 5 days, each one thing they can do with what is in this folder.
 - **Prompts:** 5 to 10, grouped as in the spec, each starting `In my Summit AI Preview,`.
-- **Times:** `meta.startedAt` from Step 0, `meta.generatedAt` = now.
+- **Times:** `meta.startedAt` from Step 0, `meta.generatedAt` = now. `meta.brainFilePath`
+  = the `path` the finder printed (the checker uses it to confirm any numbers are theirs).
 
 Tell them while you write: *"Writing your website and your lead magnet now, in your
 words. A couple of minutes."*

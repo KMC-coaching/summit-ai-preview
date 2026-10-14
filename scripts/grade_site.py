@@ -77,20 +77,27 @@ FILLER = ["placehold.co", "placeholder", "lorem ipsum", "[scaffold", "has not be
 BRACKET = re.compile(r"\[[A-Z][^\]\n]{0,300}\]")  # launch-check.mjs:82, widened to match build_site's 300-character blanks
 
 # launch-check.mjs:1122-1131 (FAIL) and 1161-1165 (WARN), verbatim.
+PLACE = r"(neighbou?rhoods?|communit(?:y|ies)|areas?|part of town|streets?|subdivisions?|zip codes?)"
 FH_FAIL = [
-    (r"\b(perfect|great|ideal) for families\b", "familial status: describe the property, not who it suits"),
-    (r"\bfamily[- ]friendly (neighborhood|neighbourhood|community|area)\b", "familial status"),
-    (r"\bsafe (neighborhood|neighbourhood|community|area|part of town)\b", "'safe' reads as coded language about residents; cite facts instead"),
-    (r"\bexclusive (neighborhood|neighbourhood|community)\b", "exclusionary framing"),
+    (r"\b(perfect|great|ideal|wonderful) for (a )?(young )?famil(y|ies)\b", "familial status: describe the property, not who it suits"),
+    (r"\bfamily[- ]friendly\b", "familial status"),
+    (r"\bfamily " + PLACE + r"\b", "familial status"),
+    (r"\b(kid|child|children)[- ]friendly\b", "familial status"),
+    (r"\b(raise|raising) (your |a )?(kids|children|family)\b", "familial status"),
+    (r"\bsafe " + PLACE + r"\b", "'safe' reads as coded language about residents; cite facts instead"),
+    (r"\b" + PLACE + r"\W+(?:\w+\W+){0,4}(?:very |really |so )?safe\b", "'safe' reads as coded language about residents; cite facts instead"),
+    (r"\b(low|no|high) crime\b", "crime claims steer; leave them to official sources"),
+    (r"\bexclusive " + PLACE + r"\b", "exclusionary framing"),
     (r"\b(no children|adults only|no kids)\b", "familial status: unlawful outside qualified 55+ housing"),
+    (r"\b(perfect|great|ideal) for (retirees|empty[- ]nesters|seniors|singles|couples|newlyweds)\b", "describe the home, not who should live there"),
     (r"\bbachelor pad\b", "sex/marital framing"),
-    (r"\bwalking distance to (a )?church(es)?\b", "religion: name amenities generically"),
-    (r"\b(christian|catholic|jewish|muslim) (community|neighborhood|neighbourhood)\b", "religion"),
+    (r"\bwalking distance to (a )?(church|churches|synagogue|mosque|temple)\b", "religion: name amenities generically"),
+    (r"\b(christian|catholic|jewish|muslim|hindu|mormon)( families| community| neighbou?rhoods?| area)\b", "religion"),
     (r"\bideal for young professionals\b", "describe the home, not the people"),
 ]
 FH_WARN = [
-    (r"\b(good|great|best|top|excellent) schools\b", "school-quality claims can steer; name the schools or district factually"),
-    (r"\b(quiet|established|desirable) (neighborhood|neighbourhood)\b", "can read as coded; prefer concrete detail"),
+    (r"\b(good|great|best|top|top[- ]rated|excellent) (schools|school districts?)\b", "school-quality claims can steer; name the schools or district factually"),
+    (r"\b(quiet|established|desirable) " + PLACE + r"\b", "can read as coded; prefer concrete detail"),
     (r"\bhandicapped\b", "use 'accessible' or person-first language"),
 ]
 COMMISSION = [
@@ -98,17 +105,25 @@ COMMISSION = [
     (r"\bcommissions?\s+(are|is)\s+(set|fixed|standard|customary)\b", "antitrust risk"),
     (r"\b6\s*%\s*commission\b", "never state a rate as if it were the norm"),
 ]
-# check-article.mjs:36-48 (FTC). Blocking in the seed.
+# check-article.mjs:36-48 (FTC), widened after a break-it run slipped past the originals.
 CLAIMS = [
-    (r"(#\s?1\b|\bnumber one\b)", "'#1' needs a source the reader can check"),
+    (r"(#\s?1\b|\bnumber[- ]one\b|\bno\.\s?1\b)", "'#1' needs a source the reader can check"),
+    (r"\b(top[- ]rated|award[- ]winning|best[- ]selling)\b", "rating or award claim needs the source named"),
+    (r"\bbest (\w+ )?(agent|realtor|broker|team|company|firm|business|dentist|doctor|lawyer|attorney|coach|plumber|contractor|choice|option|service|\w+(?:er|or|ist))s? (in|of) [A-Z][a-z]+", "superlative claim"),
     (r"\bbest (in|of) (town|the city|the area|the state|the county)\b", "superlative claim"),
     (r"\b(voted|rated|awarded) (the )?(best|top|#\s?1)\b", "award claim needs the award named"),
     # "deemed reliable but not guaranteed" is the MLS disclaimer, not a claim.
     (r"(?<!not )(?<!no )(?<!never )\bguarantee(d|s)?\b(?! (of|or) (accuracy|completeness))", "a guarantee is a legal promise"),
+    (r"\b(results|success) (promised|assured)\b|\bpromise (you )?(results|a sale|to sell)\b", "a promised result is a guarantee"),
     (r"\b100% (satisfaction|success|guaranteed|effective)\b", "absolute claim"),
     (r"\b(cheapest|lowest price(d)?|lowest rates?|unbeatable price)\b", "price superlative"),
     (r"\brisk[- ]free\b", "absolute claim"),
     (r"\b(always|never) (sells|closes|works|succeeds)\b", "absolute claim"),
+]
+# Content we WRITE only: a competitor's real, permitted reviews are not a finding.
+INVENTED = [
+    (r"[\"“][^\"”]{20,}[\"”]\s*[-–—]\s*[A-Z][a-z]+(\s[A-Z]\.?)?", "looks like a testimonial: only real ones from their file, used with permission"),
+    (r"\b(5|five)[- ]star (review|rating)s?\b|\b\d\.\d (stars?|rating)\b", "a rating needs a real, checkable source from their file"),
 ]
 # launch-check.mjs:1053-1107 SLOP, plus the copywriter's banned phrases.
 SLOP = [
@@ -820,12 +835,14 @@ def audit(url, label, profile, local):
         categories.append({"name": g, "score": score, "counts": counts})
     vals = [c["score"] for c in categories if c["score"] is not None]
     overall = round(sum(vals) / len(vals)) if vals else None
+    below_bar = [k for k in names if lh.get(k) is not None and lh.get(k) < BAR[k]
+                 and not (local and k == "seo" and all(f["id"] in ("is-crawlable", "canonical") for f in lh.get("seoFailed", [])))]
 
     totals = {s: sum(1 for c in R.checks if c["status"] == s) for s in ("pass", "warn", "fail", "local", "todo", "notMeasured")}
     return {
         "url": home, "label": label, "profile": profile, "local": local, "reachable": True,
         "measuredAt": datetime.now().isoformat(timespec="minutes"), "seconds": round(time.time() - started),
-        "overall": overall, "letter": letter(overall), "categories": categories, "checks": R.checks, "totals": totals,
+        "overall": overall, "letter": cap_letter(letter(overall), below_bar), "belowBar": below_bar, "categories": categories, "checks": R.checks, "totals": totals,
         "lighthouse": {k: lh.get(k) for k in ("performance", "accessibility", "bestPractices", "seo", "lcp", "cls")},
         "lighthouseSource": lh.get("_source"), "lighthouseError": lh.get("_error") if lh.get("performance") is None else None,
         "bar": BAR,
@@ -834,6 +851,11 @@ def audit(url, label, profile, local):
                   "sitemapPages": len(sm_pages), "trackers": sorted(found_trackers)},
         "pages": [{"path": p["path"], "status": p["status"], "title": p["title"], "types": p["types"]} for p in pages],
     }
+
+
+def cap_letter(l, below_bar):
+    """Below a Lighthouse floor, the seed will not launch it: no A, whatever the average."""
+    return "B" if below_bar and l == "A" else l
 
 
 def letter(score):

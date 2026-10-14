@@ -3,30 +3,79 @@
   "id": "general",
   "label": "Any other business",
   "pages": [
-    { "key": "services", "file": "services.html", "nav": "Services", "kind": "services" }
+    {
+      "key": "services",
+      "file": "services.html",
+      "nav": "Services",
+      "kind": "services"
+    }
   ],
   "schemaType": "ProfessionalService",
   "schemaTypeHints": {
-    "dent": "Dentist", "insur": "InsuranceAgency", "attorney|lawyer|law firm": "Attorney", "account|bookkeep|cpa|tax": "AccountingService",
-    "plumb": "Plumber", "electric": "Electrician", "roof": "RoofingContractor", "hvac|heating|cooling": "HVACBusiness",
-    "chiropract|physio|physical therap|doctor|clinic": "MedicalBusiness", "salon|hair": "HairSalon", "fitness|gym|trainer": "HealthClub",
-    "financial|advis|wealth|mortgage|loan": "FinancialService", "restaurant|cafe|coffee|bakery": "FoodEstablishment"
+    "dent": "Dentist",
+    "insur": "InsuranceAgency",
+    "attorney|lawyer|law firm": "Attorney",
+    "account|bookkeep|cpa|tax": "AccountingService",
+    "plumb": "Plumber",
+    "electric": "Electrician",
+    "roof": "RoofingContractor",
+    "hvac|heating|cooling": "HVACBusiness",
+    "chiropract|physio|physical therap|doctor|clinic": "MedicalBusiness",
+    "salon|hair": "HairSalon",
+    "fitness|gym|trainer": "HealthClub",
+    "financial|advis|wealth|mortgage|loan": "FinancialService",
+    "restaurant|cafe|coffee|bakery": "FoodEstablishment"
   },
   "requireDisclosure": false,
   "images": {
-    "hero": ["gen-office", "gen-plants", "gen-notebook"],
-    "difference": ["gen-plants"],
-    "pillars": ["gen-notebook", "gen-office", "gen-plants", "gen-docs"],
-    "ticker": ["gen-office", "gen-notebook", "gen-plants", "gen-cafe", "gen-office", "gen-plants"],
-    "split": ["gen-cafe"],
-    "magnet": ["gen-notebook"],
-    "about": ["gen-office"],
-    "services": ["gen-notebook"],
-    "contact": ["gen-plants"],
-    "guide": ["gen-notebook"]
+    "hero": [
+      "gen-office",
+      "gen-plants",
+      "gen-notebook"
+    ],
+    "difference": [
+      "gen-plants"
+    ],
+    "pillars": [
+      "gen-notebook",
+      "gen-office",
+      "gen-plants",
+      "gen-docs"
+    ],
+    "ticker": [
+      "gen-office",
+      "gen-notebook",
+      "gen-plants",
+      "gen-cafe",
+      "gen-office",
+      "gen-plants"
+    ],
+    "split": [
+      "gen-cafe"
+    ],
+    "magnet": [
+      "gen-notebook"
+    ],
+    "about": [
+      "gen-office"
+    ],
+    "services": [
+      "gen-notebook"
+    ],
+    "contact": [
+      "gen-plants"
+    ],
+    "guide": [
+      "gen-notebook"
+    ],
+    "video": [
+      "re-aerial"
+    ]
   },
   "professionImages": {
-    "dent": "gen-dental", "insur|financ|account|tax|mortgage": "gen-docs", "plumb|electric|roof|hvac|contract|repair|handyman": "gen-tools",
+    "dent": "gen-dental",
+    "insur|financ|account|tax|mortgage": "gen-docs",
+    "plumb|electric|roof|hvac|contract|repair|handyman": "gen-tools",
     "cafe|coffee|restaurant|bakery": "gen-cafe"
   },
   "video": {

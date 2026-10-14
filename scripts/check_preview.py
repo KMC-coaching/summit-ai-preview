@@ -118,6 +118,45 @@ def main() -> int:
         if not isinstance(s.get("value"), (int, float)) or not s.get("label"):
             problems.append("business.stats[%d] needs a numeric value and a label (and only real numbers from their file)" % i)
 
+    # A second (third...) lead magnet: same required fields as the first, its own pages.
+    MAG = ["title", "subtitle", "format", "hook", "bullets", "formHeadline", "buttonText", "sections", "closing", "socialPost", "emails"]
+    for i, m in enumerate([c.get("leadMagnet") or {}] + list(c.get("moreMagnets") or [])):
+        where = "leadMagnet" if i == 0 else "moreMagnets[%d]" % (i - 1)
+        if i:
+            for k in MAG + ["slug"]:
+                if m.get(k) in (None, "", []):
+                    problems.append("empty: %s.%s" % (where, k))
+        if m.get("format") and m["format"] not in ("checklist", "guide"):
+            problems.append('%s.format must be "checklist" or "guide" (quizzes and scorecards are not built yet)' % where)
+    slugs = [m.get("slug") for m in (c.get("moreMagnets") or [])]
+    if len(slugs) != len(set(slugs)):
+        problems.append("moreMagnets: every slug must be different")
+    for i, p in enumerate(c.get("posts") or []):
+        if not p.get("text") or not p.get("platform"):
+            problems.append("posts[%d] needs a platform and text" % i)
+
+    # Numbers shown as stats must come from their own file, never from us.
+    brain = (c.get("meta") or {}).get("brainFilePath")
+    stats = dig(c, "business.stats") or []
+    if stats:
+        try:
+            raw = Path(brain).expanduser().read_text(encoding="utf-8", errors="replace") if brain else ""
+        except OSError:
+            raw = ""
+        digits = re.sub(r"[^0-9]", " ", raw)
+        for i, st in enumerate(stats):
+            v = str(int(st["value"])) if isinstance(st.get("value"), (int, float)) and float(st["value"]).is_integer() else str(st.get("value"))
+            if not raw:
+                problems.append("business.stats: set meta.brainFilePath so each number can be checked against their file")
+                break
+            if v not in digits.split():
+                problems.append("business.stats[%d]: %s is not in their workbook file. Only their own numbers." % (i, v))
+
+    known = {"profile", "meta", "business", "brand", "avatar", "differentiator", "images", "site", "leadMagnet", "moreMagnets", "posts", "audit", "prompts"}
+    unknown = sorted(set(c) - known)
+    if unknown:
+        problems.append("unknown top-level keys %s: nothing reads them, so they would never show. See CONTENT-SPEC.md." % unknown)
+
     if LIB.exists():
         ids = {x["id"] for x in json.loads(LIB.read_text(encoding="utf-8"))}
         for slot, v in (c.get("images") or {}).items():
@@ -126,7 +165,7 @@ def main() -> int:
                     problems.append('images.%s: "%s" is not in the photo library' % (slot, x))
 
     # The audit's own rules, run on every word before anything is built.
-    rules = [(G.CLAIMS, "FTC claim")] + [(G.SLOP, "reads like AI")]
+    rules = [(G.CLAIMS, "FTC claim"), (G.INVENTED, "invented proof"), (G.SLOP, "reads like AI")]
     if profile == "real-estate":
         rules += [(G.FH_FAIL, "Fair Housing"), (G.FH_WARN, "Fair Housing risk"), (G.COMMISSION, "commission wording")]
     for path, text in strings(c):

@@ -56,7 +56,7 @@
           <h2>Your new website</h2><p>${D.s ? D.s.pages.filter((p) => p.file !== "privacy.html").length : 6} pages in your words and your colors, with photos, video and motion. Click to see every page.</p><span class="go">See your website &rarr;</span></a>
         <a class="tile tile--magnet" href="#/magnet"><div class="mini-cover" aria-hidden="true"><em>FREE</em>${t(m.title)}</div><div class="shade"></div>
           <span class="badge">Your first lead magnet</span>
-          <h2>${t(m.title)}</h2><p>The free ${esc(m.format || "guide")}, the sign-up page, the post that promotes it, and ${(m.emails || []).length} follow-up emails.</p><span class="go">See your lead magnet &rarr;</span></a>
+          <h2>${t(m.title)}</h2><p>The free ${esc(m.format || "guide")}, the sign-up page, the post that promotes it, and ${(m.emails || []).length} follow-up emails.${(c.moreMagnets || []).length ? ` Plus ${(c.moreMagnets || []).length} more you made.` : ""}</p><span class="go">See your lead magnet &rarr;</span></a>
         <a class="tile tile--report" href="#/report">
           <div class="vs">${g && g.reachable ? `<div class="g" style="background:${color(g.overall)};color:#111">${esc(g.letter)}</div><span class="arrow">&rarr;</span>` : ""}<div class="g" style="background:${gp ? color(gp.overall) : "rgba(255,255,255,.1)"};color:#111">${gp ? esc(gp.letter) : "…"}</div></div>
           <h2>Your website report card</h2><p>${g && g.reachable ? `${esc(host(g.url))} against your new site, on every check our sites must pass.` : "Your new site, measured on every check our sites must pass."}</p><span class="go">See the report &rarr;</span></a>
@@ -85,12 +85,18 @@
 
   /* ---------------------------------------------------------- magnet */
   function magnetView() {
-    const m = D.c.leadMagnet || {};
+    const all = [D.c.leadMagnet || {}].concat(D.c.moreMagnets || []);
+    const files = (D.s && D.s.magnets) || [{ free: "free-guide.html", guide: "guide.html" }];
+    const k = Math.min(Number((location.hash.match(/^#\/magnet\/(\d+)/) || [])[1] || 0), all.length - 1);
+    const m = all[k] || {};
+    const f = files[k] || files[0];
+    const switcher = all.length > 1 ? `<div class="chips" style="margin-top:16px">${all.map((x, i) => `<a class="btn ${i === k ? "" : "ghost"} sm" href="#/magnet/${i}">${t(x.title)}</a>`).join("")}</div>` : "";
+    const posts = (D.c.posts || []).filter((p) => !p.magnet || p.magnet === (m.slug || "main"));
     return topbar("magnet") + `<section class="view"><div class="wrap">
-      <p class="kicker">Your first lead magnet</p><h1>${t(m.title)}</h1><p class="lede">${t(m.hook)}</p>
+      <p class="kicker">${k ? "Another lead magnet you made" : "Your first lead magnet"}</p><h1>${t(m.title)}</h1><p class="lede">${t(m.hook)}</p>${switcher}
       <div class="mag">
         <div><div class="bigcover"><em>FREE ${esc((m.format || "guide").toUpperCase())}</em><span>${t(m.title)}</span><small>${esc(D.c.business.name)}</small></div>
-          <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn" href="site/free-guide.html">Try signing up yourself</a><a class="btn ghost" href="site/guide.html">Read the ${esc(m.format || "guide")}</a></div></div>
+          <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn" href="site/${esc(f.free)}">Try signing up yourself</a><a class="btn ghost" href="site/${esc(f.guide)}">Read the ${esc(m.format || "guide")}</a></div></div>
         <div>
           <div class="panel"><p class="kicker">How it works</p><div class="flow">
             <div class="m"><span class="d">1</span><span>A post sends people to your free ${esc(m.format || "guide")}.</span></div>
@@ -99,6 +105,7 @@
             ${(m.emails || []).map((e) => `<div class="m"><span class="d">Day ${esc(e.day)}</span><span><b>${t(e.subject)}</b></span></div>`).join("")}
           </div></div>
           <div class="panel"><p class="kicker">The post that brings them in</p><div class="quote">${t(m.socialPost)}</div>${copyBtn(m.socialPost || "", "Copy the post")}</div>
+          ${posts.length ? `<div class="panel"><p class="kicker">More posts you asked for</p>${posts.map((p) => `<p class="muted" style="margin-top:12px">${esc(p.platform)}${p.day ? " · " + esc(p.day) : ""}</p><div class="quote">${t(p.text)}</div>${copyBtn(p.text || "", "Copy")}`).join("")}</div>` : ""}
         </div>
       </div></div></section>`;
   }
@@ -144,6 +151,7 @@
       <h2 style="margin-top:34px;font-size:1.6rem">Every check, side by side</h2>
       <p class="muted" style="margin-top:6px">Open any section. "Fill in" means a blank only you can complete, like your license number. "After launch" means it can only pass on a published site.</p>
       ${groupHtml}
+      ${(D.others || []).length ? `<h2 style="margin-top:34px;font-size:1.6rem">Other sites you checked</h2><div class="duel">${D.others.map((o) => side(o, o.label || "Another site", "", "")).join("")}</div>` : ""}
       ${ex.length ? `<div class="panel" style="margin-top:22px"><p class="kicker">Sites built the way we teach</p><p class="muted" style="margin:6px 0 10px">Ask Claude to grade any of these and compare.</p><div class="chips">${ex.map((e) => `<a class="btn ghost sm" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.name)}</a>`).join("")}</div></div>` : ""}
     </div></section>`;
   }
@@ -167,7 +175,7 @@
       <div class="brandgrid">
         <div class="panel"><p class="kicker">Colors and voice</p>
           <div class="sw">${["primary", "accent"].filter((k) => col[k]).map((k) => `<div><span style="background:${esc(col[k])}"></span>${esc(col[k])}</div>`).join("")}</div>
-          <p class="muted">${t(b.colorNote)}</p>
+          <p class="muted">${t(b.colorNote)}</p>${((D.s || {}).colorNotes || []).map((n) => `<p class="muted" style="margin-top:8px">${esc(n)}</p>`).join("")}
           <div class="chips">${(b.voice || []).map((v) => `<span>${esc(v)}</span>`).join("")}</div>
           ${b.voiceExample ? `<div class="quote">${t(b.voiceExample)}</div>` : ""}</div>
         <div class="panel"><p class="kicker">Your ideal client</p><h2 style="font-size:1.5rem;margin:8px 0">${t(av.name)}</h2><p class="muted">${t(av.snapshot)}</p>
@@ -240,15 +248,18 @@
     setTimeout(() => clearInterval(tick), 10 * 60 * 1000);
   }
 
-  Promise.all([get("data/content.json"), get("data/site.json"), get("data/grade.json"), get("data/grade-preview.json"), get("config/settings.json")]).then(([c, s, g, gp, settings]) => {
-    if (!c) { document.getElementById("app").innerHTML = '<div class="loading"><div><h1>Not built yet</h1><p class="muted" style="margin-top:10px">Go back to Claude and say: <b>build my preview</b>.</p></div></div>'; return; }
+  Promise.all([get("data/content.built.json"), get("data/site.json"), get("data/grade.json"), get("data/grade-preview.json"), get("config/settings.json"), get("data/grades/index.json")]).then(async ([c, s, g, gp, settings, others]) => {
+    if (!c) { document.getElementById("app").innerHTML = '<div class="loading"><div><h1>Your preview is not ready yet</h1><p class="muted" style="margin-top:10px">Go back to Claude and say: <b>open my preview</b>.</p></div></div>'; return; }
     c.business = c.business || {};
-    Object.assign(D, { c, s, g, gp: gp && gp.reachable ? gp : null, settings: settings || {} });
+    const extra = (await Promise.all((others || []).map((f) => get("data/grades/" + f)))).filter((x) => x && x.reachable);
+    Object.assign(D, { c, s, g, gp: gp && gp.reachable ? gp : null, settings: settings || {}, others: extra });
     const st = Date.parse((c.meta || {}).startedAt || ""), en = Date.parse((c.meta || {}).generatedAt || "");
     if (st && en && en > st) D.minutes = Math.max(1, Math.round((en - st) / 60000));
+    const pal = (s && s.palette) || {};
     const col = (c.brand || {}).colors || {};
-    if (col.primary) document.documentElement.style.setProperty("--brand", col.primary);
-    if (col.accent) document.documentElement.style.setProperty("--brand-accent", col.accent);
+    const brand = pal["--brand"] || col.primary, acc = pal["--accent"] || col.accent;
+    if (brand) document.documentElement.style.setProperty("--brand", brand);
+    if (acc) document.documentElement.style.setProperty("--brand-accent", acc);
     render();
     waitForPreviewGrade();
   });

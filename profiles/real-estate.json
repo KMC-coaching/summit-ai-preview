@@ -3,23 +3,68 @@
   "id": "real-estate",
   "label": "Real estate",
   "pages": [
-    { "key": "sell", "file": "sell.html", "nav": "Sell", "kind": "steps" },
-    { "key": "buy", "file": "buy.html", "nav": "Buy", "kind": "steps" }
+    {
+      "key": "sell",
+      "file": "sell.html",
+      "nav": "Sell",
+      "kind": "steps"
+    },
+    {
+      "key": "buy",
+      "file": "buy.html",
+      "nav": "Buy",
+      "kind": "steps"
+    }
   ],
   "schemaType": "RealEstateAgent",
   "requireDisclosure": true,
   "images": {
-    "hero": ["re-exterior", "re-exterior", "re-exterior"],
-    "difference": ["re-living"],
-    "pillars": ["re-kitchen", "re-door", "re-patio", "re-keys"],
-    "ticker": ["re-exterior", "re-living", "re-kitchen", "re-townhome", "re-street", "re-patio"],
-    "split": ["re-street"],
-    "magnet": ["re-keys"],
-    "about": ["re-door"],
-    "sell": ["re-exterior"],
-    "buy": ["re-keys"],
-    "contact": ["re-community"],
-    "guide": ["re-living"]
+    "hero": [
+      "re-exterior",
+      "re-exterior",
+      "re-exterior"
+    ],
+    "difference": [
+      "re-living"
+    ],
+    "pillars": [
+      "re-kitchen",
+      "re-door",
+      "re-patio",
+      "re-keys"
+    ],
+    "ticker": [
+      "re-exterior",
+      "re-living",
+      "re-kitchen",
+      "re-townhome",
+      "re-street",
+      "re-patio"
+    ],
+    "split": [
+      "re-street"
+    ],
+    "magnet": [
+      "re-keys"
+    ],
+    "about": [
+      "re-door"
+    ],
+    "sell": [
+      "re-exterior"
+    ],
+    "buy": [
+      "re-keys"
+    ],
+    "contact": [
+      "re-community"
+    ],
+    "guide": [
+      "re-living"
+    ],
+    "video": [
+      "re-aerial"
+    ]
   },
   "video": {
     "src": "https://assets.mixkit.co/videos/48394/48394-720.mp4",

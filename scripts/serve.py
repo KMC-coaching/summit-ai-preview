@@ -34,15 +34,46 @@ LOG = ROOT / ".preview-server.log"
 FIRST_PORT = 4321
 
 
+INSTANCE = APP / "data" / ".instance"
+
+
+def instance_id() -> str:
+    """A random id for THIS folder, served by its own server. Two copies on one
+    computer (a re-download, a second student) must never answer for each other."""
+    if not INSTANCE.exists():
+        INSTANCE.parent.mkdir(parents=True, exist_ok=True)
+        import secrets
+        INSTANCE.write_text(secrets.token_hex(8))
+    return INSTANCE.read_text().strip()
+
+
 def answering(port: int) -> bool:
     try:
-        with urlopen("http://127.0.0.1:%d/config/settings.json" % port, timeout=2) as r:
-            return r.status == 200 and b"exampleSites" in r.read()
+        with urlopen("http://127.0.0.1:%d/data/.instance" % port, timeout=2) as r:
+            return r.status == 200 and r.read().decode().strip() == instance_id()
     except Exception:
         return False
 
 
+def port_free(port: int) -> bool:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            s.bind(("127.0.0.1", port))
+            return True
+        except OSError:
+            return False
+
+
 def free_port() -> int:
+    # Same address as last time when possible: their open tab and the sign-ups saved
+    # in that browser stay where they were.
+    try:
+        last = json.loads(STATE.read_text()).get("port")
+        if last and port_free(last):
+            return last
+    except Exception:
+        pass
     for port in range(FIRST_PORT, FIRST_PORT + 50):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             try:
@@ -68,6 +99,7 @@ def start() -> int:
     port = running_port()
     if port:
         return port
+    instance_id()
     port = free_port()
     kwargs = {}
     if os.name == "nt":
@@ -92,6 +124,9 @@ def stop():
         print("Not running.")
         return
     pid = json.loads(STATE.read_text()).get("pid")
+    if not pid:
+        print("Not running.")
+        return
     try:
         if os.name == "nt":
             subprocess.run(["taskkill", "/PID", str(pid), "/F"], capture_output=True)
@@ -99,7 +134,10 @@ def stop():
             os.kill(pid, 15)
     except Exception:
         pass
-    STATE.unlink(missing_ok=True)
+    try:
+        STATE.write_text(json.dumps({"port": json.loads(STATE.read_text()).get("port"), "pid": None}))
+    except Exception:
+        STATE.unlink(missing_ok=True)
     print("Stopped.")
 
 

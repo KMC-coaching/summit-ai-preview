@@ -146,14 +146,29 @@ def lift_until(h, against, need, toward="#000000"):
 def palette(brand_colors):
     brand = brand_colors.get("primary") or "#1f4e79"
     accent = brand_colors.get("accent") or "#c9a24b"
-    bg, alt = "#fbfaf7", "#f5f1ea"
+    bg, alt, dark = "#fbfaf7", "#f5f1ea", "#121418"
+    on_accent = "#111111" if contrast("#111111", accent) >= contrast("#ffffff", accent) else "#ffffff"
     return {
         "--brand": lift_until(brand, "#ffffff", 4.5),          # white text on brand buttons
-        "--accent": accent,
+        "--accent": accent,                                    # decoration only (underlines, rules)
+        "--on-accent": on_accent,                              # text on an accent-filled button
         "--brand-ink": lift_until(brand, alt, 4.5),
         "--accent-ink": lift_until(accent, alt, 4.6),          # eyebrows on light and alt bands
+        "--accent-on-dark": lift_until(accent, dark, 4.6, toward="#ffffff"),  # eyebrows on dark bands and photos
         "--on-brand": "#ffffff",
     }
+
+
+def color_notes(brand_colors, pal):
+    """What we changed so text stays readable, so Claude can say so instead of it happening silently."""
+    notes = []
+    want = (brand_colors.get("primary") or "").lower()
+    if want and pal["--brand"].lower() != want:
+        notes.append("Your main color %s was deepened to %s so white text on it stays readable." % (want, pal["--brand"]))
+    acc = (brand_colors.get("accent") or "").lower()
+    if acc and contrast(acc, "#fbfaf7") < 1.6:
+        notes.append("Your accent %s is very close to the page background, so it is used only for small touches." % acc)
+    return notes
 
 
 # ------------------------------------------------------------------ images
@@ -310,6 +325,8 @@ class Site:
             lic = '<p>%s<br>License # %s<br>%s</p>' % (esc(b.get("person")), t(b.get("license") or "[Your license number]"),
                                                      t(b.get("brokerage") or "[Your brokerage]"))
         explore = "".join('<li><a href="%s">%s</a></li>' % (h, esc(lbl)) for h, lbl in self.pages)
+        explore += "".join('<li><a href="%s">%s</a></li>' % (fr, esc(plain(m.get("navLabel") or m.get("title"))))
+                           for m, fr, _ in self.magnets()[1:])
         reach = "".join("<li>%s</li>" % x for x in (
             ('<a href="tel:%s">%s</a>' % (esc(re.sub(r"[^0-9+]", "", b["phone"])), esc(b["phone"]))) if b.get("phone") and not PH.search(b["phone"]) else "",
             ('<a href="mailto:%s">%s</a>' % (esc(b["email"]), esc(b["email"]))) if b.get("email") and not PH.search(b["email"]) else "",
@@ -350,7 +367,7 @@ class Site:
         bg = self.pick.slot("magnet")[0]
         bullets = "".join("<li>%s</li>" % t(x) for x in (m.get("bullets") or [])[:3])
         return """<section class="magnet" aria-labelledby="magnet-h"><div class="magnet__bg">%s</div><div class="wrap">
-<div class="reveal"><p class="eyebrow" style="color:var(--accent)">Free %s</p><h2 class="h2" id="magnet-h">%s</h2>
+<div class="reveal"><p class="eyebrow" style="color:var(--accent-on-dark)">Free %s</p><h2 class="h2" id="magnet-h">%s</h2>
 <p class="hero__sub">%s</p><ul class="ticks">%s</ul>
 <div class="links"><a class="pill pill--accent" href="free-guide.html">%s</a></div></div>
 <a class="cover reveal d1" href="free-guide.html" aria-label="Get %s"><span class="tag">Free</span><span class="t">%s</span><span class="by">%s</span></a>
@@ -400,7 +417,7 @@ class Site:
         video = self.p.get("video") or {}
         video_band = ""
         if video.get("src") and not re.search(r"\bonline\b|remote|virtual", str(self.b.get("market", "")), re.I):
-            poster = self.pick.slot("difference")[0]
+            poster = self.pick.slot("video")[0]
             video_band = """<section class="video reveal" aria-label="%s"><video muted loop playsinline preload="none" poster="../assets/img/library/%s" data-src="%s" aria-label="%s"></video>
 <div class="video__cap"><div class="wrap"><p class="label">%s</p></div></div></section>""" % (
                 esc(video["label"]), poster["small"], esc(video["src"]), esc(video["label"]), t(self.b.get("market")))
@@ -413,7 +430,7 @@ class Site:
                             for i, s in enumerate(stats[:3]))
             stat_band = '<section class="section"><div class="wrap"><p class="eyebrow">By the numbers</p><div class="stats">%s</div></div></section>' % cells
 
-        diff_img = self.pick.slot("difference")[0] if not video_band else self.pick.slot("about")[0]
+        diff_img = self.pick.slot("difference")[0]
         d = c.get("differentiator", {})
         difference = """<section class="section section--alt" id="difference"><div class="wrap split">
 <div class="frame frame--tall reveal">%s</div>
@@ -497,8 +514,15 @@ class Site:
         self.page("services.html", "%s | %s" % (plain(s.get("headline"))[:48], plain(self.b.get("name"))),
                   plain(s.get("sub") or s.get("intro"))[:160], im, body)
 
-    def build_magnet(self):
-        m = self.c.get("leadMagnet", {})
+    def magnets(self):
+        """The main lead magnet, then any more they asked for: [(magnet, free page, guide page)]."""
+        out = [(self.c.get("leadMagnet", {}), "free-guide.html", "guide.html")]
+        for m in self.c.get("moreMagnets") or []:
+            slug = re.sub(r"[^a-z0-9]+", "-", str(m.get("slug") or m.get("title") or "guide").lower()).strip("-")[:40] or "guide"
+            out.append((m, "free-%s.html" % slug, "guide-%s.html" % slug))
+        return out
+
+    def build_magnet(self, m, free_file, guide_file):
         im = self.pick.slot("guide")[0]
         bullets = "".join("<li>%s</li>" % t(x) for x in (m.get("bullets") or []))
         body = """<section class="pagehero" style="min-height:100svh"><div class="pagehero__img">%s</div>
@@ -512,11 +536,11 @@ class Site:
 <button class="pill pill--accent submit" type="submit">%s</button>
 <p class="fine">Preview: this saves only in this browser. Nothing is sent.</p></form>
 <div class="done" id="leadDone" tabindex="-1"><p class="h3">You're all set!</p><p style="margin-top:10px">%s</p>
-<div class="links"><a class="pill pill--accent" href="guide.html">Read your %s now</a></div></div>
+<div class="links"><a class="pill pill--accent" href="%s">Read your %s now</a></div></div>
 </div></div></div></section>""" % (img(im, eager=True), esc(m.get("format") or "guide"), t(m.get("title")), t(m.get("subtitle")), bullets,
                                    t(m.get("formHeadline")), esc(m.get("buttonText") or "Send it to me"),
-                                   t(m.get("thankYou") or "Your guide is ready. Read it now; a copy is on its way to your inbox."), esc(m.get("format") or "guide"))
-        self.page("free-guide.html", "%s | %s" % (plain(m.get("title")), plain(self.b.get("name"))), plain(m.get("subtitle") or m.get("hook"))[:160], im, body)
+                                   t(m.get("thankYou") or "Your guide is ready. Read it now; a copy is on its way to your inbox."), guide_file, esc(m.get("format") or "guide"))
+        self.page(free_file, "%s | %s" % (plain(m.get("title")), plain(self.b.get("name"))), plain(m.get("subtitle") or m.get("hook"))[:160], im, body)
 
         sections = "".join("<section><h3>%s</h3>%s</section>" % (t(s.get("heading")), paras(s.get("body"))) for s in (m.get("sections") or []))
         mails = "".join('<div class="mail reveal"><p class="day">Day %s</p><div class="body"><p class="subj">%s</p>%s</div></div>' % (esc(e.get("day")), t(e.get("subject")), t(e.get("body")))
@@ -526,7 +550,7 @@ class Site:
             '<section class="section section--alt"><div class="wrap"><p class="eyebrow">What happens next, on its own</p><h2 class="h2">The follow-up that runs itself</h2><p class="body" style="margin-top:16px">On a live site, everyone who asks for this %s gets these emails automatically, in your voice.</p><div class="flow">%s</div></div></section>' % (
                 esc(m.get("format") or "guide"), mails) + \
             self.inquire(get(self.c, "site.home.closingHeadline"), get(self.c, "site.home.closingText"))
-        self.page("guide.html", "%s, the full %s | %s" % (plain(m.get("title"))[:40], plain(m.get("format") or "guide"), plain(self.b.get("name"))),
+        self.page(guide_file, "%s, the full %s | %s" % (plain(m.get("title"))[:40], plain(m.get("format") or "guide"), plain(self.b.get("name"))),
                   plain(m.get("hook"))[:160], im, body)
 
     def build_contact(self):
@@ -554,10 +578,16 @@ class Site:
         self.build_about()
         for pg in self.p["pages"]:
             (self.build_steps if pg["kind"] == "steps" else self.build_services)(pg)
-        self.build_magnet()
+        extra_files, labels_extra = [], []
+        for i, (m, free_file, guide_file) in enumerate(self.magnets()):
+            self.build_magnet(m, free_file, guide_file)
+            labels_extra.append((guide_file, "Your %s, delivered" % plain(m.get("format") or "guide")))
+            if i:
+                extra_files += [free_file, guide_file]
+                labels_extra.append((free_file, plain(m.get("navLabel") or m.get("title") or "Free guide")))
         self.build_contact()
         self.build_privacy()
-        files = [f for f, _ in self.pages] + ["guide.html", "privacy.html"]
+        files = [f for f, _ in self.pages] + ["guide.html"] + extra_files + ["privacy.html"]
         (SITE / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n%s</urlset>\n'
                                           % "".join("  <url><loc>%s</loc></url>\n" % self.url(f) for f in files), encoding="utf-8")
         (APP / "robots.txt").write_text("User-agent: *\nAllow: /\nSitemap: %s/site/sitemap.xml\n" % self.base, encoding="utf-8")
@@ -569,9 +599,15 @@ class Site:
                 "".join("- [%s](%s)\n" % (lbl, self.url(f)) for f, lbl in self.pages)), encoding="utf-8")
         (DATA / "images.json").write_text(json.dumps(self.pick.chosen, indent=1), encoding="utf-8")
         # What the dashboard needs to show every page as a thumbnail.
-        labels = dict(self.pages + [("guide.html", "Your %s, delivered" % plain(get(self.c, "leadMagnet.format", "guide"))), ("privacy.html", "Privacy")])
-        (DATA / "site.json").write_text(json.dumps({"base": self.base, "profile": self.p["id"],
-                                                     "pages": [{"file": f, "label": labels[f]} for f in files]}, indent=1), encoding="utf-8")
+        labels = dict(self.pages + labels_extra + [("privacy.html", "Privacy")])
+        brand_colors = get(self.c, "brand.colors", {}) or {}
+        (DATA / "site.json").write_text(json.dumps({
+            "base": self.base, "profile": self.p["id"],
+            "pages": [{"file": f, "label": labels[f]} for f in files],
+            "magnets": [{"title": plain(m.get("title")), "format": plain(m.get("format") or "guide"), "free": fr, "guide": gd}
+                        for m, fr, gd in self.magnets()],
+            "palette": self.pal, "colorNotes": color_notes(brand_colors, self.pal),
+        }, indent=1), encoding="utf-8")
         return files
 
 
