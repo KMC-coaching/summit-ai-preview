@@ -7,8 +7,8 @@ keep that name exactly: a second download becomes "summit-ai-brain (1).md", and
 Safari sometimes adds ".txt". So this looks for the name loosely, in the places
 a download actually lands.
 
-Takes the best name match (the contracted name beats a loose one), newest first
-within the same match. Prints one JSON object:
+Takes the NEWEST matching file: the workbook may have been downloaded twice, and
+a browser can rename the second copy. The closer name only breaks a tie. Prints one JSON object:
   {"found": true,  "path": "...", "modified": "...", "others": [...]}   others excludes path
   {"found": false, "searched": [...], "blocked": [...]}                 blocked = macOS said no
 
@@ -80,7 +80,7 @@ def main() -> int:
             mtime = f.stat().st_mtime
             if mtime < cutoff:
                 continue
-            hits.append((r, -mtime, f))
+            hits.append((-mtime, r, f))  # newest wins; the closer name only breaks a tie
 
     if not hits:
         print(json.dumps({"found": False, "searched": searched, "blocked": blocked}, indent=2))

@@ -9,8 +9,7 @@ asks the questions; this preview never asks them again. It finds the file on its
 
 - Do not ask the person to rename it or move it.
 - Browsers add ` (1)`, ` (2)` on repeat downloads, and Safari sometimes adds `.txt`.
-  That is fine: the finder prefers names starting `summit-ai-brain`, newest first. Only if
-  there is none does it fall back to a looser match: a name containing `ai-brain`,
+  That is fine: the finder takes the **newest** file whose name contains `ai-brain`,
   `summit…brain` or `summit…workbook`, ending in `.md`, `.txt`, `.json`, `.pdf` or
   `.docx`, from Downloads, Desktop or Documents, from the last 120 days.
 - Keep `summit-ai-brain` at the start of the name and every variant is found.
