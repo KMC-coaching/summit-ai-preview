@@ -14,8 +14,8 @@ the brain is all it needs.
 1. In your **AI Agent Digital Revolution** session, say: **build my AI preview**.
    BOSS asks two or three quick things your workbook didn't (like your brand colors), saves
    one file to your Downloads folder, and gives you a line to copy.
-2. In Claude, click **Code**, then **New session**. If it asks for a folder, pick your
-   **Sites** folder.
+2. In Claude, click **Code**, then **New session**. Click **Select folder** and choose
+   **Desktop**, where your AI Agent Digital Revolution folder lives.
 3. Paste the line BOSS gave you and press Enter. It looks like this:
 
 ```text

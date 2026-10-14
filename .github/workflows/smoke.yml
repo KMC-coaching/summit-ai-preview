@@ -39,3 +39,34 @@ jobs:
             .preview-audit.log
             .preview-server.log
           if-no-files-found: ignore
+
+  # A brand-new machine: no checkout, no Git, no GitHub login. Fetch the preview exactly the
+  # way START-HERE tells a student's Claude to (curl, unauthenticated), unpack it, and run the
+  # whole smoke test from that download. Fails at once if the repo is not reachable without
+  # signing in. Runs on main only: that is the address students download from.
+  fresh-download:
+    if: github.event_name != 'pull_request'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-15, macos-15-intel, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Download START-HERE and the folder with no login
+        run: |
+          set -e
+          cd "$RUNNER_TEMP"
+          code=$(curl -s -o START-HERE.md -w "%{http_code}" https://raw.githubusercontent.com/KMC-coaching/summit-ai-preview/main/START-HERE.md)
+          echo "START-HERE.md: HTTP $code"; test "$code" = 200
+          code=$(curl -sL -o preview.zip -w "%{http_code}" https://codeload.github.com/KMC-coaching/summit-ai-preview/zip/refs/heads/main)
+          echo "folder zip: HTTP $code"; test "$code" = 200
+          unzip -q preview.zip && mv summit-ai-preview-main Summit-AI-Preview
+      - name: Run the smoke test from the download
+        run: cd "$RUNNER_TEMP/Summit-AI-Preview" && python tests/smoke.py

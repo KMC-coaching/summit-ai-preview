@@ -467,7 +467,13 @@ def lighthouse_local(url, result):
     npx = os.path.join(bindir, "npx.cmd" if os.name == "nt" else "npx")
     out = os.path.join(tempfile.mkdtemp(), "lh.json")
     env = dict(os.environ, PATH=bindir + os.pathsep + os.environ.get("PATH", ""))
-    args = [npx, "--yes", LIGHTHOUSE, url, "--quiet", "--chrome-flags=--headless=new --no-sandbox",
+    # A fixed free port: without one, chrome-launcher finds Chrome's port by reading Chrome's
+    # log file, which fails on Windows ("waiting for dynamic debugging port").
+    import socket
+    with socket.socket() as sk:
+        sk.bind(("127.0.0.1", 0))
+        port = sk.getsockname()[1]
+    args = [npx, "--yes", LIGHTHOUSE, url, "--quiet", "--port=%d" % port, "--chrome-flags=--headless=new --no-sandbox",
             "--only-categories=performance,accessibility,best-practices,seo",
             "--output=json", "--output-path=" + out]
     err = ""
