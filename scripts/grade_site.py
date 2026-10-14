@@ -528,12 +528,23 @@ def pagespeed(url, result):
             return
 
 
+WINDOWS_LIMIT = ("Google's speed test can't run on this Windows computer from here (a Windows limit, not a "
+                 "problem with your site). Everything else on this report card was checked.")
+
+
 def lighthouse_any(url, result, local_site):
     if lighthouse_local(url, result):
         result.pop("_error", None)
         return
     if local_site:
-        return  # Google's servers cannot reach a site on this computer
+        # Google's servers cannot reach a site on this computer. On Windows, Google's speed
+        # test often cannot start Chrome from a background task: a known Windows limit, not
+        # a fault in their site. Say so plainly instead of showing Chrome's error.
+        if os.name == "nt":
+            result["_log"] = (result.get("_log") or "") + "\n" + (result.get("_error") or "")
+            result["_error"] = WINDOWS_LIMIT
+            result["_limit"] = "windows"
+        return
     local_err = result.get("_error")
     pagespeed(url, result)
     if result.get("performance") is None and local_err:
@@ -914,6 +925,7 @@ def audit(url, label, profile, local):
         "overall": overall, "letter": cap_letter(letter(overall), below_bar), "belowBar": below_bar, "categories": categories, "checks": R.checks, "totals": totals,
         "lighthouse": {k: lh.get(k) for k in ("performance", "accessibility", "bestPractices", "seo", "lcp", "cls")},
         "lighthouseSource": lh.get("_source"), "screenshot": lh.get("screenshot"), "lighthouseLog": lh.get("_log"), "lighthouseError": lh.get("_error") if lh.get("performance") is None else None,
+        "lighthouseLimit": lh.get("_limit"),
         "bar": BAR,
         "facts": {"pagesChecked": len(pages), "pagesOk": len(ok), "linksChecked": len(to_check),
                   "pagesWithSchema": len(ok) - len(no_ld), "brokenPages": broken_pages, "brokenLinks": broken_links[:20],
