@@ -28,11 +28,11 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
   "meta": { "brainFile": "summit-ai-brain.md", "generatedAt": "2026-10-20T10:12" },
 
   "business": {
-    "name": "Bright Smile Family Dental",     // required
-    "person": "Dr. Maria Lopez",              // required
-    "profession": "Family dentist",           // required, plain words
-    "oneLiner": "Gentle dentistry for whole families in Chula Vista.",
-    "market": "Chula Vista, California",       // where they work, or "Online"
+    "name": "Harbor Lane Insurance",          // required
+    "person": "Dana Okafor",                   // required
+    "profession": "Independent insurance agent", // required, plain words
+    "oneLiner": "Home and auto cover explained in plain English, for Tacoma families.",
+    "market": "Tacoma, Washington",            // where they work, or "Online"
     "phone": "", "email": "",                  // only if given
     "website": "https://...",                  // their site if they have one, else ""
     "gradedUrl": "https://...",                // the site the grader ran on (theirs, or the one they admire)
@@ -44,21 +44,23 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
     "colorNote": "Taken from your answers" ,
     "fonts": { "heading": "Fraunces", "body": "Inter" },   // any Google Font names
     "tagline": "Short, theirs.",
-    "voice": ["warm", "plain-spoken", "reassuring"],       // 3-5 words
+    "taglineSuggested": false,                             // true when they gave none and you wrote it
+    "voice": ["straight-talking", "patient", "neighborly"],       // 3-5 words
     "voiceExample": "One sentence that sounds exactly like them.",
     "wordsTheyUse": ["..."], "wordsTheyAvoid": ["..."]
   },
 
   "avatar": {
-    "name": "Busy Parent Paula",                 // a label for the ideal client, not a real person
+    "name": "First-Home Freddie",                       // a label for the ideal client, not a real person
     "snapshot": "Two sentences on who they are.",
     "pains": ["...", "...", "..."],
     "wants": ["...", "...", "..."],
-    "whereTheyAre": ["Facebook parent groups", "..."]
+    "whereTheyAre": ["neighborhood Facebook groups", "..."]
   },
 
   "differentiator": {
-    "methodName": "The Calm Chair Method",       // name of their way of working
+    "methodName": "The Kitchen-Table Review",    // name of their way of working
+    "methodNameSuggested": false,              // true when they had no name for it
     "statement": "One sentence: why them and not the other 50.",
     "pillars": [ { "name": "...", "text": "..." }, { }, { } ]   // exactly 3
   },
@@ -77,7 +79,7 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
   },
 
   "leadMagnet": {
-    "title": "The 5-Minute Cavity Check",          // the free thing
+    "title": "The 10-Minute Coverage Gap Check",          // the free thing
     "subtitle": "...", "format": "checklist",       // checklist | guide | quiz | scorecard
     "hook": "Why someone stops scrolling for this.",
     "bullets": ["what they will get", "...", "..."],

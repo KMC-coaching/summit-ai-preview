@@ -67,37 +67,44 @@ Then go straight on. Do not wait for a reply unless they ask something.
 
 ## Step 1 — Cut the approval boxes down (the Module 1 pre-setup, minus GitHub)
 
-Use your own file tools (Read / Edit / Write) for this, not a shell command, because
-nothing else is installed yet. Target the **user-level** settings file:
+Target the **user-level** settings file (nothing else is installed yet, so use `cp` for
+the backup and your own Read / Edit tools for the merge):
 
 - Mac: `~/.claude/settings.json` · Windows: `%USERPROFILE%\.claude\settings.json`
 
-1. If it exists and `settings.json.bak` does **not** exist beside it, copy it to
-   `settings.json.bak` first. Never overwrite an existing backup: this step is re-run
+1. If it exists and `settings.json.bak` does **not** exist beside it, `cp` it to
+   `settings.json.bak` first (a byte-for-byte copy). Never overwrite an existing backup: this step is re-run
    when someone comes back, and a second backup would replace their real original.
 2. Merge: add only the missing entries to `permissions.allow`, keep everything else
    exactly as it was. Never replace the file.
 3. If there was no file, create one with just this block.
+4. If the file exists but is not valid JSON, do not touch it. Skip this step with the
+   one line below: a broken settings file is theirs to keep, not ours to "fix".
 
 ```json
 "Read", "Write", "Edit", "Glob", "Grep",
 "Bash(uname:*)", "Bash(sw_vers:*)", "Bash(command -v:*)", "Bash(which:*)",
 "Bash(mkdir:*)", "Bash(ls:*)", "Bash(cat:*)", "Bash(cp:*)", "Bash(mv:*)",
 "Bash(chmod:*)", "Bash(find:*)", "Bash(curl:*)", "Bash(unzip:*)", "Bash(tar:*)",
-"Bash(git:*)", "Bash(python3:*)", "Bash(py:*)", "Bash(xcode-select:*)",
-"Bash(winget:*)", "Bash(open:*)", "Bash(sleep:*)"
+"Bash(cd:*)", "Bash(python3:*)", "Bash(/usr/bin/python3:*)", "Bash(py:*)",
+"Bash(xcode-select:*)", "Bash(winget:*)", "Bash(open:*)", "Bash(sleep:*)"
 ```
 
-Deliberately not `Bash(*)`. No GitHub tool, no GitHub sign-in: this preview does not
-need a GitHub account, and asking for one is a hurdle with no payoff today.
+A short named list, the same idea as Module 1's, not `Bash(*)`. No Git, no GitHub tool,
+no GitHub sign-in: this preview does not need a GitHub account, and asking for one is a
+hurdle with no payoff today. The entries match the exact command shapes this runbook
+uses (`cd ... && /usr/bin/python3 scripts/...`), so the boxes really do stop.
 
 If the write is refused, one line — *"I couldn't set that automatically, so you'll see a
 few more of those boxes. Same answer each time."* — and carry on.
 
 ## Step 2 — Make sure the preview has what it needs to run
 
-One check, not a string of them. Find out: operating system, whether Python 3 runs,
-whether Google Chrome is installed.
+One short script, not a string of separate lookups. Find out: operating system, whether
+Apple's developer tools (Mac) or Python 3 (Windows) are present, and whether Google
+Chrome is installed (Mac: `/Applications/Google Chrome.app` or
+`~/Applications/Google Chrome.app`; Windows: `chrome.exe` under Program Files or
+`%LOCALAPPDATA%\Google\Chrome\Application`).
 
 **Mac.** Python comes with Apple's developer tools. Check with `xcode-select -p`.
 Do **not** call `python3` before that check passes: on a Mac without the tools, merely
@@ -118,7 +125,8 @@ run `winget install -e --id Python.Python.3.12 --scope user --silent
 `%LOCALAPPDATA%\Programs\Python\Python312\python.exe` for the rest of the run. Do not
 tell them to restart anything.
 
-From here on, `PY` below means whichever Python you just confirmed.
+From here on, `PY` means: **`/usr/bin/python3` on a Mac**, always (not whatever
+`python3` happens to be on the path), or the Windows Python you just confirmed.
 
 **Chrome.** If Google Chrome is not installed, do not install it for them. The preview
 still opens in their default browser. Mention it once at the end: the website speed
@@ -137,9 +145,14 @@ Say first, on a Mac:
 
 Run `PY scripts/find_brain_file.py`. It prints JSON.
 
-- **Found:** read the file at `path` in full. Tell them in one line: *"Found it, from
-  [date]."* If `others` lists more than one candidate and the newest looks incomplete,
-  use the most complete one.
+- **Found:** read the file at `path` in full. Tell them in one line: *"Found it, the
+  one you saved on [date]."* using the `modified` date the script printed (when it
+  landed on this computer), not any date written inside the file. If `others` is not
+  empty and the chosen file looks incomplete, use the most complete one.
+- **Not found, and `blocked` lists Downloads:** the Mac said no to looking there. Do
+  not send them to download it again. One line: *"Your Mac blocked me from looking in
+  Downloads. Open System Settings, then Privacy & Security, then Files and Folders,
+  and switch Downloads on for Claude. Tell me when it's done."* Then run it again.
 - **Not found:** do not make them hunt. One line:
 
   > "I couldn't find the file the workbook saves. It's the download button at the end
@@ -157,12 +170,16 @@ script names.
 ## Step 4 — Start the website report (runs in the background)
 
 From the file, pick the site to grade, in this order: their own website; else a
-competitor or a site they admire; else skip this step.
+competitor or a site they admire; else skip this step. Pass just the address
+(`example.com` is fine, the grader adds `https://`). Put the same address, with
+`https://`, in `business.gradedUrl`, and the label you used in `business.gradedLabel`.
 
 Tell them: *"While I write, I'm checking [site] the way Google and AI assistants see it.
 That takes a minute or two."*
 
-Start it in the background so you can write while it runs:
+Start it as a background task (your own run-in-background option, not `&`), so you
+can write while it runs. It takes one to three minutes, and the first time on a
+computer it also fetches Google's speed test, about 30 seconds more:
 
 `PY scripts/grade_site.py <url> --label "Your website" --out app/data/grade.json`
 
@@ -179,6 +196,9 @@ Read `CONTENT-SPEC.md` and write `app/data/content.json` exactly in that shape.
   reviews, testimonials, prices or results that the file does not contain. Use a
   visible `[square-bracket placeholder]` instead. The page styles those so they are
   obviously theirs to fill in.
+- **Tagline and method name**: if they gave none, suggest one in their voice and set
+  `brand.taglineSuggested` / `differentiator.methodNameSuggested` to `true`. The
+  dashboard labels it as a suggestion, so it is never passed off as theirs.
 - **Colors**: theirs if given; otherwise choose to fit their personality and say so in
   `brand.colorNote`. White text must be readable on `primary`; the checker enforces it.
 - **The lead magnet**: pick the format that fits their client (checklist, short guide,
@@ -186,8 +206,11 @@ Read `CONTENT-SPEC.md` and write `app/data/content.json` exactly in that shape.
   would genuinely want, that leads naturally to booking them.
 - **The audit**: use the opportunity menu below. Take the 2 or 3 their file and the
   website report most clearly point at, rank them, and put the evidence in their own
-  words or the report's numbers. The plan is 3-5 days, not 30: each day is one thing
-  they can do with what is already in this folder.
+  words or the report's numbers. Only pick a row that honestly fits. If their biggest
+  time drain fits none (say, insurance paperwork), name it plainly in `audit.summary`
+  and do not force it into a row that promises something else. The plan is 3-5 days,
+  not 30: each day is one thing they can do with what is already in this folder, and
+  every plan prompt starts with `In my Summit AI Preview,` too.
 - **Prompts**: 5-8 things they can paste to play with it. Every prompt must start with
   `In my Summit AI Preview,` so it works in any Claude session later.
   Mix: change the home page headline, new lead magnet for a different client, grade a
@@ -213,28 +236,34 @@ promises what does not exist.
 
 ## Step 6 — Check, launch, open
 
-1. Wait for the grader to finish (it writes `app/data/grade.json`). If it ran past
-   five minutes, carry on without it: the dashboard says plainly that no site was
-   checked, and they can ask for it again.
+1. Make sure the grader has finished: its background task has ended and
+   `app/data/grade.json` exists. It stops itself within about five minutes, so this
+   always resolves. If it ended without writing the file, carry on: the dashboard says
+   plainly that no site was checked, and they can ask for it again.
 2. `PY scripts/check_preview.py`. If it says NOT READY, fix every line it lists in
    `content.json` and run it again. Never launch an unfinished preview.
 3. `PY scripts/serve.py`. It starts the preview in the background (it keeps running
    after this chat closes) and opens it in **Google Chrome**. It prints the address.
 
-Then:
+Then, using `openedIn` from what it printed:
 
-> "It's open in Google Chrome. Have a look around: everything on that page came from
-> the answers you gave once.
+> "It's open in [Google Chrome / your web browser]. Have a look around: everything on
+> that page came from the answers you gave once.
 >
 > If you ever lose the tab, come back and say **open my preview**. And if a link I give
 > you ever asks where to open, choose **Open in Google Chrome**."
 
-Give the address once as a clickable link, after that message.
+Then give the address once as a clickable link. That link is the one place the
+address itself is shown; never explain what it is.
+
+If the report card says the speed test did not run and Chrome **is** installed, say one
+line, no detail: *"Google's speed test didn't finish this time. Say **grade my website
+again** in a few minutes and I'll retry it."*
 
 ## Step 7 — Then stop
 
-Offer one thing: *"Want to try changing something? Copy any prompt from the bottom of
-the page and paste it here."* Then wait.
+Offer one thing: *"Want to try changing something? Copy any prompt from the **Things
+to try right now** section of the page and paste it here."* Then wait.
 
 When they paste a prompt, edit `app/data/content.json` (or run the grader), run the
 checker, and tell them to refresh the page. Never rebuild what did not change.

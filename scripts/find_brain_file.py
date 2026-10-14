@@ -5,11 +5,12 @@ Find the file the Summit workbook downloaded, without asking the person where it
 The workbook saves one file, named per BRAIN-FILE-CONTRACT.md. Browsers do not
 keep that name exactly: a second download becomes "summit-ai-brain (1).md", and
 Safari sometimes adds ".txt". So this looks for the name loosely, in the places
-a download actually lands, and takes the newest match.
+a download actually lands.
 
-Prints one JSON object:
-  {"found": true,  "path": "...", "modified": "...", "others": [...]}
-  {"found": false, "searched": [...]}
+Takes the best name match (the contracted name beats a loose one), newest first
+within the same match. Prints one JSON object:
+  {"found": true,  "path": "...", "modified": "...", "others": [...]}   others excludes path
+  {"found": false, "searched": [...], "blocked": [...]}                 blocked = macOS said no
 
 Read-only. Runs on the Python that ships with macOS (3.9), so no newer syntax.
 """
@@ -60,12 +61,15 @@ def main() -> int:
     cutoff = time.time() - MAX_AGE_DAYS * 86400
     hits = []
     searched = []
+    blocked = []
     for folder in places():
         searched.append(str(folder))
         try:
             entries = list(folder.iterdir())
         except (PermissionError, OSError):
-            # macOS asks before letting anything read Downloads. A refusal lands here.
+            # macOS asks before letting anything read Downloads. A refusal lands here,
+            # and must be reported: "not found" would send them to re-download for nothing.
+            blocked.append(str(folder))
             continue
         for f in entries:
             if not f.is_file() or f.suffix.lower() not in EXTENSIONS:
@@ -79,7 +83,7 @@ def main() -> int:
             hits.append((r, -mtime, f))
 
     if not hits:
-        print(json.dumps({"found": False, "searched": searched}, indent=2))
+        print(json.dumps({"found": False, "searched": searched, "blocked": blocked}, indent=2))
         return 1
 
     hits.sort()

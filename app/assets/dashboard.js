@@ -7,7 +7,7 @@
   "use strict";
 
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const t = (s) => esc(s).replace(/\[([^\]]{2,140})\]/g, '<span class="ph">[$1]</span>');
+  const t = (s) => esc(s).replace(/\[([^\]]{2,300})\]/g, '<span class="ph">[$1]</span>');
   const get = (u) => fetch(u, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   const color = (v, bar) => (v == null ? "#b9b3a6" : v >= (bar || 90) ? "var(--good)" : v >= 60 ? "var(--mid)" : "var(--bad)");
   const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return u; } };
@@ -19,13 +19,13 @@
   function brandCard(c) {
     const b = c.brand || {}, col = b.colors || {}, a = c.avatar || {}, d = c.differentiator || {};
     return `<div class="card s5"><div class="label"><span class="num">1</span>Your brand, from your answers</div>
-      <h2>${t(c.business.name)}</h2><p class="muted">${t(b.tagline || c.business.oneLiner)}</p>
+      <h2>${t(c.business.name)}</h2><p class="muted">${t(b.tagline || c.business.oneLiner)}${b.taglineSuggested ? ' <span class="chip">suggested</span>' : ""}</p>
       <div class="swatches">${["primary", "accent", "ink", "paper"].filter((k) => col[k]).map((k) => `<div class="sw"><span style="background:${esc(col[k])}"></span>${esc(col[k])}</div>`).join("")}</div>
       <div class="small muted">Voice</div><div class="chips">${(b.voice || []).map((v) => `<span class="chip">${esc(v)}</span>`).join("")}</div>
       ${b.voiceExample ? `<div class="quote">${t(b.voiceExample)}</div>` : ""}
       <h3 style="margin-top:16px">Your ideal client: ${t(a.name)}</h3><p class="small">${t(a.snapshot)}</p>
       <div class="small muted">What keeps them up at night</div><ul class="tight small">${(a.pains || []).map((p) => `<li>${t(p)}</li>`).join("")}</ul>
-      <h3>What makes you different</h3><p class="small"><strong>${t(d.methodName)}.</strong> ${t(d.statement)}</p>
+      <h3>What makes you different</h3><p class="small"><strong>${t(d.methodName)}.</strong>${d.methodNameSuggested ? ' <span class="chip">name suggested</span>' : ""} ${t(d.statement)}</p>
     </div>`;
   }
 
@@ -72,7 +72,7 @@
       <h2>Five pages, in your words and your colors</h2>
       <p class="muted small">Built from your answers in a few minutes, with structured data on every page. It lives only on this computer: nobody else can see it, and it is not published anywhere.</p>
       <div class="frame"><iframe src="site/index.html" title="Your sample website" loading="lazy" tabindex="-1"></iframe><a class="cover-link" href="site/index.html" aria-label="Open your sample website"></a></div>
-      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn dark" href="site/index.html">Open your website</a>${copyBtn("Change the headline on my preview website's home page to: ", "Copy a prompt to change it")}</div>
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn dark" href="site/index.html">Open your website</a>${copyBtn("In my Summit AI Preview, change the headline on my sample website's home page to: ", "Copy a prompt to change it")}</div>
     </div>`;
   }
 

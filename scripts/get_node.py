@@ -31,6 +31,10 @@ MIN_MAJOR = 18
 
 
 def works(node: str) -> bool:
+    """node runs, is new enough, and has npx beside it (Lighthouse is fetched with npx)."""
+    bindir = os.path.dirname(node)
+    if not os.path.exists(os.path.join(bindir, "npx.cmd" if os.name == "nt" else "npx")):
+        return False
     try:
         out = subprocess.run([node, "--version"], capture_output=True, text=True, timeout=20).stdout.strip()
         return out.startswith("v") and int(out[1:].split(".")[0]) >= MIN_MAJOR
@@ -39,7 +43,8 @@ def works(node: str) -> bool:
 
 
 def existing():
-    for cand in [shutil.which("node"), str(HOME_DIR / "bin" / "node"), str(HOME_DIR / "node.exe")]:
+    # Same order as grade_site.find_node(): our private copy first, then whatever is on PATH.
+    for cand in [str(HOME_DIR / "bin" / "node"), str(HOME_DIR / "node.exe"), shutil.which("node")]:
         if cand and Path(cand).exists() and works(cand):
             return cand
     return None

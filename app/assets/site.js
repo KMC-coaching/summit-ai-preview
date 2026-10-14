@@ -8,7 +8,7 @@
 
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   // [Square-bracket text] is a placeholder for them to fill, never a fact we made up.
-  const t = (s) => esc(s).replace(/\[([^\]]{2,140})\]/g, '<span class="ph">[$1]</span>');
+  const t = (s) => esc(s).replace(/\[([^\]]{2,300})\]/g, '<span class="ph">[$1]</span>');
   const paras = (s) => String(s || "").split(/\n{2,}/).map((p) => `<p>${t(p).replace(/\n/g, "<br>")}</p>`).join("");
   const list = (a) => (a || []).map((x) => `<li>${t(x)}</li>`).join("");
   const initials = (name) => String(name || "?").split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
@@ -63,7 +63,8 @@
 
   function chrome(c, page) {
     const biz = c.business || {};
-    document.title = (PAGES.find((p) => p[0] === page) || [, ""])[1] + " | " + (biz.name || "Preview");
+    const label = page === "thank-you.html" ? "Thank you" : (PAGES.find((p) => p[0] === page) || [, "Home"])[1];
+    document.title = label + " | " + (biz.name || "Preview");
     const desc = document.createElement("meta");
     desc.name = "description";
     desc.content = biz.oneLiner || "";

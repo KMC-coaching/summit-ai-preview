@@ -38,8 +38,8 @@ REQUIRED = [
 ]
 COUNTS = {
     "differentiator.pillars": (3, 3), "site.home.steps": (3, 3), "leadMagnet.emails": (3, 3),
-    "site.faq": (3, 8), "audit.opportunities": (2, 3), "audit.plan": (3, 5), "prompts": (4, 10),
-    "leadMagnet.sections": (3, 8), "site.services.items": (2, 6),
+    "site.faq": (4, 6), "audit.opportunities": (2, 3), "audit.plan": (3, 5), "prompts": (5, 8),
+    "leadMagnet.sections": (4, 7), "site.services.items": (2, 6),
 }
 HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
 
@@ -101,6 +101,14 @@ def main() -> int:
         for k in ("title", "why", "evidence", "whatChanges", "bossDoes"):
             if not o.get(k):
                 problems.append("audit.opportunities[%d].%s is empty" % (i, k))
+
+    prefix = "In my Summit AI Preview,"
+    for i, p in enumerate(dig(c, "prompts") or []):
+        if not str(p.get("prompt", "")).startswith(prefix):
+            problems.append('prompts[%d].prompt must start with "%s"' % (i, prefix))
+    for i, d in enumerate(dig(c, "audit.plan") or []):
+        if d.get("prompt") and not str(d["prompt"]).startswith(prefix):
+            problems.append('audit.plan[%d].prompt must start with "%s"' % (i, prefix))
 
     if GRADE.exists():
         try:

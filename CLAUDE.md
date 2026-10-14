@@ -4,8 +4,8 @@ This folder is someone's **Summit AI Preview**. They are not technical and they 
 type commands.
 
 - **First run, or "build my preview":** follow `START-HERE.md` exactly, top to bottom.
-- **"Open my preview"** (or anything like it): run `python3 scripts/serve.py`
-  (Windows: the Python from START-HERE Step 2). It reuses or restarts the preview and
+- **"Open my preview"** (or anything like it): run `/usr/bin/python3 scripts/serve.py`
+  on a Mac (Windows: the Python from START-HERE Step 2), from this folder. It reuses or restarts the preview and
   opens it in Google Chrome.
 - **A prompt starting "In my Summit AI Preview,"**: they copied it from their dashboard.
   Do what it asks by editing `app/data/content.json` (shape in `CONTENT-SPEC.md`), or by

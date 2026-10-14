@@ -5,9 +5,11 @@ Grade a live website the way search engines and AI assistants see it.
     python3 scripts/grade_site.py https://example.com [--label "Your site"] [--out app/data/grade.json]
 
 Lifted from the realtor-site-seed `audit:compare` battery and rebuilt for a
-machine with nothing on it: standard-library Python only, no Node, no local
-Chrome. Lighthouse still runs, but on Google's side, through the free
-PageSpeed Insights service.
+machine with nothing on it: standard-library Python only. Lighthouse runs in
+the person's own Chrome, headless, through a private Node that
+scripts/get_node.py puts in their home folder (the first run also downloads
+Lighthouse itself, about 30 seconds). If that cannot run, Google's free
+PageSpeed Insights service is tried instead; it often refuses anonymous callers.
 
 WHAT IT MEASURES, AND HOW HONESTLY
   Speed, Accessibility, Best practices, SEO   Lighthouse (mobile), via PageSpeed
@@ -211,6 +213,14 @@ BUSINESS = re.compile(
 
 # ---------------------------------------------------------------- page discovery
 
+def link_key(url: str) -> str:
+    """One key for the same page however it was linked: http/https, WWW, Capitals, trailing slash."""
+    u = urlparse(url)
+    h = u.netloc.lower()
+    h = h[4:] if h.startswith("www.") else h
+    return h + (u.path.rstrip("/") or "/") + ("?" + u.query if u.query else "")
+
+
 def same_site(url: str, host: str) -> bool:
     h = urlparse(url).netloc.lower()
     return h == host or h == "www." + host or "www." + h == host
@@ -301,7 +311,8 @@ def find_node():
     import shutil
     home = os.path.join(os.path.expanduser("~"), ".summit-preview", "node")
     for cand in (os.path.join(home, "bin", "node"), os.path.join(home, "node.exe"), shutil.which("node")):
-        if cand and os.path.exists(cand):
+        if cand and os.path.exists(cand) and os.path.exists(
+                os.path.join(os.path.dirname(cand), "npx.cmd" if os.name == "nt" else "npx")):
             return cand
     return None
 
@@ -324,12 +335,16 @@ def lighthouse_local(url: str, result: dict) -> bool:
             "--chrome-flags=--headless=new --no-sandbox",
             "--only-categories=performance,accessibility,best-practices,seo",
             "--output=json", "--output-path=" + out]
+    err = ""
     try:
-        subprocess.run(args, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=240)
+        p = subprocess.run(args, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, timeout=240)
+        err = (p.stderr or "").strip()
         with open(out, encoding="utf-8") as f:
             lh = json.load(f)
     except Exception as e:
-        result["_error"] = "Lighthouse could not run here (%s). Is Google Chrome installed?" % type(e).__name__
+        tail = err.splitlines()[-1][:200] if err else type(e).__name__
+        hint = " (Google Chrome looks missing)" if "chrome" in err.lower() and "not" in err.lower() else ""
+        result["_error"] = "Lighthouse could not run here%s: %s" % (hint, tail)
         return False
     _read_lighthouse(lh, result)
     result["_source"] = "Lighthouse, run on this computer"
@@ -421,7 +436,7 @@ def grade(url: str, label: str) -> dict:
     log("Checking %d pages, one at a time..." % len(targets))
 
     pages = []
-    all_links = set()
+    all_links = {}
     for i, p in enumerate(targets):
         if i == 0:
             s, body = status, html
@@ -435,7 +450,7 @@ def grade(url: str, label: str) -> dict:
         for href in pp.links:
             u = urldefrag(urljoin(p, href))[0]
             if u.startswith("http") and same_site(u, host):
-                all_links.add(u)
+                all_links.setdefault(link_key(u), u)
         pages.append({
             "url": p,
             "status": s,
@@ -458,8 +473,8 @@ def grade(url: str, label: str) -> dict:
     ok = [p for p in pages if 200 <= p["status"] < 300]
     broken_pages = [p["url"] for p in pages if p["status"] >= 400 or p["status"] == 0]
 
-    page_urls = {p["url"].rstrip("/") for p in pages}
-    to_check = [u for u in sorted(all_links) if u.rstrip("/") not in page_urls
+    page_keys = {link_key(p["url"]) for p in pages}
+    to_check = [u for k, u in sorted(all_links.items()) if k not in page_keys
                 and not re.search(r"\.(jpg|jpeg|png|gif|webp|svg|pdf|zip|mp4)$", u, re.I)][:MAX_LINKS]
     log("Following %d links to look for dead ends..." % len(to_check))
     broken_links = []

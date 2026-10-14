@@ -11,3 +11,7 @@ node_modules/
 .DS_Store
 __pycache__/
 graphify-out/
+
+# Team-only tooling. Students' machines don't have graphify, so it must never ship.
+.claude/settings.local.json
+CLAUDE.local.md
