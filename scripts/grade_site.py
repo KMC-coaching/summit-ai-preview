@@ -74,7 +74,7 @@ BAR = {"performance": 85, "accessibility": 100, "bestPractices": 95, "seo": 100}
 FILLER = ["placehold.co", "placeholder", "lorem ipsum", "[scaffold", "has not been written yet",
           "example.com", ".example", "@example", "yourdomain", "fill in your", "test-000000",
           "(555)", "555-01", "n/a", "tbd", "todo"]
-BRACKET = re.compile(r"\[[A-Z][^\]\n]{0,80}\]")  # launch-check.mjs:82
+BRACKET = re.compile(r"\[[A-Z][^\]\n]{0,300}\]")  # launch-check.mjs:82, widened to match build_site's 300-character blanks
 
 # launch-check.mjs:1122-1131 (FAIL) and 1161-1165 (WARN), verbatim.
 FH_FAIL = [

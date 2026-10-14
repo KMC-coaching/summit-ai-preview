@@ -25,6 +25,29 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
 
 `check_preview.py` runs rules 3 to 5 automatically with the same lists the audit uses.
 
+## When their file is unsure
+
+- **Two business names?** Use the first, and make Day 1 of the plan and the first prompt
+  the offer to switch.
+- **No colors?** Choose two that fit how they want to come across; say so in `colorNote`.
+- **A one-liner or subheading** becomes the page's search description: aim for one full
+  sentence of 60 to 160 characters. The builder tops up or trims to fit, but write it well.
+
+- **More than 4 steps in their process?** Group them into 3 or 4 pillars without dropping
+  any. Fewer than 3? Use what they gave; never invent a step.
+- **Their own site, a competitor, or one they admire?** Label the report card by what
+  their file calls it: `Your website`, `A competitor's website`, else `A site you admire`.
+- **Blanks vs. email merge fields.** A blank the owner must fill is `[Like this]`, capital
+  first letter. A merge field the email tool fills is `{first_name}` in curly braces, never
+  square brackets.
+- **Lists.** In lead magnet `body` text, lines starting `- ` become a bullet list and
+  lines starting `[ ] ` become a checklist. Blank line between paragraphs.
+- **The ideal client stays private.** `avatar` is shown only on their dashboard and may
+  describe people (age, life stage). None of that goes into site copy, the lead magnet,
+  posts or emails, and for real estate never. Describe needs and situations, not people.
+- **Invent nothing about their process.** Describe only steps they named; no added
+  promises about what happens at showings, calls or appointments.
+
 ## Pick the profile first
 
 - `"profile": "real-estate"` for agents, teams and brokers. Pages: Home, About, **Sell**,
@@ -46,7 +69,6 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
     "areas": ["...", "..."],                                    // real estate: neighborhoods they named
     "phone": "", "email": "",                                   // only if given
     "website": "",                                              // their own site, or ""
-    "gradedUrl": "https://...", "gradedLabel": "Your website",  // or "A site you admire" / "A competitor's website"
     "license": "", "brokerage": "",                             // real estate: ONLY if given. Blank = placeholder in footer
     "schemaType": "",                                           // optional, e.g. "Dentist"; the profile has a default
     "stats": []                                                 // ONLY real numbers from their file: [{ "value": 120, "suffix": "+", "label": "homes sold" }]
@@ -65,7 +87,7 @@ Write in **their** voice, from **their** answers. Short sentences. One reader.
   "differentiator": {
     "methodName": "...", "methodNameSuggested": true,           // true when their process had no name
     "statement": "One sentence: why them and not the other 50.",
-    "pillars": [ { "name": "...", "text": "..." } ]             // exactly 4, in order: their process
+    "pillars": [ { "name": "...", "text": "..." } ]             // 3 or 4, in order: their process. Never pad to 4.
   },
 
   "images": {},   // optional. Slot -> library photo id(s) from app/assets/img/library/library.json.

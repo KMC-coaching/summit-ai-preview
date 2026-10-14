@@ -49,8 +49,27 @@ def t(s) -> str:
     return PH.sub(r'<span class="ph">[\1]</span>', esc(s))
 
 
+LIST_ITEM = re.compile(r"^\s*(?:[-*\u2022]|\[ ?\]|\d+[.)])\s+")
+
+
 def paras(s) -> str:
-    return "".join("<p>%s</p>" % t(p).replace("\n", "<br>") for p in re.split(r"\n{2,}", str(s or "")) if p.strip())
+    """Paragraphs on blank lines. Lines starting "- ", "* ", "[ ]" or "1." become a list
+    ("[ ]" items a checklist); a lead-in line above them stays a paragraph."""
+    out = []
+    for block in re.split(r"\n{2,}", str(s or "")):
+        lines = [l for l in block.split("\n") if l.strip()]
+        if not lines:
+            continue
+        if len(lines) > 1 and all(LIST_ITEM.match(l) for l in lines[1:]) and not LIST_ITEM.match(lines[0]):
+            out.append("<p>%s</p>" % t(lines[0]))
+            lines = lines[1:]
+        if all(LIST_ITEM.match(l) for l in lines):
+            check = all(re.match(r"^\s*\[ ?\]", l) for l in lines)
+            items = "".join("<li>%s</li>" % t(LIST_ITEM.sub("", l, count=1)) for l in lines)
+            out.append('<ul class="%s">%s</ul>' % ("checks" if check else "ticks", items))
+        else:
+            out.append("<p>%s</p>" % t(block.strip()).replace("\n", "<br>"))
+    return "".join(out)
 
 
 def plain(s) -> str:
@@ -63,6 +82,23 @@ def get(d, path, default=""):
             return default
         d = d[k]
     return d if d not in (None, "") else default
+
+
+def fit_desc(*candidates, lo=50, hi=165):
+    """Search descriptions must be 50-170 characters (the audit checks). Take the first
+    candidate, top it up from the next ones if short, trim at a word if long."""
+    parts = [plain(c) for c in candidates if plain(c)]
+    if not parts:
+        return ""
+    out = parts[0]
+    for extra in parts[1:]:
+        if len(out) >= lo:
+            break
+        if extra not in out:
+            out = (out.rstrip(".") + ". " + extra).strip()
+    if len(out) > hi:
+        out = out[:hi].rsplit(" ", 1)[0].rstrip(",;:") + "."
+    return out
 
 
 def fit_title(title, limit=62):
@@ -224,7 +260,7 @@ class Site:
         self.b = c.get("business", {})
         self.pal = palette(get(c, "brand.colors", {}) or {})
         self.pages = [("index.html", "Home"), ("about.html", "About")] + [(pg["file"], pg["nav"]) for pg in profile["pages"]] + \
-                     [("free-guide.html", "Free guide"), ("contact.html", "Contact")]
+                     [("free-guide.html", get(c, "leadMagnet.navLabel", "Free guide")), ("contact.html", "Contact")]
 
     def url(self, f):
         return "%s/site/%s" % (self.base, "" if f == "index.html" else f)
@@ -294,6 +330,8 @@ class Site:
 
     def page(self, f, title, desc, og_img, body, faq=None, hero=False):
         title = fit_title(title)
+        desc = fit_desc(desc, self.b.get("oneLiner"), get(self.c, "brand.tagline"), "%s, %s in %s." % (
+            plain(self.b.get("person")), plain(self.b.get("profession")).lower(), plain(self.b.get("market"))))
         name = plain(title)
         ld = schema_graph(self.c, self.p, self.base, self.url(f), name, faq)
         out = self.head(f, title, desc, og_img)
@@ -356,12 +394,12 @@ class Site:
 
         statement = """<section class="section"><div class="wrap"><p class="eyebrow reveal">%s</p>
 <p class="statement reveal d1">%s</p>
-<div class="links reveal d2"><a class="tlink" href="about.html">How we work</a><a class="tlink" href="contact.html">Talk with us</a></div></div></section>""" % (
+<div class="links reveal d2"><a class="tlink" href="about.html">About %s</a><a class="tlink" href="contact.html">Get in touch</a></div></div></section>""" % (esc(plain(self.b.get("person")).split(" ")[0] or "us"), 
             t(h.get("statementEyebrow") or "Hello"), t(h.get("statement")))
 
         video = self.p.get("video") or {}
         video_band = ""
-        if video.get("src"):
+        if video.get("src") and not re.search(r"\bonline\b|remote|virtual", str(self.b.get("market", "")), re.I):
             poster = self.pick.slot("difference")[0]
             video_band = """<section class="video reveal" aria-label="%s"><video muted loop playsinline preload="none" poster="../assets/img/library/%s" data-src="%s" aria-label="%s"></video>
 <div class="video__cap"><div class="wrap"><p class="label">%s</p></div></div></section>""" % (
@@ -505,8 +543,9 @@ class Site:
 <section class="section"><div class="wrap doc">
 <p>When you fill in a form on this site, %s receives your name, your email address, and anything you choose to write. That is used only to reply to you and, if you asked for a guide, to send it and a short series of follow-up emails. You can ask to stop at any time by replying to any email.</p>
 <p>This site does not use advertising trackers or sell personal information.</p>
-<p><span class="ph">[Have your broker or attorney review this page before the site goes live]</span></p>
-</div></section>""" % n
+<p><span class="ph">[%s]</span></p>
+</div></section>""" % (n, "Have your broker or attorney review this page before the site goes live" if self.p.get("requireDisclosure")
+                                else "Have a professional review this page before the site goes live")
         self.page("privacy.html", "Privacy | %s" % plain(self.b.get("name")), "How %s uses the details you send through this website." % plain(self.b.get("name")), self.pick.slot("contact")[0], body)
 
     def build(self):

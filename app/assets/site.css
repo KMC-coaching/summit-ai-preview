@@ -280,3 +280,8 @@ ul.ticks li::before { content: ""; position: absolute; left: 0; top: .5em; width
 
 .in-frame .previewbar { display: none; }
 .in-frame .reveal { opacity: 1 !important; transform: none !important; }
+
+ul.checks { list-style: none; padding: 0; margin: 14px 0; display: grid; gap: 12px; }
+ul.checks li { padding-left: 34px; position: relative; }
+ul.checks li::before { content: ""; position: absolute; left: 0; top: .2em; width: 18px; height: 18px; border: 1.5px solid var(--accent-ink); border-radius: 4px; }
+.doc ul.ticks { margin: 14px 0; }

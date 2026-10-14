@@ -42,7 +42,7 @@ BY_PROFILE = {
     "general": ["site.services.headline", "site.services.intro", "site.services.items"],
 }
 COUNTS = {
-    "differentiator.pillars": (4, 4), "site.home.tickerCaptions": (6, 6), "leadMagnet.emails": (3, 3),
+    "differentiator.pillars": (3, 4), "site.home.tickerCaptions": (6, 6), "leadMagnet.emails": (3, 3),
     "site.faq": (4, 6), "audit.opportunities": (2, 3), "audit.plan": (3, 5), "prompts": (5, 10),
     "leadMagnet.sections": (4, 7), "site.services.items": (2, 6), "site.sell.steps": (3, 5), "site.buy.steps": (3, 5),
     "site.about.values": (3, 3), "leadMagnet.bullets": (3, 5),
@@ -138,12 +138,24 @@ def main() -> int:
                 if m:
                     problems.append('%s: "%s" in %s (%s)' % (kind, m.group(0), path, why))
 
+    warnings = []
+    for path, text in strings(c):
+        low = text.lower()
+        for m in ("example.com", ".example", "@example", "555-01", "(555)", "lorem ipsum", "yourdomain"):
+            if m in low:
+                warnings.append('"%s" in %s looks like template text; the report card will flag it. Fine only if it is truly theirs.' % (m, path))
+                break
+
     if problems:
+        for w in warnings:
+            problems.append("note: " + w)
         print("NOT READY:")
         for p in problems:
             print("  - " + p)
         return 1
     print("OK: content is complete and passes the %s rules." % ("real estate" if profile == "real-estate" else "general"))
+    for w in warnings:
+        print("  note: " + w)
     return 0
 
 

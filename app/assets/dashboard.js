@@ -137,6 +137,7 @@
     return topbar("report") + `<section class="view"><div class="wrap">
       <p class="kicker">Your website report card</p><h1>${have ? `${esc(host(g.url))}, against what we just built` : "Your new site, measured"}</h1>
       <p class="lede">The same checks a site has to pass before we let it launch: Google's own Lighthouse test, how AI assistants read it, broken pages, the words on the page${D.c.profile === "real-estate" ? ", Fair Housing and licensing rules" : ""}, and privacy. Nothing here is estimated: every number was measured today.</p>
+      ${g && !g.reachable ? `<div class="notice">We tried to check ${esc(host(g.url))} and it did not answer. If the address is wrong, tell Claude the right one and say <b>&nbsp;grade my website again</b>.</div>` : ""}
       ${have ? `<div class="notice">${esc(g.label || "This site")}: ${esc(host(g.url))}. ${g.label && /admire|competitor/i.test(g.label) ? "You do not have a site of your own yet, so we measured this one instead." : ""}</div>` : ""}
       <div class="duel">${have ? side(g, g.label || "Your current website", "", "") : ""}${side(gp, "Your new site, built just now", "side--new", "Your new site")}</div>
       ${cats}
