@@ -15,3 +15,8 @@ graphify-out/
 # Team-only tooling. Students' machines don't have graphify, so it must never ship.
 .claude/settings.local.json
 CLAUDE.local.md
+
+# Built per person from content.json.
+app/site/*
+app/robots.txt
+app/llms.txt

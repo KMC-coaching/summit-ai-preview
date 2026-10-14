@@ -1,0 +1,36 @@
+{
+  "_contract": "A profile holds everything that differs by profession. The engine (scripts/build_site.py, scripts/grade_site.py, app/assets/*) is identical for every profile. Adding a profession means adding one file here. Keys: pages (the second and third content pages, in nav order), schemaType (the business node's schema.org type), images (library categories per slot, first unused photo wins), video (stand-in clip), compliance (shown to Claude in START-HERE, enforced by grade_site.py --profile).",
+  "id": "real-estate",
+  "label": "Real estate",
+  "pages": [
+    { "key": "sell", "file": "sell.html", "nav": "Sell", "kind": "steps" },
+    { "key": "buy", "file": "buy.html", "nav": "Buy", "kind": "steps" }
+  ],
+  "schemaType": "RealEstateAgent",
+  "requireDisclosure": true,
+  "images": {
+    "hero": ["re-exterior", "re-exterior", "re-exterior"],
+    "difference": ["re-living"],
+    "pillars": ["re-kitchen", "re-door", "re-patio", "re-keys"],
+    "ticker": ["re-exterior", "re-living", "re-kitchen", "re-townhome", "re-street", "re-patio"],
+    "split": ["re-street"],
+    "magnet": ["re-keys"],
+    "about": ["re-door"],
+    "sell": ["re-exterior"],
+    "buy": ["re-keys"],
+    "contact": ["re-community"],
+    "guide": ["re-living"]
+  },
+  "video": {
+    "src": "https://assets.mixkit.co/videos/48394/48394-720.mp4",
+    "license": "Mixkit Free License",
+    "label": "Aerial footage over a residential neighborhood",
+    "screened": "2026-10-14: rooftops and streets only, no faces, no readable signs"
+  },
+  "compliance": [
+    "Fair Housing: describe the property, never the people. Never: perfect/great/ideal for families, family-friendly, safe neighborhood, exclusive community, walking distance to church, good schools, ideal for young professionals.",
+    "License number, brokerage name, and the words Equal Housing Opportunity go in the footer of every page. Never invent a license number: use [Your license number].",
+    "Never imply commission is set: no 'standard', 'customary' or 'typical' commission or fee.",
+    "No testimonials, sales counts, rankings or awards that are not in their file."
+  ]
+}

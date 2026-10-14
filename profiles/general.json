@@ -1,0 +1,43 @@
+{
+  "_contract": "See profiles/real-estate.json. Same keys, everything else is shared.",
+  "id": "general",
+  "label": "Any other business",
+  "pages": [
+    { "key": "services", "file": "services.html", "nav": "Services", "kind": "services" }
+  ],
+  "schemaType": "ProfessionalService",
+  "schemaTypeHints": {
+    "dent": "Dentist", "insur": "InsuranceAgency", "attorney|lawyer|law firm": "Attorney", "account|bookkeep|cpa|tax": "AccountingService",
+    "plumb": "Plumber", "electric": "Electrician", "roof": "RoofingContractor", "hvac|heating|cooling": "HVACBusiness",
+    "chiropract|physio|physical therap|doctor|clinic": "MedicalBusiness", "salon|hair": "HairSalon", "fitness|gym|trainer": "HealthClub",
+    "financial|advis|wealth|mortgage|loan": "FinancialService", "restaurant|cafe|coffee|bakery": "FoodEstablishment"
+  },
+  "requireDisclosure": false,
+  "images": {
+    "hero": ["gen-office", "gen-plants", "gen-notebook"],
+    "difference": ["gen-plants"],
+    "pillars": ["gen-notebook", "gen-office", "gen-plants", "gen-docs"],
+    "ticker": ["gen-office", "gen-notebook", "gen-plants", "gen-cafe", "gen-office", "gen-plants"],
+    "split": ["gen-cafe"],
+    "magnet": ["gen-notebook"],
+    "about": ["gen-office"],
+    "services": ["gen-notebook"],
+    "contact": ["gen-plants"],
+    "guide": ["gen-notebook"]
+  },
+  "professionImages": {
+    "dent": "gen-dental", "insur|financ|account|tax|mortgage": "gen-docs", "plumb|electric|roof|hvac|contract|repair|handyman": "gen-tools",
+    "cafe|coffee|restaurant|bakery": "gen-cafe"
+  },
+  "video": {
+    "src": "https://assets.mixkit.co/videos/48394/48394-720.mp4",
+    "license": "Mixkit Free License",
+    "label": "Aerial footage over the neighborhoods you serve",
+    "screened": "2026-10-14: rooftops and streets only, no faces, no readable signs"
+  },
+  "compliance": [
+    "No testimonials, client counts, rankings, awards or results that are not in their file.",
+    "No medical, legal or financial outcome promises. Describe the service, not a guaranteed result.",
+    "FTC: no '#1', 'best in town', 'guaranteed', 'risk-free', 'cheapest' unless their file proves it."
+  ]
+}
