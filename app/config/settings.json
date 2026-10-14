@@ -1,0 +1,17 @@
+{
+  "_readme": "Ours, not theirs. Ships with the repo. exampleSites: top students' sites, shown under the report card (Krista named Ronnie, Doug, Alisha Collins, Chris Vanette; URLs still to be confirmed and graded before they go in). next: the 'what's next' panel.",
+  "exampleSites": [
+    { "name": "Ronnie", "url": "" },
+    { "name": "Doug", "url": "" },
+    { "name": "Alisha Collins", "url": "" },
+    { "name": "Chris Vanette", "url": "" }
+  ],
+  "next": {
+    "headline": "This is a glimpse. Not the system.",
+    "text": "What you just watched is a taste of what an AI operating system does with your business: one set of answers, five things built. The full system puts it live, on your own domain, with real follow-up and a team of AI employees behind it.",
+    "videoUrl": "",
+    "videoPlaceholder": "A short video from Krista goes here.",
+    "ctaText": "",
+    "ctaUrl": ""
+  }
+}

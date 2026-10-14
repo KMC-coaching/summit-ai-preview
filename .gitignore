@@ -1,0 +1,13 @@
+# Generated per person. Never committed: it is their business details.
+app/data/*
+!app/data/.gitkeep
+.preview-server.json
+.preview-server.log
+
+.env
+.env.*
+*.local
+node_modules/
+.DS_Store
+__pycache__/
+graphify-out/
