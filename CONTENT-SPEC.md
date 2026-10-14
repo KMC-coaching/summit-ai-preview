@@ -41,7 +41,8 @@ the invented-proof checks (testimonials, star ratings, stats not in their file).
 - **More than 4 steps in their process?** Group them into 3 or 4 pillars without dropping
   any. Fewer than 3? Use what they gave; never invent a step.
 - **Their own site, a competitor, or one they admire?** Label the report card by what
-  their file calls it: `Your website`, `A competitor's website`, else `A site you admire`.
+  their file calls it: `Your website`, `A competitor's website`, else `A site you admire`. A
+  competitor Claude found itself: `A competitor in <area>`.
 - **Blanks vs. email merge fields.** A blank the owner must fill is `[Like this]`, capital
   first letter. A merge field the email tool fills is `{first_name}` in curly braces, never
   square brackets.

@@ -1,5 +1,5 @@
 {
-  "_contract": "See profiles/real-estate.json. Same keys, everything else is shared. fullSite: what the full seed site adds beyond the preview, shown on the report card; every line must be something the seed really ships.",
+  "_contract": "See profiles/real-estate.json. Same keys, everything else is shared. fullSite: what the full seed site adds beyond the preview, shown on the report card; every line must be something the seed really ships. competitorSearch: the query shape and the domains to block when START-HERE looks for a local competitor (portals, directories, press releases, national brands), so the business's own sites rise to the top.",
   "id": "general",
   "label": "Any other business",
   "pages": [
@@ -136,6 +136,44 @@
         "title": "You own all of it",
         "text": "Your accounts, your domain, your files. Nobody can switch it off, raise your rent or hold it hostage. Roughly $25 to $40 a month, in your name."
       }
+    ]
+  },
+  "competitorSearch": {
+    "query": "<profession> <area> <city>",
+    "block": [
+      "yelp.com",
+      "facebook.com",
+      "instagram.com",
+      "linkedin.com",
+      "youtube.com",
+      "tiktok.com",
+      "x.com",
+      "twitter.com",
+      "nextdoor.com",
+      "mapquest.com",
+      "yellowpages.com",
+      "bbb.org",
+      "provenexpert.com",
+      "newswire.com",
+      "accessnewswire.com",
+      "prnewswire.com",
+      "einpresswire.com",
+      "globenewswire.com",
+      "businesswire.com",
+      "finance.yahoo.com",
+      "wikipedia.org",
+      "angi.com",
+      "homeadvisor.com",
+      "thumbtack.com",
+      "houzz.com",
+      "healthgrades.com",
+      "zocdoc.com",
+      "vitals.com",
+      "tripadvisor.com",
+      "groupon.com",
+      "porch.com",
+      "expertise.com",
+      "birdeye.com"
     ]
   }
 }

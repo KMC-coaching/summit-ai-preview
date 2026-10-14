@@ -1,5 +1,5 @@
 {
-  "_contract": "A profile holds everything that differs by profession. The engine (scripts/build_site.py, scripts/grade_site.py, app/assets/*) is identical for every profile. Adding a profession means adding one file here. Keys: pages (the second and third content pages, in nav order), schemaType (the business node's schema.org type), images (library categories per slot, first unused photo wins), video (stand-in clip), compliance (shown to Claude in START-HERE, enforced by grade_site.py --profile). fullSite: what the full seed site adds beyond the preview, shown on the report card; every line must be something the seed really ships.",
+  "_contract": "A profile holds everything that differs by profession. The engine (scripts/build_site.py, scripts/grade_site.py, app/assets/*) is identical for every profile. Adding a profession means adding one file here. Keys: pages (the second and third content pages, in nav order), schemaType (the business node's schema.org type), images (library categories per slot, first unused photo wins), video (stand-in clip), compliance (shown to Claude in START-HERE, enforced by grade_site.py --profile). fullSite: what the full seed site adds beyond the preview, shown on the report card; every line must be something the seed really ships. competitorSearch: the query shape and the domains to block when START-HERE looks for a local competitor (portals, directories, press releases, national brands), so the business's own sites rise to the top.",
   "id": "real-estate",
   "label": "Real estate",
   "pages": [
@@ -125,6 +125,57 @@
         "title": "You own all of it",
         "text": "Your accounts, your domain, your files. Nobody can switch it off, raise your rent or hold it hostage. Roughly $25 to $40 a month, in your name."
       }
+    ]
+  },
+  "competitorSearch": {
+    "query": "realtor <area> <city>",
+    "block": [
+      "yelp.com",
+      "facebook.com",
+      "instagram.com",
+      "linkedin.com",
+      "youtube.com",
+      "tiktok.com",
+      "x.com",
+      "twitter.com",
+      "nextdoor.com",
+      "mapquest.com",
+      "yellowpages.com",
+      "bbb.org",
+      "provenexpert.com",
+      "newswire.com",
+      "accessnewswire.com",
+      "prnewswire.com",
+      "einpresswire.com",
+      "globenewswire.com",
+      "businesswire.com",
+      "finance.yahoo.com",
+      "wikipedia.org",
+      "zillow.com",
+      "realtor.com",
+      "redfin.com",
+      "homes.com",
+      "trulia.com",
+      "homelight.com",
+      "fastexpert.com",
+      "ratemyagent.com",
+      "experience.com",
+      "rocket.com",
+      "rentcafe.com",
+      "libertyhomeguard.com",
+      "top10lists.us",
+      "neighborhoods.com",
+      "windermere.com",
+      "coldwellbanker.com",
+      "coldwellbankerhomes.com",
+      "kw.com",
+      "remax.com",
+      "compass.com",
+      "century21.com",
+      "bhhs.com",
+      "exprealty.com",
+      "sothebysrealty.com",
+      "activerain.com"
     ]
   }
 }

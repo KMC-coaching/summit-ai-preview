@@ -1,5 +1,5 @@
 {
-  "_contract": "Same keys as profiles/real-estate.json (pages, schemaType, disclosure, images, video, compliance); everything else is the shared engine. disclosure 'lender' puts NMLS numbers, the company and Equal Housing Lender in every footer, and turns on the lending checks in grade_site.py. fullSite: what the full seed site adds beyond the preview, shown on the report card; every line must be something the seed really ships.",
+  "_contract": "Same keys as profiles/real-estate.json (pages, schemaType, disclosure, images, video, compliance); everything else is the shared engine. disclosure 'lender' puts NMLS numbers, the company and Equal Housing Lender in every footer, and turns on the lending checks in grade_site.py. fullSite: what the full seed site adds beyond the preview, shown on the report card; every line must be something the seed really ships. competitorSearch: the query shape and the domains to block when START-HERE looks for a local competitor (portals, directories, press releases, national brands), so the business's own sites rise to the top.",
   "id": "lender",
   "label": "Lenders and mortgage professionals",
   "pages": [
@@ -126,6 +126,51 @@
         "title": "You own all of it",
         "text": "Your accounts, your domain, your files. Nobody can switch it off, raise your rent or hold it hostage. Roughly $25 to $40 a month, in your name."
       }
+    ]
+  },
+  "competitorSearch": {
+    "query": "mortgage lender <area> <city>",
+    "block": [
+      "yelp.com",
+      "facebook.com",
+      "instagram.com",
+      "linkedin.com",
+      "youtube.com",
+      "tiktok.com",
+      "x.com",
+      "twitter.com",
+      "nextdoor.com",
+      "mapquest.com",
+      "yellowpages.com",
+      "bbb.org",
+      "provenexpert.com",
+      "newswire.com",
+      "accessnewswire.com",
+      "prnewswire.com",
+      "einpresswire.com",
+      "globenewswire.com",
+      "businesswire.com",
+      "finance.yahoo.com",
+      "wikipedia.org",
+      "bankrate.com",
+      "lendingtree.com",
+      "nerdwallet.com",
+      "zillow.com",
+      "rocketmortgage.com",
+      "rocket.com",
+      "experian.com",
+      "creditkarma.com",
+      "investopedia.com",
+      "forbes.com",
+      "nmlsconsumeraccess.org",
+      "usbank.com",
+      "wellsfargo.com",
+      "chase.com",
+      "bankofamerica.com",
+      "guildmortgage.com",
+      "movement.com",
+      "crosscountrymortgage.com",
+      "fairwaymortgage.com"
     ]
   }
 }

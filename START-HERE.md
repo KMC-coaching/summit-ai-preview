@@ -191,15 +191,35 @@ competitor or site they admire that their file names; else **find a competitor y
 In a BOSS file it is `Website to grade` under `## Preview answers`, and `Which site that is`
 gives the label. Pass the bare address (the grader adds `https://`).
 
-**Finding a competitor** (no site, "none", or their own site did not answer): search the web
-for their profession in their main area, e.g. `realtor East Sacramento`, `mortgage lender
-Elk Grove`, `dentist Folsom`. Pick the first result that is one local business's own site in
-that area, doing what they do. Never a portal or directory (Zillow, Realtor.com, Redfin,
-Homes.com, Yelp, Angi, Bankrate, LendingTree), a national brokerage or franchise page, a
-social profile, or their own business. Label it `A competitor in <area>`. Tell them: *"You
-don't have a site of your own yet, so I found one of your competitors in [area]:
-[address]. Your report card puts it next to what I'm building you."* If the search tool is
-unavailable or nothing qualifies after two searches, carry on without one.
+**First check their address answers:** `curl -sI -m 10 https://<address>`. If it does not,
+go straight to "If their site does not answer" below; do not tell them you are checking it.
+
+**Finding a competitor** (no site, "none", or their own site did not answer). Keep going
+until you have one; a report card with nothing beside it is the case to avoid.
+
+1. Search with your web search tool using the profile's `competitorSearch`: its `query`
+   with their main area and city filled in (e.g. `realtor East Sacramento Sacramento`), and
+   its whole `block` list as the search's blocked domains. **The block list is what makes
+   this work:** without it, portals, directories and press releases fill every result;
+   with it, local businesses' own sites come first.
+2. Take the first result that is **one local business's own site** in that area doing what
+   they do. Never grade a portal or directory (Zillow, Realtor.com, Redfin, Homes.com, Yelp,
+   Angi, HomeLight, Bankrate, LendingTree), a national brokerage or franchise page, a press
+   release, a social profile, or their own business.
+3. **Directories and press releases are leads, not dead ends.** Most local results are one
+   of those, and they name real local businesses: "Best Realtor in East Sacramento: [name]"
+   gives a name and usually a site. Take the business's own website from the result, or
+   search the name once to find it.
+4. Nothing yet: the same search with their next area, then their city alone, then their
+   zip, always with the block list.
+5. Before grading, check the address answers (`curl -sI -m 10`). If it does not, take the
+   next one.
+
+Label it `A competitor in <area>`. If they have no site, tell them: *"You don't have a site
+of your own yet, so I found one of your competitors in [area]: [address]. Your report card
+puts it next to what I'm building you."* Only if web search itself is unavailable, carry on without one and say: *"I
+couldn't search the web from here, so your report card shows your new site on its own. Say
+**grade a competitor** any time and I'll add one."*
 
 Tell them: *"While I write, I'm checking [site] the same way we check our own sites
 before they launch. That takes a minute or two."* Then start it as a **background task**
@@ -210,10 +230,13 @@ before they launch. That takes a minute or two."* Then start it as a **backgroun
 Label: `Your website`, `A site you admire`, `A competitor's website`, or `A competitor in <area>`. It only reads
 public pages, one at a time, like any visitor.
 
-**If it ends at once with "The site did not answer"**, the address is wrong or the site is
-down. Tell them in one line: *"I couldn't reach [address]. If it's spelled differently,
-tell me and I'll check it again. Meanwhile I'll compare you with a competitor."* Then grade
-the competitor or admired site their file names, else find a competitor as above.
+**If their site does not answer** (the check above, or the grader ends at once with "The
+site did not answer"): grade the competitor or admired site their file names, else find a
+competitor as above, then tell them both things in one message: *"I couldn't reach
+[address], so I found one of your competitors in [area] to compare you with: [competitor].
+If your address is spelled differently, tell me and I'll check yours too."* The
+competitor's grade goes in `app/data/grade.json`: it is the comparison on their report
+card.
 
 ## Step 5: Write their preview
 
