@@ -8,6 +8,8 @@
   "use strict";
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   document.documentElement.classList.add("js");
+  // Shown as a thumbnail on the dashboard: no preview bar, no motion delay.
+  if (window.self !== window.top) document.documentElement.classList.add("in-frame");
 
   /* Scroll reveal. Not IntersectionObserver on purpose: an anchor jump can skip
      the observer's sample and leave a section invisible (Reveal.tsx). */

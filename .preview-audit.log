@@ -1,0 +1,21 @@
+  Running Google Lighthouse (speed, accessibility, SEO) in the background...
+  Reading the sitemap and robots file...
+  Reading 8 pages, one at a time...
+  Following 2 more links to look for dead ends...
+  Waiting for Lighthouse to finish...
+
+Your new site  http://localhost:4321/site/
+Overall: 97 (A)   37 passed, 1 to fix, 0 warnings, 4 not measured
+  Google's own test (Lighthouse, on a phone)           97
+  Can Google and AI assistants find it                 100
+  Structured data (how AI reads your business)         100
+  Broken pages and dead ends                           100
+  Words on the page                                    80
+  Real estate rules (Fair Housing and licensing)       100
+  Privacy                                              100
+  - [fail] No leftover template text: ".example", "555-01"
+  - [todo] Nothing left to fill in: [Your license number]; [Your brokerage]; [Have your broker or attorney review this page before the site goes l
+  - [todo] License number on every page: On 0 of 8 pages; the blank for it is there, waiting for your number
+  - [todo] Brokerage named on every page: On 0 of 8 pages; the blank for it is there, waiting for your brokerage
+
+Saved to app/data/grade-preview.json

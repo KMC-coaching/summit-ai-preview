@@ -18,16 +18,9 @@ You will not type any commands. Claude does the work.
 3. Copy everything in the box below, paste it in, and press Enter.
 
 ```text
-Set up my Summit AI Preview.
-
-1. Download it from https://github.com/KMC-coaching/summit-ai-preview. It's public, so
-   no account or sign-in is needed. Get it as a zip with curl, not git (git may not be
-   installed yet): https://codeload.github.com/KMC-coaching/summit-ai-preview/zip/refs/heads/main
-   Unpack it into a folder called Summit-AI-Preview in my home folder. If that folder
-   already exists, keep everything in its app/data folder and update the rest.
-2. Open START-HERE.md in that folder and follow it exactly, from Step 0.
-
-I'm not technical. Talk to me in plain English and never ask me to type commands.
+Set up my Summit AI Preview. Use curl to download
+https://raw.githubusercontent.com/KMC-coaching/summit-ai-preview/main/START-HERE.md
+then read it and follow it exactly. I'm not technical, so never ask me to type commands.
 ```
 
 ## While it runs

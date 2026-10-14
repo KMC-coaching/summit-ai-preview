@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Refuse to launch a preview that is not finished.
+Refuse to build a preview that is not finished, or that breaks a rule.
 
-    python3 scripts/check_preview.py      -> exit 0 and "OK", or a list of what is missing
+    python3 scripts/check_preview.py      -> "OK: ..." (exit 0), or a list of what to fix (exit 1)
 
-A half-filled page in front of someone who just spent ten minutes answering
-questions is worse than a thirty-second delay, so every field the pages read is
-checked here, in CONTENT-SPEC.md's shape.
+Checks app/data/content.json against CONTENT-SPEC.md, then scans every word in
+it with the SAME lists the audit uses (scripts/grade_site.py): Fair Housing for
+real estate, FTC claims for everyone, em-dashes and stock AI phrases. Catching
+them here costs nothing; catching them on the report card is embarrassing.
 """
 from __future__ import annotations
 
@@ -16,30 +17,35 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-CONTENT = ROOT / "app" / "data" / "content.json"
-GRADE = ROOT / "app" / "data" / "grade.json"
+sys.path.insert(0, str(ROOT / "scripts"))
+import grade_site as G  # noqa: E402  one list of rules, not two
 
-REQUIRED = [
-    "business.name", "business.person", "business.profession", "business.oneLiner", "business.market",
-    "brand.colors.primary", "brand.colors.accent", "brand.colors.ink", "brand.colors.paper",
-    "brand.tagline", "brand.voice",
+CONTENT = ROOT / "app" / "data" / "content.json"
+LIB = ROOT / "app" / "assets" / "img" / "library" / "library.json"
+PREFIX = "In my Summit AI Preview,"
+
+COMMON = [
+    "profile", "business.name", "business.person", "business.profession", "business.oneLiner", "business.market",
+    "brand.colors.primary", "brand.colors.accent", "brand.tagline", "brand.voice",
     "avatar.name", "avatar.snapshot", "avatar.pains", "avatar.wants",
     "differentiator.methodName", "differentiator.statement", "differentiator.pillars",
-    "site.home.heroHeadline", "site.home.heroSub", "site.home.primaryCta", "site.home.whoItsFor",
-    "site.home.steps", "site.home.closingHeadline", "site.home.closingText",
-    "site.about.headline", "site.about.story", "site.about.values",
-    "site.services.headline", "site.services.intro", "site.services.items",
-    "site.faq", "site.contact.headline", "site.contact.text",
+    "site.home.heroLead", "site.home.heroSub", "site.home.primaryCta", "site.home.statement",
+    "site.home.differenceHeadline", "site.home.differenceBody", "site.home.tickerHeadline", "site.home.tickerCaptions",
+    "site.home.splitHeadline", "site.home.splitBody", "site.home.closingHeadline", "site.home.closingText",
+    "site.about.headline", "site.about.story", "site.about.values", "site.faq", "site.contact.headline", "site.contact.text",
     "leadMagnet.title", "leadMagnet.subtitle", "leadMagnet.format", "leadMagnet.hook", "leadMagnet.bullets",
     "leadMagnet.formHeadline", "leadMagnet.buttonText", "leadMagnet.sections", "leadMagnet.closing",
-    "leadMagnet.socialPost", "leadMagnet.emails",
-    "audit.summary", "audit.opportunities", "audit.plan",
-    "prompts",
+    "leadMagnet.socialPost", "leadMagnet.emails", "audit.summary", "audit.opportunities", "audit.plan", "prompts",
 ]
+BY_PROFILE = {
+    "real-estate": ["business.areas", "site.sell.headline", "site.sell.intro", "site.sell.steps", "site.buy.headline", "site.buy.intro", "site.buy.steps"],
+    "general": ["site.services.headline", "site.services.intro", "site.services.items"],
+}
 COUNTS = {
-    "differentiator.pillars": (3, 3), "site.home.steps": (3, 3), "leadMagnet.emails": (3, 3),
-    "site.faq": (4, 6), "audit.opportunities": (2, 3), "audit.plan": (3, 5), "prompts": (5, 8),
-    "leadMagnet.sections": (4, 7), "site.services.items": (2, 6),
+    "differentiator.pillars": (4, 4), "site.home.tickerCaptions": (6, 6), "leadMagnet.emails": (3, 3),
+    "site.faq": (4, 6), "audit.opportunities": (2, 3), "audit.plan": (3, 5), "prompts": (5, 10),
+    "leadMagnet.sections": (4, 7), "site.services.items": (2, 6), "site.sell.steps": (3, 5), "site.buy.steps": (3, 5),
+    "site.about.values": (3, 3), "leadMagnet.bullets": (3, 5),
 }
 HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
 
@@ -52,15 +58,17 @@ def dig(obj, path):
     return obj
 
 
-def luminance(h):
-    rgb = [int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)]
-    lin = [c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4 for c in rgb]
-    return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
-
-
-def contrast(a, b):
-    la, lb = sorted([luminance(a), luminance(b)], reverse=True)
-    return (la + 0.05) / (lb + 0.05)
+def strings(obj, path=""):
+    if isinstance(obj, str):
+        yield path, obj
+    elif isinstance(obj, dict):
+        for k, v in obj.items():
+            if k in ("wordsTheyAvoid",):  # the list of words they never use, quoted on purpose
+                continue
+            yield from strings(v, path + "." + k if path else k)
+    elif isinstance(obj, list):
+        for i, v in enumerate(obj):
+            yield from strings(v, "%s[%d]" % (path, i))
 
 
 def main() -> int:
@@ -74,24 +82,21 @@ def main() -> int:
         return 1
 
     problems = []
-    for p in REQUIRED:
-        v = dig(c, p)
-        if v in (None, "", [], {}):
+    profile = c.get("profile")
+    if profile not in BY_PROFILE:
+        problems.append('profile must be "real-estate" or "general"')
+    for p in COMMON + BY_PROFILE.get(profile, []):
+        if dig(c, p) in (None, "", [], {}):
             problems.append("empty: " + p)
     for p, (lo, hi) in COUNTS.items():
         v = dig(c, p)
         if isinstance(v, list) and not (lo <= len(v) <= hi):
             problems.append("%s has %d items, needs %d-%d" % (p, len(v), lo, hi))
 
-    colors = dig(c, "brand.colors") or {}
-    for k in ("primary", "accent", "ink", "paper"):
-        if k in colors and not HEX.match(str(colors[k])):
+    for k in ("primary", "accent"):
+        v = dig(c, "brand.colors." + k)
+        if v and not HEX.match(str(v)):
             problems.append("brand.colors.%s must be a 6-digit hex like #1F4E79" % k)
-    if all(HEX.match(str(colors.get(k, ""))) for k in ("ink", "paper", "primary")):
-        if contrast(colors["ink"], colors["paper"]) < 7:
-            problems.append("ink on paper is hard to read (contrast %.1f, needs 7+)" % contrast(colors["ink"], colors["paper"]))
-        if contrast("#FFFFFF", colors["primary"]) < 4.5:
-            problems.append("white text on primary is hard to read (contrast %.1f, needs 4.5+): darken primary" % contrast("#FFFFFF", colors["primary"]))
 
     for i, e in enumerate(dig(c, "leadMagnet.emails") or []):
         for k in ("day", "subject", "body"):
@@ -101,27 +106,44 @@ def main() -> int:
         for k in ("title", "why", "evidence", "whatChanges", "bossDoes"):
             if not o.get(k):
                 problems.append("audit.opportunities[%d].%s is empty" % (i, k))
-
-    prefix = "In my Summit AI Preview,"
     for i, p in enumerate(dig(c, "prompts") or []):
-        if not str(p.get("prompt", "")).startswith(prefix):
-            problems.append('prompts[%d].prompt must start with "%s"' % (i, prefix))
+        if not str(p.get("prompt", "")).startswith(PREFIX):
+            problems.append('prompts[%d].prompt must start with "%s"' % (i, PREFIX))
+        if not p.get("group") or not p.get("label"):
+            problems.append("prompts[%d] needs a group and a label" % i)
     for i, d in enumerate(dig(c, "audit.plan") or []):
-        if d.get("prompt") and not str(d["prompt"]).startswith(prefix):
-            problems.append('audit.plan[%d].prompt must start with "%s"' % (i, prefix))
+        if d.get("prompt") and not str(d["prompt"]).startswith(PREFIX):
+            problems.append('audit.plan[%d].prompt must start with "%s"' % (i, PREFIX))
+    for i, s in enumerate(dig(c, "business.stats") or []):
+        if not isinstance(s.get("value"), (int, float)) or not s.get("label"):
+            problems.append("business.stats[%d] needs a numeric value and a label (and only real numbers from their file)" % i)
 
-    if GRADE.exists():
-        try:
-            json.loads(GRADE.read_text(encoding="utf-8"))
-        except json.JSONDecodeError:
-            problems.append("grade.json is not valid JSON: run the grader again")
+    if LIB.exists():
+        ids = {x["id"] for x in json.loads(LIB.read_text(encoding="utf-8"))}
+        for slot, v in (c.get("images") or {}).items():
+            for x in ([v] if isinstance(v, str) else (v or [])):
+                if x not in ids:
+                    problems.append('images.%s: "%s" is not in the photo library' % (slot, x))
+
+    # The audit's own rules, run on every word before anything is built.
+    rules = [(G.CLAIMS, "FTC claim")] + [(G.SLOP, "reads like AI")]
+    if profile == "real-estate":
+        rules += [(G.FH_FAIL, "Fair Housing"), (G.FH_WARN, "Fair Housing risk"), (G.COMMISSION, "commission wording")]
+    for path, text in strings(c):
+        if path.startswith("prompts") or path.startswith("meta"):
+            continue
+        for patterns, kind in rules:
+            for pat, why in patterns:
+                m = re.search(pat, text, re.I)
+                if m:
+                    problems.append('%s: "%s" in %s (%s)' % (kind, m.group(0), path, why))
 
     if problems:
         print("NOT READY:")
         for p in problems:
             print("  - " + p)
         return 1
-    print("OK: content is complete%s." % ("" if GRADE.exists() else " (no website was graded)"))
+    print("OK: content is complete and passes the %s rules." % ("real estate" if profile == "real-estate" else "general"))
     return 0
 
 

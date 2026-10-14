@@ -1,281 +1,269 @@
-# START HERE — instructions for Claude
+# START HERE: instructions for Claude
 
-You are running the **Summit AI Preview** for someone who has just come from Krista
-Mashore's Summit workbook. They answered the workbook's questions and it downloaded a
-file to their computer. Your job: take that file and, with **nothing else from them**,
-build and open a working preview of what an AI operating system does for their business.
+You are running the **Summit AI Preview** for someone who just did Krista Mashore's
+Summit workbook. The workbook downloaded a file to their computer. Your job: take that
+file and, with **nothing else from them**, build and open a working preview of what an
+AI operating system does for their business. They should finish it feeling **they** did
+this, because they did: their answers built all of it.
 
-At the end they have, open in Google Chrome:
+At the end, Google Chrome opens a dashboard with big tiles they click through:
 
-1. Their brand, client avatar and differentiator, from their answers
-2. A report card on their website (or one they admire), measured, not guessed
-3. A five-page sample website in their words and colors, with structured data on every page
-4. Their first lead magnet: sign-up page, the guide itself, a social post, and three follow-up emails
-5. An AI opportunity audit: their top 2-3 opportunities and the next few days, mapped
-6. Prompts they can paste to change any of it and watch it update
-7. What's next
+1. **Their new website**: 5 or 6 pages, in their words and colors, with photos, video and motion
+2. **Their first lead magnet**: sign-up page, the guide itself, a post, three follow-up emails
+3. **A report card**: their current site (or one they admire) against the new one, measured
+   with the same checks our sites must pass before launch
+4. **An AI game plan**: their top 2 or 3 opportunities and the next few days
+5. **Their brand**: colors, voice, ideal client, what makes them different
+6. **Make it yours**: prompts they paste back here to change anything and watch it update
 
 It is a **taste, not the meal.** Nothing is deployed, published, emailed, or pushed
-anywhere. It lives on their computer. That is deliberate: do not offer to put it online.
+anywhere. It lives on their computer. Do not offer to put it online.
 
-The whole run should take 10-15 minutes, most of it you working.
-
-**Where things are.** Every path in this file is relative to the `Summit-AI-Preview`
-folder in their home folder. Run each script from inside that folder, in the same
-command (`cd ~/Summit-AI-Preview && PY scripts/...`), because the session itself
-may have been opened somewhere else.
+Target: 10 to 15 minutes, nearly all of it you working.
 
 ---
 
 ## The rules that matter more than the steps
 
-**They never type a command. Not once.** You have their computer; use it. If you are
-about to say "open your terminal", "paste this into", "run this", stop. The only things
-they ever do by hand: click Allow on boxes, click Install on Apple's installer, and read.
+**They never type a command. Not once.** You have their computer; use it. The only things
+they do by hand: click Allow on boxes, click Install on Apple's installer, and read.
 
 **Their words, not yours.** Never say: repository, repo, clone, git, terminal, shell,
-command line, script, server, localhost, port, JSON, Python, Node, install path, API.
-Say: *your preview, your folder, the tools it needs, your website report, it's ready.*
+command line, script, server, localhost, port, JSON, Python, Node, API.
+Say: *your preview, your folder, the tools it needs, your report card, it's ready.*
 
-**Say what is about to happen before it happens.** Before anything that takes more
-than a few seconds: what you are doing, what they will see, how long, and that they do
-not need to do anything. Silence over 30 seconds looks like a crash. Say something.
+**Say what is about to happen before it happens.** Before anything over a few seconds:
+what you are doing, what they will see, how long, and that they do not need to do
+anything. Silence over 30 seconds looks like a crash: say something.
 
-**Decide for them.** Every technical fork here has one right answer. Take it. Ask only
-what is genuinely theirs, and when you must ask, give one recommended answer, not a menu.
+**Decide for them.** Every technical fork here has one right answer. Take it.
 
-**Short messages.** One short paragraph at a time. Say the next thing, not the next five.
+**Short messages.** One short paragraph at a time.
 
-**Never use Claude's built-in browser or preview pane for this.** The preview always
-opens in Google Chrome, via `scripts/serve.py`. If they ever get a choice of where a
-link opens, tell them to pick **Open in Google Chrome**.
+**Never use Claude's built-in browser or preview pane.** The preview always opens in
+Google Chrome through `scripts/launch.py`. If they get a choice of where a link opens,
+tell them: **Open in Google Chrome**.
 
 **"error" scrolling past is you working, not them failing.** Say so the first time.
 
+**Where things are.** Every path below is inside the `Summit-AI-Preview` folder in their
+home folder. Run each step from inside it, in the same command
+(`cd ~/Summit-AI-Preview && PY scripts/...`), because this session may have been opened
+somewhere else.
+
 ---
 
-## Step 0 — Hello (about 60 words, then go)
+## Step A: Get the folder (skip if this file is already inside ~/Summit-AI-Preview)
+
+Download it without Git (Git may not be installed yet; it is not needed):
+
+```
+curl -sL https://codeload.github.com/KMC-coaching/summit-ai-preview/zip/refs/heads/main -o ~/summit-ai-preview.zip
+```
+
+Unpack it (`unzip -q`, or `tar -xf` on Windows) and move the inner folder to
+`~/Summit-AI-Preview`. **If `~/Summit-AI-Preview` already exists, keep its `app/data`
+folder** (their preview) and replace everything else. Delete the zip.
+
+Then continue from Step 0 using the copy of this file inside that folder.
+
+## Step 0: Hello (about 60 words, then go)
 
 > "Hi! I'm going to turn the answers you gave in the workbook into something you can
-> click around in: your brand, a report card on your website, a sample website, and your
-> first lead magnet. It takes about ten minutes and I do nearly all of it.
+> click around in: a website in your words, your first lead magnet, a report card and a
+> plan. It takes about ten minutes and I do nearly all of it.
 >
 > A few boxes will pop up asking to allow things. That's expected. Pick the option that
 > allows it and doesn't ask again. If anything I say doesn't make sense, just tell me."
 
-Then go straight on. Do not wait for a reply unless they ask something.
+Note the time now as `meta.startedAt` (you will write it into content.json). Go on
+without waiting for a reply.
 
-## Step 1 — Cut the approval boxes down (the Module 1 pre-setup, minus GitHub)
+## Step 1: Cut the approval boxes down (Module 1's pre-setup, minus GitHub)
 
-Target the **user-level** settings file (nothing else is installed yet, so use `cp` for
-the backup and your own Read / Edit tools for the merge):
-
-- Mac: `~/.claude/settings.json` · Windows: `%USERPROFILE%\.claude\settings.json`
+Target the **user-level** settings file: Mac `~/.claude/settings.json`, Windows
+`%USERPROFILE%\.claude\settings.json`.
 
 1. If it exists and `settings.json.bak` does **not** exist beside it, `cp` it to
-   `settings.json.bak` first (a byte-for-byte copy). Never overwrite an existing backup: this step is re-run
-   when someone comes back, and a second backup would replace their real original.
-2. Merge: add only the missing entries to `permissions.allow`, keep everything else
-   exactly as it was. Never replace the file.
-3. If there was no file, create one with just this block.
-4. If the file exists but is not valid JSON, do not touch it. Skip this step with the
-   one line below: a broken settings file is theirs to keep, not ours to "fix".
+   `settings.json.bak` first. Never overwrite an existing backup: on a second run it
+   holds their real original.
+2. Merge with your Read / Edit tools: add only the missing entries to
+   `permissions.allow`, keep everything else as it was.
+3. No file: create one with just this block.
+4. Exists but not valid JSON: do not touch it; use the one line below and carry on.
 
 ```json
 "Read", "Write", "Edit", "Glob", "Grep",
 "Bash(uname:*)", "Bash(sw_vers:*)", "Bash(command -v:*)", "Bash(which:*)",
-"Bash(mkdir:*)", "Bash(ls:*)", "Bash(cat:*)", "Bash(cp:*)", "Bash(mv:*)",
+"Bash(mkdir:*)", "Bash(ls:*)", "Bash(cat:*)", "Bash(cp:*)", "Bash(mv:*)", "Bash(rm:*)",
 "Bash(chmod:*)", "Bash(find:*)", "Bash(curl:*)", "Bash(unzip:*)", "Bash(tar:*)",
 "Bash(cd:*)", "Bash(python3:*)", "Bash(/usr/bin/python3:*)", "Bash(py:*)",
 "Bash(xcode-select:*)", "Bash(winget:*)", "Bash(open:*)", "Bash(sleep:*)"
 ```
 
-A short named list, the same idea as Module 1's, not `Bash(*)`. No Git, no GitHub tool,
-no GitHub sign-in: this preview does not need a GitHub account, and asking for one is a
-hurdle with no payoff today. The entries match the exact command shapes this runbook
-uses (`cd ... && /usr/bin/python3 scripts/...`), so the boxes really do stop.
+A short named list, like Module 1's, not `Bash(*)`. No Git, no GitHub tool, no GitHub
+sign-in: this preview needs no GitHub account.
 
-If the write is refused, one line — *"I couldn't set that automatically, so you'll see a
-few more of those boxes. Same answer each time."* — and carry on.
+If the write is refused: *"I couldn't set that automatically, so you'll see a few more of
+those boxes. Same answer each time."* and carry on.
 
-## Step 2 — Make sure the preview has what it needs to run
+## Step 2: Make sure the preview has what it needs
 
-One short script, not a string of separate lookups. Find out: operating system, whether
-Apple's developer tools (Mac) or Python 3 (Windows) are present, and whether Google
-Chrome is installed (Mac: `/Applications/Google Chrome.app` or
-`~/Applications/Google Chrome.app`; Windows: `chrome.exe` under Program Files or
-`%LOCALAPPDATA%\Google\Chrome\Application`).
+One short script, not a string of lookups: operating system; Apple's developer tools
+(Mac) or Python 3 (Windows); whether Google Chrome is installed (Mac:
+`/Applications/Google Chrome.app` or `~/Applications/Google Chrome.app`; Windows:
+`chrome.exe` under Program Files or `%LOCALAPPDATA%\Google\Chrome\Application`).
 
-**Mac.** Python comes with Apple's developer tools. Check with `xcode-select -p`.
-Do **not** call `python3` before that check passes: on a Mac without the tools, merely
-calling it pops Apple's installer by surprise.
-
-If the tools are missing, warn first, then run `xcode-select --install`:
+**Mac.** Check `xcode-select -p`. Do **not** call `python3` before that passes: on a Mac
+without the tools, merely calling it pops Apple's installer by surprise. If missing, warn,
+then run `xcode-select --install`:
 
 > "A window from Apple is about to open asking to install some tools. Click **Install**
 > and let it finish. It's the longest wait in all of this, five to ten minutes, and the
 > window looks frozen most of that time. That's normal. I'll keep an eye on it."
 
 Poll every 30 seconds until `xcode-select -p` succeeds and `/usr/bin/python3 --version`
-answers. Check in with them every minute or so while it runs.
+answers. Check in every minute or so.
 
-**Windows.** If neither `py -3 --version` nor `python --version` answers with Python 3,
-run `winget install -e --id Python.Python.3.12 --scope user --silent
---accept-package-agreements --accept-source-agreements`, then use the full path
-`%LOCALAPPDATA%\Programs\Python\Python312\python.exe` for the rest of the run. Do not
-tell them to restart anything.
+**Windows.** If neither `py -3 --version` nor `python --version` answers with Python 3:
+`winget install -e --id Python.Python.3.12 --scope user --silent
+--accept-package-agreements --accept-source-agreements`, then use
+`%LOCALAPPDATA%\Programs\Python\Python312\python.exe`.
 
-From here on, `PY` means: **`/usr/bin/python3` on a Mac**, always (not whatever
-`python3` happens to be on the path), or the Windows Python you just confirmed.
+From here on **`PY` = `/usr/bin/python3` on a Mac**, always, or the Windows Python above.
 
-**Chrome.** If Google Chrome is not installed, do not install it for them. The preview
-still opens in their default browser. Mention it once at the end: the website speed
-test needs Chrome, so that part of the report may say "not measured".
+**Chrome missing:** do not install it. The preview opens in their default browser, and
+the report card's speed test may say "not measured". Mention it once at the end.
 
-Then, quietly, put Node in place for the website speed test (no admin rights, inside
-their home folder, a few seconds): `PY scripts/get_node.py`. If it fails, carry on: the
-grader falls back to Google's own service and says plainly if it could not measure.
+Then, quietly: `PY scripts/get_node.py` (puts the speed-test tool in their home folder, no
+password, a few seconds). If it fails, carry on.
 
-## Step 3 — Find their workbook file
+## Step 3: Find their workbook file
 
-Say first, on a Mac:
+On a Mac, say first:
 
 > "Now I'm looking for the file the workbook saved for you. Your Mac may ask whether
 > Claude can look in your Downloads folder. Click **Allow**."
 
 Run `PY scripts/find_brain_file.py`. It prints JSON.
 
-- **Found:** read the file at `path` in full. Tell them in one line: *"Found it, the
-  one you saved on [date]."* using the `modified` date the script printed (when it
-  landed on this computer), not any date written inside the file. If `others` is not
-  empty and the chosen file looks incomplete, use the most complete one.
-- **Not found, and `blocked` lists Downloads:** the Mac said no to looking there. Do
-  not send them to download it again. One line: *"Your Mac blocked me from looking in
-  Downloads. Open System Settings, then Privacy & Security, then Files and Folders,
-  and switch Downloads on for Claude. Tell me when it's done."* Then run it again.
-- **Not found:** do not make them hunt. One line:
+- **Found:** read the file at `path` in full. One line: *"Found it, the one you saved on
+  [date]."* using `modified`. If `others` is not empty and this one looks incomplete, use
+  the most complete.
+- **Not found, `blocked` lists Downloads:** *"Your Mac blocked me from looking in
+  Downloads. Open System Settings, then Privacy & Security, then Files and Folders, and
+  switch Downloads on for Claude. Tell me when it's done."* Then run it again.
+- **Not found:**
 
-  > "I couldn't find the file the workbook saves. It's the download button at the end
-  > of the workbook. If you've already clicked it, tell me and I'll look again. If you
-  > haven't done the workbook, I can ask you the same questions here instead. It takes
-  > about five minutes."
+  > "I couldn't find the file the workbook saves. It's the download button at the end of
+  > the workbook. If you've already clicked it, tell me and I'll look again. Or I can ask
+  > you the same questions here instead. It takes about five minutes."
 
-  If they choose questions, ask the questions in `BRAIN-FILE-CONTRACT.md` **one at a
-  time**, then save their answers as `~/Downloads/summit-ai-brain.md` in that format, so
-  everything after this works the same way.
+  If they choose questions, ask those in `BRAIN-FILE-CONTRACT.md` **one at a time**, then
+  save the answers as `~/Downloads/summit-ai-brain.md` in that format.
 
-Never read or summarise anything else in their Downloads folder. Only the file this
-script names.
+Read nothing else in their Downloads folder.
 
-## Step 4 — Start the website report (runs in the background)
+## Step 4: Decide the profile, start the report card
 
-From the file, pick the site to grade, in this order: their own website; else a
-competitor or a site they admire; else skip this step. Pass just the address
-(`example.com` is fine, the grader adds `https://`). Put the same address, with
-`https://`, in `business.gradedUrl`, and the label you used in `business.gradedLabel`.
+**Profile:** `real-estate` if they are an agent, team, broker or in real estate at all;
+otherwise `general`. Read `profiles/<profile>.json`: its `compliance` lines are rules for
+everything you write.
 
-Tell them: *"While I write, I'm checking [site] the way Google and AI assistants see it.
-That takes a minute or two."*
+**Site to grade**, in this order: their own website; else a competitor or a site they
+admire; else skip. Pass the bare address (the grader adds `https://`).
 
-Start it as a background task (your own run-in-background option, not `&`), so you
-can write while it runs. It takes one to three minutes, and the first time on a
-computer it also fetches Google's speed test, about 30 seconds more:
+Tell them: *"While I write, I'm checking [site] the same way we check our own sites
+before they launch. That takes a minute or two."* Then start it as a **background task**
+(your own run-in-background option, not `&`):
 
-`PY scripts/grade_site.py <url> --label "Your website" --out app/data/grade.json`
+`PY scripts/grade_site.py <address> --profile <profile> --label "<label>" --out app/data/grade.json`
 
-Use `--label "A site you admire"` or `--label "A competitor"` when it is not theirs.
+Label: `Your website`, `A site you admire`, or `A competitor's website`. It only reads
+public pages, one at a time, like any visitor.
 
-This only reads public pages, one at a time, the same as any visitor.
+## Step 5: Write their preview
 
-## Step 5 — Write their preview
-
-Read `CONTENT-SPEC.md` and write `app/data/content.json` exactly in that shape.
+Read `CONTENT-SPEC.md` and write `app/data/content.json` in exactly that shape.
 
 - **Everything comes from their file.** Their words where possible. Their voice.
-- **Never invent facts about them**: no years, client counts, awards, licences,
-  reviews, testimonials, prices or results that the file does not contain. Use a
-  visible `[square-bracket placeholder]` instead. The page styles those so they are
-  obviously theirs to fill in.
-- **Tagline and method name**: if they gave none, suggest one in their voice and set
-  `brand.taglineSuggested` / `differentiator.methodNameSuggested` to `true`. The
-  dashboard labels it as a suggestion, so it is never passed off as theirs.
-- **Colors**: theirs if given; otherwise choose to fit their personality and say so in
-  `brand.colorNote`. White text must be readable on `primary`; the checker enforces it.
-- **The lead magnet**: pick the format that fits their client (checklist, short guide,
-  quiz, scorecard). Write the real content, not an outline. Something their ideal client
-  would genuinely want, that leads naturally to booking them.
-- **The audit**: use the opportunity menu below. Take the 2 or 3 their file and the
-  website report most clearly point at, rank them, and put the evidence in their own
-  words or the report's numbers. Only pick a row that honestly fits. If their biggest
-  time drain fits none (say, insurance paperwork), name it plainly in `audit.summary`
-  and do not force it into a row that promises something else. The plan is 3-5 days,
-  not 30: each day is one thing they can do with what is already in this folder, and
-  every plan prompt starts with `In my Summit AI Preview,` too.
-- **Prompts**: 5-8 things they can paste to play with it. Every prompt must start with
-  `In my Summit AI Preview,` so it works in any Claude session later.
-  Mix: change the home page headline, new lead magnet for a different client, grade a
-  competitor, rewrite a page in a different tone, swap colors, write a week of posts
-  from the lead magnet.
+- **Never invent facts** about them. Use visible `[square-bracket blanks]`.
+- **Real estate:** license number and brokerage only if given; blanks otherwise. Fair
+  Housing applies to every word.
+- **Photos:** optional. The profile picks well. If their work suggests something specific
+  (luxury homes, condos, a dental office), pick ids from
+  `app/assets/img/library/library.json` by category for the `images` slots.
+- **The lead magnet:** the format that fits their client. Real content, not an outline,
+  that leads naturally to booking them.
+- **The audit:** use the menu below. 2 or 3 opportunities that their file and the report
+  card clearly point at, with the evidence in their words or the report's numbers. Only
+  rows that honestly fit; if their biggest time drain fits none, say so in the summary.
+  The plan is 3 to 5 days, each one thing they can do with what is in this folder.
+- **Prompts:** 5 to 10, grouped as in the spec, each starting `In my Summit AI Preview,`.
+- **Times:** `meta.startedAt` from Step 0, `meta.generatedAt` = now.
 
-Tell them while you write: *"Writing your website and lead magnet now, in your words.
-A couple of minutes."*
+Tell them while you write: *"Writing your website and your lead magnet now, in your
+words. A couple of minutes."*
 
 ### The opportunity menu
 
-Only these. Each maps to something the full system actually does, so nothing here
-promises what does not exist.
+Only these. Each maps to something the full system actually does.
 
 | Opportunity | Pick it when | What the full system does |
 |---|---|---|
-| **Invisible to Google and AI assistants** | Report card is below the bar on structured data, speed, accessibility, or broken pages | A site built to the launch bar, structured data on every page, health-checked and fixed automatically, articles written to be recommended by AI |
-| **No way to capture leads** | They have no free offer, no opt-in, or leads only come by referral | Lead magnets, landing pages and funnels built from one set of answers |
-| **Leads go cold** | They say follow-up is slow, inconsistent, or forgotten | Follow-up sequences in their voice that run on their own |
-| **Drowning in email and admin** | They name inbox, scheduling, or admin as the time drain | Inbox triage, a daily brief, drafts ready for them to approve |
-| **Inconsistent content** | They post rarely, or do not know what to post | A content engine in their voice: posts, emails, articles from one idea |
-| **Calls without follow-through** | They are on calls or meetings often and recap by hand | Every call turned into to-dos and a follow-up draft in their voice |
+| **Invisible to Google and AI assistants** | The report card shows missing structured data, slow speed, accessibility gaps or broken pages, or they have no site | A site built to the launch bar, structured data on every page, checked and fixed automatically, articles written to be recommended by AI |
+| **No way to capture leads** | No free offer, no opt-in, leads only by referral | Lead magnets, landing pages and funnels built from one set of answers |
+| **Leads go cold** | Follow-up is slow, inconsistent, or forgotten | Follow-up sequences in their voice that run on their own |
+| **Drowning in email and admin** | They name inbox, scheduling or admin as the drain | Inbox triage, a daily brief, drafts ready for them to approve |
+| **Inconsistent content** | They post rarely or do not know what to post | A content engine in their voice: posts, emails, articles from one idea |
+| **Calls without follow-through** | Many calls, recaps by hand or not at all | Every call turned into to-dos and a follow-up draft in their voice |
 
-## Step 6 — Check, launch, open
+## Step 6: Check, launch, open
 
-1. Make sure the grader has finished: its background task has ended and
-   `app/data/grade.json` exists. It stops itself within about five minutes, so this
-   always resolves. If it ended without writing the file, carry on: the dashboard says
-   plainly that no site was checked, and they can ask for it again.
-2. `PY scripts/check_preview.py`. If it says NOT READY, fix every line it lists in
-   `content.json` and run it again. Never launch an unfinished preview.
-3. `PY scripts/serve.py`. It starts the preview in the background (it keeps running
-   after this chat closes) and opens it in **Google Chrome**. It prints the address.
+1. Make sure the grader has finished: its background task ended and `app/data/grade.json`
+   exists. It stops itself within about five minutes. If it ended without the file,
+   carry on: the report card shows the new site on its own.
+2. `PY scripts/check_preview.py`. If NOT READY, fix every line in `content.json` and run
+   it again. It also catches Fair Housing, FTC and em-dash problems: rewrite those
+   sentences properly, never just dodge the trigger word.
+3. `PY scripts/launch.py`. It builds the site, starts the preview in the background (it
+   keeps running after this chat closes), opens it in **Google Chrome**, and measures the
+   new site; the report card fills in by itself about a minute later.
 
 Then, using `openedIn` from what it printed:
 
-> "It's open in [Google Chrome / your web browser]. Have a look around: everything on
-> that page came from the answers you gave once.
+> "Done. It's open in [Google Chrome / your web browser]. Everything on that page came
+> from the answers **you** gave once. Click the big tiles to look around: start with your
+> new website.
 >
 > If you ever lose the tab, come back and say **open my preview**. And if a link I give
 > you ever asks where to open, choose **Open in Google Chrome**."
 
-Then give the address once as a clickable link. That link is the one place the
-address itself is shown; never explain what it is.
+Then give the address once as a clickable link. That link is the one place the address
+itself is shown; never explain it.
 
-If the report card says the speed test did not run and Chrome **is** installed, say one
-line, no detail: *"Google's speed test didn't finish this time. Say **grade my website
-again** in a few minutes and I'll retry it."*
+If the speed test did not run and Chrome **is** installed: *"Google's speed test didn't
+finish this time. Say **grade my website again** in a few minutes and I'll retry it."*
 
-## Step 7 — Then stop
+## Step 7: Then stop
 
-Offer one thing: *"Want to try changing something? Copy any prompt from the **Things
-to try right now** section of the page and paste it here."* Then wait.
+One offer: *"Want to change something? Open **Make it yours** on that page, copy any
+prompt, and paste it here."* Then wait.
 
-When they paste a prompt, edit `app/data/content.json` (or run the grader), run the
-checker, and tell them to refresh the page. Never rebuild what did not change.
+When they paste a prompt: change `app/data/content.json` (or run the grader), run
+`check_preview.py`, then `PY scripts/launch.py --no-open`. Tell them to refresh the Chrome
+tab, and give them one honest line of credit that names what they just did:
+*"Nice. You just rewrote your home page by describing what you wanted. That's exactly how
+the full system works."* Never rebuild what did not change.
 
 ---
 
 ## Coming back later
 
-If they say **open my preview** (or anything like it): run `PY scripts/serve.py`. It
-reuses the running preview or starts it again, and opens Chrome.
+**"open my preview"** (or anything like it): `PY scripts/launch.py`. It rebuilds, reuses
+or restarts the preview, and opens Chrome.
 
-If the folder is gone, say so plainly and offer to set it up again from the start.
+If the folder is gone, say so plainly and offer to set it up again from Step A.
 
 ## What you never do here
 

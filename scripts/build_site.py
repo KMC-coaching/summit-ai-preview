@@ -529,6 +529,10 @@ class Site:
                 ", ".join(plain(a) for a in (b.get("areas") or [b.get("market")]) if a),
                 "".join("- [%s](%s)\n" % (lbl, self.url(f)) for f, lbl in self.pages)), encoding="utf-8")
         (DATA / "images.json").write_text(json.dumps(self.pick.chosen, indent=1), encoding="utf-8")
+        # What the dashboard needs to show every page as a thumbnail.
+        labels = dict(self.pages + [("guide.html", "Your %s, delivered" % plain(get(self.c, "leadMagnet.format", "guide"))), ("privacy.html", "Privacy")])
+        (DATA / "site.json").write_text(json.dumps({"base": self.base, "profile": self.p["id"],
+                                                     "pages": [{"file": f, "label": labels[f]} for f in files]}, indent=1), encoding="utf-8")
         return files
 
 

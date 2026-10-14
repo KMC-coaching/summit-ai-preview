@@ -42,6 +42,12 @@ thinner, not broken.
 - ★ Where you work (city / area, or "online")
 - Phone and email you want on your website (optional)
 - Social media handles (optional)
+- **Real estate only:** license number, brokerage name, and the neighborhoods or towns
+  you work most. *(The license number and brokerage go in the footer of every page, as
+  the law requires. If they are blank, the preview shows a blank to fill in. It never
+  makes one up.)*
+- **Any real numbers you are proud of** (homes sold, years in business, clients served).
+  Optional. *(Shown as animated stats only if given. Never invented.)*
 
 ### Your website
 - ★ Your current website address, or "I don't have one"

@@ -1,173 +1,254 @@
 /*
- * The dashboard: everything their answers produced, on one page.
- * Reads data/content.json (written by Claude), data/grade.json (written by the
- * grader) and config/settings.json (ours: example sites, the next-step video).
+ * The dashboard: a choose-your-own-adventure over everything their answers built.
+ * #/            the landing: big tiles, pick where to start
+ * #/site        every page of the new site as a large live thumbnail
+ * #/magnet      the lead magnet, its post and its follow-up
+ * #/report      their current site against the new one, every check, side by side
+ * #/plan        the AI opportunity audit and the next few days, on one screen
+ * #/brand       brand, ideal client, differentiator
+ * #/play        prompts to paste into Claude, grouped, plus what's next
+ *
+ * Reads data/content.json, data/site.json, data/grade.json (their site or the one
+ * they admire), data/grade-preview.json (the new site, measured after launch),
+ * and config/settings.json (ours).
  */
 (function () {
   "use strict";
-
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const t = (s) => esc(s).replace(/\[([^\]]{2,300})\]/g, '<span class="ph">[$1]</span>');
   const get = (u) => fetch(u, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-  const color = (v, bar) => (v == null ? "#b9b3a6" : v >= (bar || 90) ? "var(--good)" : v >= 60 ? "var(--mid)" : "var(--bad)");
-  const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return u; } };
-
+  const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return u || ""; } };
+  const color = (v) => (v == null ? "rgba(255,255,255,.25)" : v >= 90 ? "var(--good)" : v >= 70 ? "var(--mid)" : "var(--bad)");
+  const D = {};
   let copyId = 0;
   const copies = {};
-  const copyBtn = (text, label) => { const id = "c" + ++copyId; copies[id] = text; return `<button class="btn small line" data-copy="${id}">${esc(label || "Copy")}</button>`; };
+  const copyBtn = (text, label) => { const id = "c" + ++copyId; copies[id] = text; return `<button class="btn sm" data-copy="${id}">${esc(label || "Copy")}</button>`; };
 
-  function brandCard(c) {
-    const b = c.brand || {}, col = b.colors || {}, a = c.avatar || {}, d = c.differentiator || {};
-    return `<div class="card s5"><div class="label"><span class="num">1</span>Your brand, from your answers</div>
-      <h2>${t(c.business.name)}</h2><p class="muted">${t(b.tagline || c.business.oneLiner)}${b.taglineSuggested ? ' <span class="chip">suggested</span>' : ""}</p>
-      <div class="swatches">${["primary", "accent", "ink", "paper"].filter((k) => col[k]).map((k) => `<div class="sw"><span style="background:${esc(col[k])}"></span>${esc(col[k])}</div>`).join("")}</div>
-      <div class="small muted">Voice</div><div class="chips">${(b.voice || []).map((v) => `<span class="chip">${esc(v)}</span>`).join("")}</div>
-      ${b.voiceExample ? `<div class="quote">${t(b.voiceExample)}</div>` : ""}
-      <h3 style="margin-top:16px">Your ideal client: ${t(a.name)}</h3><p class="small">${t(a.snapshot)}</p>
-      <div class="small muted">What keeps them up at night</div><ul class="tight small">${(a.pains || []).map((p) => `<li>${t(p)}</li>`).join("")}</ul>
-      <h3>What makes you different</h3><p class="small"><strong>${t(d.methodName)}.</strong>${d.methodNameSuggested ? ' <span class="chip">name suggested</span>' : ""} ${t(d.statement)}</p>
-    </div>`;
+  const VIEWS = [["site", "Your website"], ["magnet", "Lead magnet"], ["report", "Report card"], ["plan", "Game plan"], ["brand", "Your brand"], ["play", "Make it yours"]];
+
+  function first() {
+    const p = String(D.c.business.person || "").replace(/^(dr|mr|mrs|ms)\.?\s+/i, "").split(/\s+/)[0];
+    return p || "You";
   }
 
-  function gradeCard(g, c, settings) {
-    if (!g) return `<div class="card s7"><div class="label"><span class="num">2</span>Website report card</div>
-      <h2>No website was checked</h2><p class="muted">Your answers did not include a website. Ask Claude: <strong>grade a website for me</strong>, and give it yours or one you admire.</p></div>`;
-    if (!g.reachable) return `<div class="card s7"><div class="label"><span class="num">2</span>Website report card</div>
-      <h2>${esc(host(g.url))} did not answer</h2><p class="muted">We tried to check it and got nothing back. That alone is worth knowing: if we cannot reach it, neither can Google. Ask Claude to <strong>try grading it again</strong>.</p></div>`;
-    const v = g.overall;
-    const bars = g.categories.map((k) => `<div class="bar"><div>${esc(k.name)}</div>
-      <div class="track" title="${esc(k.source)}"><i style="width:${k.score || 0}%;background:${color(k.score, k.bar)}"></i><span class="goal" style="left:${k.bar}%"></span></div>
-      <div class="v" style="color:${color(k.score, k.bar)}">${k.score == null ? "–" : k.score}</div></div>`).join("");
-    const f = g.facts || {};
-    const sev = { high: "var(--bad)", medium: "var(--mid)", low: "#8a8f99" };
-    const findings = (g.findings || []).slice(0, 6).map((x) => `<div class="finding"><span class="dot" style="background:${sev[x.severity]}"></span><div><strong>${esc(x.text)}</strong><div class="small muted">${esc(x.detail)}</div></div></div>`).join("");
-    const lh = g.lighthouse || {};
-    const row = (name, theirs, bar) => `<tr><td>${name}</td><td>${theirs}</td><td><strong>${bar}</strong></td></tr>`;
-    const yn = (b) => (b ? "Yes" : "No");
-    const examples = (settings.exampleSites || []).filter((e) => e.url);
-    return `<div class="card s7"><div class="label"><span class="num">2</span>${esc(g.label || "Website")} report card</div>
-      <div class="grade-top"><div class="ring" style="--v:${v || 0};--c:${color(v, 90)}"><div><span><b>${esc(g.letter)}</b><small>${v == null ? "" : v + " / 100"}</small></span></div></div>
-      <div><h2 style="margin:0">${esc(host(g.url))}</h2><p class="muted small" style="margin:4px 0 0">${f.pagesChecked} pages and ${f.linksChecked} links checked, ${esc(g.measuredAt.replace("T", " at "))}.
-      ${g.lighthouseError ? "<br>Google's speed test did not run this time, so those rows say –. Ask Claude to grade it again." : ""}</p></div></div>
-      <div class="bars">${bars}</div><div class="legend"><i></i> the bar a site has to clear before we let it launch</div>
-      <h3 style="margin-top:22px">What we found</h3>${findings || '<p class="muted">Nothing major. That is rare.</p>'}
-      <h3 style="margin-top:22px">Your site against the bar</h3>
-      <table class="compare"><thead><tr><th></th><th>${esc(g.label || "This site")}</th><th>The bar we build to</th></tr></thead><tbody>
-      ${row("Pages with structured data", `${f.pagesWithSchema} of ${f.pagesOk}`, "Every page")}
-      ${row("Broken pages and links", (f.brokenPages || []).length + (f.brokenLinks || []).length, "0")}
-      ${row("Speed on a phone", lh.performance == null ? "–" : lh.performance, g.bar.performance + "+")}
-      ${row("Accessibility", lh.accessibility == null ? "–" : lh.accessibility, g.bar.accessibility)}
-      ${row("Google's SEO check", lh.seo == null ? "–" : lh.seo, g.bar.seo)}
-      ${row("Business schema", yn(f.businessSchema), "Yes")}
-      ${row("FAQ markup for AI answers", yn(f.faqSchema), "Yes")}
-      ${row("llms.txt for AI assistants", yn(f.llmsTxt), "Yes")}
-      </tbody></table>
-      ${examples.length ? `<h3 style="margin-top:22px">Sites built the way we teach</h3><p class="small muted">Want to see the difference? Ask Claude to grade any of these, then compare.</p>
-        <div class="chips">${examples.map((e) => `<a class="chip" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.name)}</a>`).join("")}</div>` : ""}
-    </div>`;
+  function topbar(active) {
+    return `<div class="topbar"><div class="wrap">
+      <a class="btn ghost sm" href="#/">&larr; Everything you built</a>
+      <nav class="tabs" aria-label="Sections">${VIEWS.map(([k, l]) => `<a href="#/${k}"${k === active ? ' aria-current="page"' : ""}>${l}</a>`).join("")}</nav>
+    </div></div>`;
   }
 
-  function siteCard(c) {
-    return `<div class="card s6"><div class="label"><span class="num">3</span>Your sample website</div>
-      <h2>Five pages, in your words and your colors</h2>
-      <p class="muted small">Built from your answers in a few minutes, with structured data on every page. It lives only on this computer: nobody else can see it, and it is not published anywhere.</p>
-      <div class="frame"><iframe src="site/index.html" title="Your sample website" loading="lazy" tabindex="-1"></iframe><a class="cover-link" href="site/index.html" aria-label="Open your sample website"></a></div>
-      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn dark" href="site/index.html">Open your website</a>${copyBtn("In my Summit AI Preview, change the headline on my sample website's home page to: ", "Copy a prompt to change it")}</div>
-    </div>`;
+  const ring = (g, small) => `<div class="ring" style="--v:${g && g.overall || 0};--c:${color(g && g.overall)}${small ? ";width:64px;height:64px" : ""}"><div${small ? ' style="width:50px;height:50px"' : ""}><span><b${small ? ' style="font-size:1.3rem"' : ""}>${esc(g && g.letter || "–")}</b>${small ? "" : `<small>${g && g.overall != null ? g.overall + " / 100" : ""}</small>`}</span></div></div>`;
+
+  /* ---------------------------------------------------------- landing */
+  function landing() {
+    const c = D.c, m = c.leadMagnet || {}, a = c.audit || {};
+    const col = (c.brand || {}).colors || {};
+    const g = D.g, gp = D.gp;
+    const minutes = D.minutes ? ` in ${D.minutes} minutes` : "";
+    return `<section class="landing"><div class="wrap" style="display:flex;flex-direction:column;flex:1">
+      <p class="kicker">Built from your answers${minutes}</p>
+      <h1>${esc(first())}, you just built all of this.</h1>
+      <p class="lede">You answered the questions once. Your AI took it from there: a website in your words, your first lead magnet, a report card and a plan. Pick where to start.</p>
+      <div class="tiles">
+        <a class="tile tile--site" href="#/site"><div class="thumb"><iframe src="site/index.html" title="" tabindex="-1" aria-hidden="true" loading="eager"></iframe></div><div class="shade"></div>
+          <span class="badge">New · built just now</span>
+          <h2>Your new website</h2><p>${D.s ? D.s.pages.filter((p) => p.file !== "privacy.html").length : 6} pages in your words and your colors, with photos, video and motion. Click to see every page.</p><span class="go">See your website &rarr;</span></a>
+        <a class="tile tile--magnet" href="#/magnet"><div class="mini-cover" aria-hidden="true"><em>FREE</em>${t(m.title)}</div><div class="shade"></div>
+          <span class="badge">Your first lead magnet</span>
+          <h2>${t(m.title)}</h2><p>The free ${esc(m.format || "guide")}, the sign-up page, the post that promotes it, and ${(m.emails || []).length} follow-up emails.</p><span class="go">See your lead magnet &rarr;</span></a>
+        <a class="tile tile--report" href="#/report">
+          <div class="vs">${g && g.reachable ? `<div class="g" style="background:${color(g.overall)};color:#111">${esc(g.letter)}</div><span class="arrow">&rarr;</span>` : ""}<div class="g" style="background:${gp ? color(gp.overall) : "rgba(255,255,255,.1)"};color:#111">${gp ? esc(gp.letter) : "…"}</div></div>
+          <h2>Your website report card</h2><p>${g && g.reachable ? `${esc(host(g.url))} against your new site, on every check our sites must pass.` : "Your new site, measured on every check our sites must pass."}</p><span class="go">See the report &rarr;</span></a>
+        <a class="tile tile--plan" href="#/plan"><h2>Your AI game plan</h2><p>${t(a.summary)}</p><span class="go">${(a.opportunities || []).length} opportunities &rarr;</span></a>
+        <a class="tile tile--brand" href="#/brand"><div class="swatch-row">${["primary", "accent"].filter((k) => col[k]).map((k) => `<span style="background:${esc(col[k])}"></span>`).join("")}</div>
+          <h2>Your brand</h2><p>Your colors, your voice, your ideal client and what makes you different.</p><span class="go">See your brand &rarr;</span></a>
+        <a class="tile tile--play" href="#/play"><div><h2>Now make it yours</h2><p>Change your headline, swap your colors, make another lead magnet. Paste one line into Claude and watch it happen.</p></div><span class="btn">Show me what I can do &rarr;</span></a>
+      </div></div></section>
+      <footer class="foot">Everything here lives only on your computer. Nothing has been published or sent anywhere.</footer>`;
   }
 
-  function magnetCard(c) {
-    const m = c.leadMagnet || {};
-    return `<div class="card s6"><div class="label"><span class="num">4</span>Your first lead magnet</div>
-      <div class="mag"><div class="mcover"><em>FREE</em>${t(m.title)}</div>
-      <div><h2>${t(m.title)}</h2><p class="muted small">${t(m.hook)}</p>
-      <p class="small"><strong>The whole path is built:</strong> a social post sends people to the sign-up page, they get the ${esc(m.format || "guide")}, and ${(m.emails || []).length} follow-up emails go out on their own.</p>
-      <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn dark" href="site/free-guide.html">Try signing up yourself</a></div></div></div>
-      <h3 style="margin-top:18px">The post that sends people to it</h3><div class="quote">${t(m.socialPost)}</div>${copyBtn(m.socialPost || "", "Copy the post")}
-    </div>`;
+  /* ---------------------------------------------------------- site */
+  function siteView() {
+    const pages = (D.s && D.s.pages) || [];
+    const g = D.g;
+    const label = (p) => p.label;
+    return topbar("site") + `<section class="view"><div class="wrap">
+      <p class="kicker">Your new website</p><h1>Built just now, in your words</h1>
+      <p class="lede">Every page below was written from your answers and built a few minutes ago. Click any page to walk through it. Scroll slowly: things move.</p>
+      ${g && g.reachable ? `<div class="notice">This is the new site your AI just built. ${esc(host(g.url))} is a different site: you will find it on your report card.</div>` : ""}
+      <div class="pages">${pages.filter((p) => p.file !== "privacy.html").map((p, i) => `<a class="pagecard${i === 0 ? " pagecard--wide" : ""}" href="site/${esc(p.file)}">
+        <div class="shot"><iframe data-src="site/${esc(p.file)}" title="" tabindex="-1" aria-hidden="true"></iframe></div>
+        <div class="cap"><b>${esc(label(p))}</b><span>Open &rarr;</span></div></a>`).join("")}</div>
+    </div></section>`;
   }
 
-  function auditCard(c) {
-    const a = c.audit || {};
-    return `<div class="card s12"><div class="label"><span class="num">5</span>Your AI opportunity audit</div>
-      <h2>${t(a.summary)}</h2>
-      ${(a.opportunities || []).map((o, i) => `<div class="opp"><div class="rank">${i + 1}</div><div><h3 style="margin:0">${t(o.title)}</h3>
-        <dl><dt>Why it matters</dt><dd>${t(o.why)}</dd><dt>What we saw</dt><dd>${t(o.evidence)}</dd><dt>When it is fixed</dt><dd>${t(o.whatChanges)}</dd><dt>What the full system does</dt><dd>${t(o.bossDoes)}</dd></dl></div></div>`).join("")}
-      <h3 style="margin-top:14px">Your next few days</h3>
-      <div class="days">${(a.plan || []).map((d) => `<div class="day"><div class="d">Day ${esc(d.day)}</div><strong>${t(d.title)}</strong><div class="small">${t(d.do)}</div>${d.prompt ? copyBtn(d.prompt, "Copy the prompt") : ""}</div>`).join("")}</div>
-    </div>`;
+  /* ---------------------------------------------------------- magnet */
+  function magnetView() {
+    const m = D.c.leadMagnet || {};
+    return topbar("magnet") + `<section class="view"><div class="wrap">
+      <p class="kicker">Your first lead magnet</p><h1>${t(m.title)}</h1><p class="lede">${t(m.hook)}</p>
+      <div class="mag">
+        <div><div class="bigcover"><em>FREE ${esc((m.format || "guide").toUpperCase())}</em><span>${t(m.title)}</span><small>${esc(D.c.business.name)}</small></div>
+          <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn" href="site/free-guide.html">Try signing up yourself</a><a class="btn ghost" href="site/guide.html">Read the ${esc(m.format || "guide")}</a></div></div>
+        <div>
+          <div class="panel"><p class="kicker">How it works</p><div class="flow">
+            <div class="m"><span class="d">1</span><span>A post sends people to your free ${esc(m.format || "guide")}.</span></div>
+            <div class="m"><span class="d">2</span><span>They give their name and email on your sign-up page.</span></div>
+            <div class="m"><span class="d">3</span><span>They get the ${esc(m.format || "guide")} right away, in your words.</span></div>
+            ${(m.emails || []).map((e) => `<div class="m"><span class="d">Day ${esc(e.day)}</span><span><b>${t(e.subject)}</b></span></div>`).join("")}
+          </div></div>
+          <div class="panel"><p class="kicker">The post that brings them in</p><div class="quote">${t(m.socialPost)}</div>${copyBtn(m.socialPost || "", "Copy the post")}</div>
+        </div>
+      </div></div></section>`;
   }
 
-  function promptsCard(c) {
-    return `<div class="card s12"><div class="label"><span class="num">6</span>Things to try right now</div>
-      <h2>Paste any of these into Claude</h2><p class="muted small">Go back to the Claude window, paste, and watch this page change. Refresh this page after Claude says it is done.</p>
-      <div class="prompts">${(c.prompts || []).map((p) => `<div class="prompt"><strong>${t(p.label)}</strong><code>${esc(p.prompt)}</code>${copyBtn(p.prompt)}</div>`).join("")}</div></div>`;
+  /* ---------------------------------------------------------- report */
+  function reportView() {
+    const g = D.g, gp = D.gp;
+    const have = g && g.reachable;
+    const side = (rep, who, cls, wait) => `<div class="side ${cls}">${rep ? ring(rep) : `<div class="ring"><div><span><b>…</b></span></div></div>`}
+      <div><p class="who">${esc(who)}</p><h2>${rep ? esc(rep.local ? "Your new site" : host(rep.url)) : esc(wait)}</h2>
+      <p class="muted" style="margin-top:6px">${rep ? `${rep.totals.pass} passed · ${rep.totals.fail} to fix${rep.totals.todo ? " · " + rep.totals.todo + " for you to fill in" : ""} · ${rep.facts.pagesChecked} pages read` : "Measuring now. This takes about a minute."}</p></div></div>`;
+    const cats = (gp || g) ? `<div class="cats"><div class="cat"><span class="cat-head">What we checked</span><span class="cat-head">${esc(have ? host(g.url) : "")}</span><span class="cat-head">Your new site</span></div>
+      ${((gp || g).categories || []).map((cat) => {
+        const o = have ? (g.categories.find((x) => x.name === cat.name) || {}) : {};
+        const n = gp ? (gp.categories.find((x) => x.name === cat.name) || {}) : {};
+        const bar = (v) => v == null ? `<div class="bar"></div><div class="num muted">${have || gp ? "not checked" : ""}</div>` : `<div class="bar"><i style="width:${v}%;background:${color(v)}"></i></div><div class="num" style="color:${color(v)}">${v}</div>`;
+        return `<div class="cat"><span>${esc(cat.name)}</span><div>${have ? bar(o.score) : ""}</div><div>${gp ? bar(n.score) : '<div class="num muted">measuring…</div>'}</div></div>`;
+      }).join("")}</div>` : "";
+
+    const groups = [];
+    for (const rep of [gp, g]) for (const ch of ((rep && rep.checks) || [])) if (!groups.includes(ch.group)) groups.push(ch.group);
+    const find = (rep, ch) => rep && (rep.checks || []).find((x) => x.group === ch.group && x.name === ch.name);
+    const label = { pass: "Pass", fail: "Fix", warn: "Warning", todo: "Fill in", local: "After launch", notMeasured: "Not measured" };
+    const cell = (x) => x ? `<span class="chip ${x.status}">${label[x.status] || x.status}</span>${x.detail ? `<small>${esc(x.detail)}</small>` : ""}${x.pages && x.pages.length && x.status !== "pass" ? `<small>Pages: ${x.pages.slice(0, 4).map(esc).join(", ")}</small>` : ""}` : '<span class="chip none">–</span>';
+    const groupHtml = groups.map((gname) => {
+      const names = [];
+      for (const rep of [gp, g]) for (const ch of ((rep && rep.checks) || [])) if (ch.group === gname && !names.some((n) => n.name === ch.name)) names.push(ch);
+      const counts = (rep) => rep ? ["pass", "fail", "todo", "warn"].map((s) => { const k = (rep.checks || []).filter((x) => x.group === gname && x.status === s).length; return k ? `<span class="chip ${s}">${k} ${label[s]}</span>` : ""; }).join("") : "";
+      return `<details class="group"${gname.startsWith("Not measured") ? "" : ""}><summary><span>${esc(gname)}</span><span class="counts">${counts(gp)}</span></summary>
+        <div class="check" style="font:700 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)"><span>Check</span><span>${esc(have ? host(g.url) : "")}</span><span>Your new site</span></div>
+        ${names.map((ch) => `<div class="check"><div class="name"><b>${esc(ch.name)}</b>${ch.why ? `<small>${esc(ch.why)}</small>` : ""}</div><div class="cell">${have ? cell(find(g, ch)) : ""}</div><div class="cell">${cell(find(gp, ch))}</div></div>`).join("")}
+      </details>`;
+    }).join("");
+
+    const ex = ((D.settings || {}).exampleSites || []).filter((e) => e.url);
+    return topbar("report") + `<section class="view"><div class="wrap">
+      <p class="kicker">Your website report card</p><h1>${have ? `${esc(host(g.url))}, against what we just built` : "Your new site, measured"}</h1>
+      <p class="lede">The same checks a site has to pass before we let it launch: Google's own Lighthouse test, how AI assistants read it, broken pages, the words on the page${D.c.profile === "real-estate" ? ", Fair Housing and licensing rules" : ""}, and privacy. Nothing here is estimated: every number was measured today.</p>
+      ${have ? `<div class="notice">${esc(g.label || "This site")}: ${esc(host(g.url))}. ${g.label && /admire|competitor/i.test(g.label) ? "You do not have a site of your own yet, so we measured this one instead." : ""}</div>` : ""}
+      <div class="duel">${have ? side(g, g.label || "Your current website", "", "") : ""}${side(gp, "Your new site, built just now", "side--new", "Your new site")}</div>
+      ${cats}
+      <h2 style="margin-top:34px;font-size:1.6rem">Every check, side by side</h2>
+      <p class="muted" style="margin-top:6px">Open any section. "Fill in" means a blank only you can complete, like your license number. "After launch" means it can only pass on a published site.</p>
+      ${groupHtml}
+      ${ex.length ? `<div class="panel" style="margin-top:22px"><p class="kicker">Sites built the way we teach</p><p class="muted" style="margin:6px 0 10px">Ask Claude to grade any of these and compare.</p><div class="chips">${ex.map((e) => `<a class="btn ghost sm" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.name)}</a>`).join("")}</div></div>` : ""}
+    </div></section>`;
   }
 
-  function nextCard(settings) {
-    const n = settings.next || {};
-    let video = `<div class="video"><div>${esc(n.videoPlaceholder || "Video coming soon")}</div></div>`;
-    if (n.videoUrl) {
-      video = /\.(mp4|webm|mov)(\?|$)/i.test(n.videoUrl)
-        ? `<div class="video"><video src="${esc(n.videoUrl)}" controls playsinline></video></div>`
-        : `<div class="video"><iframe src="${esc(n.videoUrl)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="What's next"></iframe></div>`;
-    }
-    return `<div class="card s12 next"><div class="grid" style="margin:0;padding:0;grid-template-columns:repeat(12,1fr);gap:24px;align-items:center">
-      <div class="s5" style="grid-column:span 5"><div class="label" style="color:var(--gold)">What's next</div><h2>${esc(n.headline || "This is a glimpse.")}</h2>
-      <p>${esc(n.text || "")}</p>${n.ctaUrl ? `<a class="btn" href="${esc(n.ctaUrl)}" target="_blank" rel="noopener">${esc(n.ctaText || "See how")}</a>` : ""}</div>
-      <div class="s7" style="grid-column:span 7">${video}</div></div></div>`;
+  /* ---------------------------------------------------------- plan */
+  function planView() {
+    const a = D.c.audit || {};
+    return topbar("plan") + `<section class="view" style="padding:18px 0 24px"><div class="wrap">
+      <p class="kicker">Your AI opportunity audit</p><h1 style="font-size:clamp(1.5rem,1rem+1.4vw,2.15rem)">${t(a.summary)}</h1>
+      <div class="plan">${(a.opportunities || []).map((o, i) => `<div class="opp"><span class="n">${i + 1}</span><h3>${t(o.title)}</h3>
+        <dl><div><dt>Why it matters</dt><dd>${t(o.why)}</dd></div><div><dt>What we saw</dt><dd>${t(o.evidence)}</dd></div><div><dt>What the full system does</dt><dd>${t(o.bossDoes)}</dd></div></dl></div>`).join("")}</div>
+      <div class="days">${(a.plan || []).map((d) => `<div class="day"><span class="d">Day ${esc(d.day)}</span><b>${t(d.title)}</b><span class="muted" style="font-size:13.5px">${t(d.do)}</span>${d.prompt ? copyBtn(d.prompt, "Copy the prompt") : ""}</div>`).join("")}</div>
+    </div></section>`;
   }
 
-  function render(c, g, settings) {
-    const b = c.brand || {};
-    const col = b.colors || {};
-    if (col.primary) document.documentElement.style.setProperty("--brand", col.primary);
-    if (col.accent) document.documentElement.style.setProperty("--brand-accent", col.accent);
-    document.title = (c.business.person || c.business.name) + " · AI Preview";
-    const first = String(c.business.person || "").replace(/^(dr|mr|mrs|ms)\.?\s+/i, "").split(/\s+/)[0] || "Here";
-    document.getElementById("app").innerHTML = `
-      <div class="hero"><div class="wrap"><div class="kicker">Built from your answers</div>
-        <h1>${esc(first)}, here is what your AI built for ${esc(c.business.name)}.</h1>
-        <p>You answered the questions once. Everything below came from those answers, with nothing else typed in. Click around: it is all yours to play with.</p>
-        <div class="row"><a class="btn" href="site/index.html">Open your website</a><a class="btn ghost" href="site/free-guide.html">See your lead magnet</a></div>
-      </div></div>
-      <div class="wrap grid">${brandCard(c)}${gradeCard(g, c, settings)}${siteCard(c)}${magnetCard(c)}${auditCard(c)}${promptsCard(c)}${nextCard(settings)}</div>
-      <footer>Everything on this page lives only on your computer. Nothing here is published or sent anywhere.</footer>`;
-
-    document.body.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-copy]");
-      if (!btn) return;
-      const text = copies[btn.dataset.copy] || "";
-      const done = () => toast("Copied. Paste it into Claude.");
-      if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, () => fallback(text, done));
-      else fallback(text, done);
-    });
+  /* ---------------------------------------------------------- brand */
+  function brandView() {
+    const b = D.c.brand || {}, col = b.colors || {}, av = D.c.avatar || {}, d = D.c.differentiator || {};
+    return topbar("brand") + `<section class="view"><div class="wrap">
+      <p class="kicker">Your brand</p><h1>${esc(D.c.business.name)}</h1><p class="lede">${t(b.tagline)}${b.taglineSuggested ? ' <span class="chips" style="display:inline-flex;margin:0"><span>suggested</span></span>' : ""}</p>
+      <div class="brandgrid">
+        <div class="panel"><p class="kicker">Colors and voice</p>
+          <div class="sw">${["primary", "accent"].filter((k) => col[k]).map((k) => `<div><span style="background:${esc(col[k])}"></span>${esc(col[k])}</div>`).join("")}</div>
+          <p class="muted">${t(b.colorNote)}</p>
+          <div class="chips">${(b.voice || []).map((v) => `<span>${esc(v)}</span>`).join("")}</div>
+          ${b.voiceExample ? `<div class="quote">${t(b.voiceExample)}</div>` : ""}</div>
+        <div class="panel"><p class="kicker">Your ideal client</p><h2 style="font-size:1.5rem;margin:8px 0">${t(av.name)}</h2><p class="muted">${t(av.snapshot)}</p>
+          <p class="kicker" style="margin-top:14px">What keeps them up at night</p><ul class="list">${(av.pains || []).map((x) => `<li>${t(x)}</li>`).join("")}</ul>
+          <p class="kicker" style="margin-top:10px">What they want</p><ul class="list">${(av.wants || []).map((x) => `<li>${t(x)}</li>`).join("")}</ul></div>
+        <div class="panel" style="grid-column:1/-1"><p class="kicker">What makes you different</p><h2 style="font-size:1.5rem;margin:8px 0">${t(d.methodName)}${d.methodNameSuggested ? ' <span class="chips" style="display:inline-flex;margin:0;vertical-align:middle"><span>name suggested</span></span>' : ""}</h2>
+          <p class="muted">${t(d.statement)}</p></div>
+      </div></div></section>`;
   }
 
-  function fallback(text, done) {
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand("copy"); done(); } catch (e) { /* nothing else to try */ }
-    ta.remove();
+  /* ---------------------------------------------------------- play */
+  function playView() {
+    const groups = {};
+    for (const p of (D.c.prompts || [])) (groups[p.group || "Try these"] = groups[p.group || "Try these"] || []).push(p);
+    const n = (D.settings || {}).next || {};
+    let video = `<div class="video">${esc(n.videoPlaceholder || "A short video goes here.")}</div>`;
+    if (n.videoUrl) video = /\.(mp4|webm|mov)(\?|$)/i.test(n.videoUrl) ? `<div class="video"><video src="${esc(n.videoUrl)}" controls playsinline></video></div>` : `<div class="video"><iframe src="${esc(n.videoUrl)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="What's next"></iframe></div>`;
+    return topbar("play") + `<section class="view"><div class="wrap">
+      <p class="kicker">Make it yours</p><h1>You're doing great. Now change anything.</h1>
+      <p class="lede">This is exactly how the full system works: you say what you want, it builds it. Pick anything below.</p>
+      <div class="how"><div><b>1. Copy</b><span class="muted">Click Copy on anything below.</span></div><div><b>2. Paste into Claude</b><span class="muted">Go back to the Claude window, paste, press Enter.</span></div><div><b>3. Refresh this page</b><span class="muted">When Claude says it's done, refresh and see your change.</span></div></div>
+      <div class="groups">${Object.entries(groups).map(([gname, ps]) => `<div class="pgroup"><h2>${esc(gname)}</h2>${ps.map((p) => `<div class="prompt"><b>${t(p.label)}</b>${copyBtn(p.prompt)}<code>${esc(p.prompt)}</code></div>`).join("")}</div>`).join("")}</div>
+      <div class="next"><div><p class="kicker">What's next</p><h2 style="font-size:1.9rem;margin:8px 0">${esc(n.headline || "This is a glimpse.")}</h2><p class="muted">${esc(n.text || "")}</p>
+        ${n.ctaUrl ? `<p style="margin-top:16px"><a class="btn" href="${esc(n.ctaUrl)}" target="_blank" rel="noopener">${esc(n.ctaText || "See how")}</a></p>` : ""}</div>${video}</div>
+    </div></section>`;
+  }
+
+  /* ---------------------------------------------------------- router */
+  const VIEW_FN = { site: siteView, magnet: magnetView, report: reportView, plan: planView, brand: brandView, play: playView };
+  function render() {
+    const key = (location.hash.match(/^#\/(\w+)/) || [])[1];
+    const app = document.getElementById("app");
+    app.innerHTML = (VIEW_FN[key] || landing)();
+    document.title = (key ? VIEWS.find((v) => v[0] === key)[1] + " · " : "") + (D.c.business.name || "Your AI Preview");
+    window.scrollTo(0, 0);
+    // Big page thumbnails: size the 1440px page to the card, load them one by one.
+    const frames = [...app.querySelectorAll(".pagecard iframe[data-src]")];
+    const fit = () => app.querySelectorAll(".pagecard .shot").forEach((s) => { const f = s.querySelector("iframe"); if (f) f.style.transform = `scale(${s.clientWidth / 1440})`; });
+    fit();
+    window.onresize = fit;
+    let i = 0;
+    const next = () => { if (i >= frames.length) return; const f = frames[i++]; f.addEventListener("load", next, { once: true }); f.src = f.dataset.src; setTimeout(next, 2500); };
+    next();
+    const h = app.querySelector("h1");
+    if (h && key) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
   }
 
   function toast(msg) {
     const d = document.createElement("div");
-    d.className = "toast";
-    d.setAttribute("role", "status");
-    d.textContent = msg;
-    document.body.appendChild(d);
-    setTimeout(() => d.remove(), 2600);
+    d.className = "toast"; d.setAttribute("role", "status"); d.textContent = msg;
+    document.body.appendChild(d); setTimeout(() => d.remove(), 2600);
+  }
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-copy]");
+    if (!b) return;
+    const text = copies[b.dataset.copy] || "";
+    const done = () => toast("Copied. Now paste it into Claude.");
+    const fallback = () => { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); done(); } catch (err) { /* nothing more to try */ } ta.remove(); };
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+  });
+  window.addEventListener("hashchange", render);
+
+  // The new site is measured after it opens; pick the result up when it lands.
+  function waitForPreviewGrade() {
+    if (D.gp) return;
+    const tick = setInterval(async () => {
+      const gp = await get("data/grade-preview.json");
+      if (gp && gp.reachable) { D.gp = gp; clearInterval(tick); const k = (location.hash.match(/^#\/(\w+)/) || [])[1]; if (!k || k === "report") render(); }
+    }, 5000);
+    setTimeout(() => clearInterval(tick), 10 * 60 * 1000);
   }
 
-  Promise.all([get("data/content.json"), get("data/grade.json"), get("config/settings.json")]).then(([c, g, s]) => {
-    if (!c) {
-      document.getElementById("app").innerHTML = '<div class="loading"><h1>Not built yet</h1><p>Go back to Claude and say: <strong>build my preview</strong>.</p></div>';
-      return;
-    }
+  Promise.all([get("data/content.json"), get("data/site.json"), get("data/grade.json"), get("data/grade-preview.json"), get("config/settings.json")]).then(([c, s, g, gp, settings]) => {
+    if (!c) { document.getElementById("app").innerHTML = '<div class="loading"><div><h1>Not built yet</h1><p class="muted" style="margin-top:10px">Go back to Claude and say: <b>build my preview</b>.</p></div></div>'; return; }
     c.business = c.business || {};
-    render(c, g, s || {});
+    Object.assign(D, { c, s, g, gp: gp && gp.reachable ? gp : null, settings: settings || {} });
+    const st = Date.parse((c.meta || {}).startedAt || ""), en = Date.parse((c.meta || {}).generatedAt || "");
+    if (st && en && en > st) D.minutes = Math.max(1, Math.round((en - st) / 60000));
+    const col = (c.brand || {}).colors || {};
+    if (col.primary) document.documentElement.style.setProperty("--brand", col.primary);
+    if (col.accent) document.documentElement.style.setProperty("--brand-accent", col.accent);
+    render();
+    waitForPreviewGrade();
   });
 })();

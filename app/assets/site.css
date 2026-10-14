@@ -277,3 +277,6 @@ ul.ticks li::before { content: ""; position: absolute; left: 0; top: .5em; width
   .menu.is-open { animation: none; }
   .hero__slide.is-active { transition: none; }
 }
+
+.in-frame .previewbar { display: none; }
+.in-frame .reveal { opacity: 1 !important; transform: none !important; }
