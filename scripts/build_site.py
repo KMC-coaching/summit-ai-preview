@@ -148,14 +148,17 @@ def palette(brand_colors):
     accent = brand_colors.get("accent") or "#c9a24b"
     bg, alt, dark = "#fbfaf7", "#f5f1ea", "#121418"
     on_accent = "#111111" if contrast("#111111", accent) >= contrast("#ffffff", accent) else "#ffffff"
+    # A light brand color (bright yellow, mint) keeps its color and gets dark text on
+    # it, instead of being darkened to olive so white text fits. They asked for yellow.
+    light_brand = contrast("#ffffff", brand) < 4.5 and contrast("#111111", brand) >= 4.5
     return {
-        "--brand": lift_until(brand, "#ffffff", 4.5),          # white text on brand buttons
+        "--brand": brand if light_brand else lift_until(brand, "#ffffff", 4.5),
         "--accent": accent,                                    # decoration only (underlines, rules)
         "--on-accent": on_accent,                              # text on an accent-filled button
         "--brand-ink": lift_until(brand, alt, 4.5),
         "--accent-ink": lift_until(accent, alt, 4.6),          # eyebrows on light and alt bands
         "--accent-on-dark": lift_until(accent, dark, 4.6, toward="#ffffff"),  # eyebrows on dark bands and photos
-        "--on-brand": "#ffffff",
+        "--on-brand": "#111111" if light_brand else "#ffffff",
     }
 
 
@@ -607,6 +610,7 @@ class Site:
             "magnets": [{"title": plain(m.get("title")), "format": plain(m.get("format") or "guide"), "free": fr, "guide": gd}
                         for m, fr, gd in self.magnets()],
             "palette": self.pal, "colorNotes": color_notes(brand_colors, self.pal),
+            "images": self.pick.chosen,
         }, indent=1), encoding="utf-8")
         return files
 

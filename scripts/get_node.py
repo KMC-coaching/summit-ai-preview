@@ -44,7 +44,10 @@ def works(node: str) -> bool:
 
 def existing():
     # Same order as grade_site.find_node(): our private copy first, then whatever is on PATH.
-    for cand in [str(HOME_DIR / "bin" / "node"), str(HOME_DIR / "node.exe"), shutil.which("node")]:
+    # SUMMIT_FRESH_NODE=1 (the CI smoke test) ignores a system Node, so the download a
+    # student's bare machine depends on is exercised on every operating system.
+    system = None if os.environ.get("SUMMIT_FRESH_NODE") else shutil.which("node")
+    for cand in [str(HOME_DIR / "bin" / "node"), str(HOME_DIR / "node.exe"), system]:
         if cand and Path(cand).exists() and works(cand):
             return cand
     return None

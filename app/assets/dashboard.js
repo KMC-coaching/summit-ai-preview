@@ -40,6 +40,34 @@
 
   const ring = (g, small) => `<div class="ring" style="--v:${g && g.overall || 0};--c:${color(g && g.overall)}${small ? ";width:64px;height:64px" : ""}"><div${small ? ' style="width:50px;height:50px"' : ""}><span><b${small ? ' style="font-size:1.3rem"' : ""}>${esc(g && g.letter || "–")}</b>${small ? "" : `<small>${g && g.overall != null ? g.overall + " / 100" : ""}</small>`}</span></div></div>`;
 
+  /* ---------------------------------------------------------- reveal */
+  function reveal() {
+    let seen = false;
+    try { seen = localStorage.getItem("summit.revealed") === "1"; localStorage.setItem("summit.revealed", "1"); } catch (e) { /* private window */ }
+    if (seen || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const c = D.c, m = c.leadMagnet || {};
+    const pages = D.s ? D.s.pages.filter((p) => p.file !== "privacy.html").length : 0;
+    const checks = (D.g && D.g.checks ? D.g.checks.length : 0) + (D.gp && D.gp.checks ? D.gp.checks.length : 0);
+    const photos = [...new Set(Object.values((D.s && D.s.images) || {}).flat())].length;
+    const steps = [
+      "Reading your answers",
+      `Writing ${pages} pages in your voice`,
+      photos ? `Choosing ${photos} photos` : "Choosing your photos",
+      `Building "${m.title || "your free guide"}"`,
+      `Writing ${(m.emails || []).length} follow-up emails`,
+      checks ? `Running ${checks} checks on your websites` : "Checking your website",
+      `${first()}, it's ready.`,
+    ];
+    const el = document.createElement("div");
+    el.className = "reveal";
+    el.innerHTML = `<div><p class="kicker">Built from your answers</p><ol>${steps.map((x) => `<li>${esc(x)}</li>`).join("")}</ol><button class="btn ghost sm" type="button">Skip</button></div>`;
+    document.body.appendChild(el);
+    const done = () => { el.classList.add("out"); setTimeout(() => el.remove(), 700); };
+    el.querySelector("button").addEventListener("click", done);
+    [...el.querySelectorAll("li")].forEach((li, i) => setTimeout(() => li.classList.add("on"), 350 + i * 650));
+    setTimeout(done, 350 + steps.length * 650 + 1100);
+  }
+
   /* ---------------------------------------------------------- landing */
   function landing() {
     const c = D.c, m = c.leadMagnet || {}, a = c.audit || {};
@@ -114,7 +142,8 @@
   function reportView() {
     const g = D.g, gp = D.gp;
     const have = g && g.reachable;
-    const side = (rep, who, cls, wait) => `<div class="side ${cls}">${rep ? ring(rep) : `<div class="ring"><div><span><b>…</b></span></div></div>`}
+    const shot = (rep) => rep && rep.screenshot ? `<img class="phone" src="${rep.screenshot}" alt="What ${esc(rep.local ? "your new site" : host(rep.url))} looks like on a phone">` : "";
+    const side = (rep, who, cls, wait) => `<div class="side ${cls}">${shot(rep)}${rep ? ring(rep) : `<div class="ring"><div><span><b>…</b></span></div></div>`}
       <div><p class="who">${esc(who)}</p><h2>${rep ? esc(rep.local ? "Your new site" : host(rep.url)) : esc(wait)}</h2>
       <p class="muted" style="margin-top:6px">${rep ? `${rep.totals.pass} passed · ${rep.totals.fail} to fix${rep.totals.todo ? " · " + rep.totals.todo + " for you to fill in" : ""} · ${rep.facts.pagesChecked} pages read` : "Measuring now. This takes about a minute."}</p></div></div>`;
     const cats = (gp || g) ? `<div class="cats"><div class="cat"><span class="cat-head">What we checked</span><span class="cat-head">${esc(have ? host(g.url) : "")}</span><span class="cat-head">Your new site</span></div>
@@ -260,7 +289,9 @@
     const brand = pal["--brand"] || col.primary, acc = pal["--accent"] || col.accent;
     if (brand) document.documentElement.style.setProperty("--brand", brand);
     if (acc) document.documentElement.style.setProperty("--brand-accent", acc);
+    if (pal["--on-brand"]) document.documentElement.style.setProperty("--brand-on", pal["--on-brand"]);
     render();
+    if (!location.hash || location.hash === "#/") reveal();
     waitForPreviewGrade();
   });
 })();

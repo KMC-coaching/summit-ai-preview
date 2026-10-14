@@ -251,6 +251,9 @@ Then, using `openedIn` from what it printed:
 > If you ever lose the tab, come back and say **open my preview**. And if a link I give
 > you ever asks where to open, choose **Open in Google Chrome**."
 
+If `app/data/site.json` has `colorNotes`, add one plain line about it (for example:
+*"Your accent color was very light, so it's only used for small touches."*).
+
 Then give the address once as a clickable link. That link is the one place the address
 itself is shown; never explain it.
 

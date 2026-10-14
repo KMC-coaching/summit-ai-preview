@@ -1,0 +1,453 @@
+{
+  "profile": "real-estate",
+  "meta": {
+    "brainFile": "summit-ai-brain-realtor.md",
+    "generatedAt": "2026-10-14T09:10",
+    "brainFilePath": ""
+  },
+  "business": {
+    "name": "Avery Home Group",
+    "person": "Jordan Avery",
+    "profession": "Real estate agent",
+    "oneLiner": "Selling homes in East Sacramento, Land Park and Elk Grove with a written plan for the first ten days.",
+    "market": "Sacramento, California",
+    "areas": [
+      "East Sacramento",
+      "Land Park",
+      "Elk Grove"
+    ],
+    "phone": "(916) 555-0187",
+    "email": "jordan@averyhomegroup.example",
+    "website": "",
+    "gradedUrl": "https://reidprice.com",
+    "gradedLabel": "A competitor's website",
+    "license": "",
+    "brokerage": "",
+    "stats": []
+  },
+  "brand": {
+    "colors": {
+      "primary": "#1f4a3a",
+      "accent": "#b08d57"
+    },
+    "colorNote": "Deep green and brass, from your answers",
+    "tagline": "A plan before the sign goes up.",
+    "taglineSuggested": true,
+    "voice": [
+      "calm",
+      "prepared",
+      "straight-talking",
+      "warm"
+    ],
+    "voiceExample": "Before we put a sign in the yard, I want you to know exactly what's going to happen in the first ten days.",
+    "wordsTheyUse": [
+      "plan",
+      "prepared",
+      "first ten days",
+      "no surprises"
+    ],
+    "wordsTheyAvoid": [
+      "dream home",
+      "hustle",
+      "unicorn"
+    ]
+  },
+  "avatar": {
+    "name": "The Long-Time Owner",
+    "snapshot": "Homeowners who have been in the same East Sac or Land Park house for fifteen years or more and are starting to think about what comes next.",
+    "pains": [
+      "Not knowing what to fix before listing, and what to leave alone",
+      "Strangers walking through a home that holds a lot of years",
+      "Pricing it wrong and watching it sit"
+    ],
+    "wants": [
+      "A clear plan they can read before they commit",
+      "A realistic price with the numbers on the table",
+      "As little disruption to daily life as possible"
+    ],
+    "whereTheyAre": [
+      "Neighborhood Facebook groups",
+      "Nextdoor",
+      "The Sunday farmers market"
+    ]
+  },
+  "differentiator": {
+    "methodName": "The First Ten Days",
+    "methodNameSuggested": true,
+    "statement": "You see the first ten days of your listing in writing before you sign anything.",
+    "pillars": [
+      {
+        "name": "The walkthrough",
+        "text": "We walk the house together before anything else happens, room by room, with a notepad and no sales pitch."
+      },
+      {
+        "name": "Fix or skip",
+        "text": "A written list of what is worth doing before you list and what is not. No repairs that will not pay you back."
+      },
+      {
+        "name": "The price, with the numbers",
+        "text": "Recent sales on the table, side by side with your home, so the price is a decision you understand."
+      },
+      {
+        "name": "The ten-day launch",
+        "text": "Photos, the listing, the first weekend and the first offers, scheduled day by day and sent to you in writing."
+      }
+    ]
+  },
+  "site": {
+    "home": {
+      "heroEyebrow": "Real estate \u00b7 East Sacramento, Land Park and Elk Grove",
+      "heroLead": "Sell your Sacramento home",
+      "heroAccent": "with a plan",
+      "heroSub": "You see the first ten days of your listing in writing before you sign a thing. No surprises, no guessing.",
+      "primaryCta": "Plan my sale",
+      "statementEyebrow": "Why sellers call Jordan",
+      "statement": "Most sellers are not worried about the sign. They are worried about everything that happens after it goes up. So we write that part down first.",
+      "differenceEyebrow": "The difference",
+      "differenceHeadline": "A written plan before the sign goes up",
+      "differenceBody": "Listing a home you have lived in for years is a lot to hand over to someone. You should know what happens on day one, day three and day ten before you agree to any of it.\n\nThat is the whole idea. A walkthrough, an honest fix-or-skip list, a price you understand, and a launch scheduled to the day.",
+      "pillarsHeadline": "Four steps, in order, every time",
+      "tickerEyebrow": "Where we help",
+      "tickerHeadline": "Selling, downsizing and first homes across Sacramento",
+      "tickerCaptions": [
+        "Selling a long-time home",
+        "Downsizing",
+        "Getting it ready",
+        "First-time buyers",
+        "East Sac and Land Park",
+        "Elk Grove"
+      ],
+      "splitEyebrow": "How we work",
+      "splitHeadline": "A weekly update you can read in two minutes",
+      "splitBody": "Every week your home is on the market, you get a short written update: who came through, what they said, and what we are doing next.\n\nNo chasing me for news. It comes to you.",
+      "splitLink": "See the selling plan",
+      "closingHeadline": "Thinking about selling in the next year?",
+      "closingText": "Tell me a little about your home. I will send back what I would look at first, with no pressure to list."
+    },
+    "about": {
+      "headline": "Calm, prepared, and on your side of the table",
+      "sub": "Jordan Avery helps long-time owners in East Sacramento, Land Park and Elk Grove sell with a plan.",
+      "story": [
+        "I work mostly with people who have been in their homes a long time. Selling a house like that is not a transaction. It is a lot of years, and it deserves a plan.",
+        "So before we sign anything, I write out the first ten days of the listing. You know what happens, when it happens, and why.",
+        "[Add a sentence about how you got into real estate and how long you have been doing it]"
+      ],
+      "values": [
+        {
+          "title": "No surprises",
+          "text": "If something is going to happen, you hear about it first, in writing."
+        },
+        {
+          "title": "Only repairs that pay",
+          "text": "A fix-or-skip list, not a wish list. Your money stays in your pocket unless it comes back to you."
+        },
+        {
+          "title": "Straight answers",
+          "text": "If the price is too high, I will say so, and show you why."
+        }
+      ]
+    },
+    "sell": {
+      "eyebrow": "Selling",
+      "headline": "Selling your home, step by step",
+      "sub": "From the first walkthrough to closing day, written down before it happens.",
+      "cta": "Plan my sale",
+      "intro": "You should never wonder what happens next. Here is the plan every seller gets, in order.",
+      "steps": [
+        {
+          "title": "The walkthrough",
+          "text": "We walk every room together. I take notes; you tell me what the house has been through."
+        },
+        {
+          "title": "Fix or skip",
+          "text": "Within two days you get a written list: what is worth doing, roughly what it costs, and what to leave alone."
+        },
+        {
+          "title": "The price conversation",
+          "text": "Recent nearby sales next to your home, on one page. We decide the price together, with the numbers in front of us."
+        },
+        {
+          "title": "The first ten days",
+          "text": "Photos, the listing, the first weekend and how we handle offers, scheduled day by day and sent to you before launch."
+        }
+      ],
+      "closingHeadline": "Want to see your first ten days?",
+      "closing": "Tell me about your home and I will sketch the plan. No commitment."
+    },
+    "buy": {
+      "eyebrow": "Buying",
+      "headline": "Buying your first home in Sacramento",
+      "sub": "For first-time buyers in Elk Grove and South Sacramento who want the process explained, not rushed.",
+      "cta": "Start my search",
+      "intro": "Buying your first home has a lot of steps. You will know each one before you reach it.",
+      "steps": [
+        {
+          "title": "The first conversation",
+          "text": "What you need, what you can comfortably afford, and the questions to ask a lender before you start looking."
+        },
+        {
+          "title": "The search",
+          "text": "Homes that fit the list, toured with someone who will point out what the photos do not show."
+        },
+        {
+          "title": "The offer",
+          "text": "What to offer and why, explained in plain words, with every term you are agreeing to."
+        },
+        {
+          "title": "Inspection to keys",
+          "text": "Inspections, appraisal and closing, with a written timeline so nothing sneaks up on you."
+        }
+      ],
+      "closingHeadline": "Thinking about buying your first home?",
+      "closing": "Send me a note and I will walk you through what the first month looks like."
+    },
+    "faq": [
+      {
+        "q": "What should I fix before I sell?",
+        "a": "Often less than you think. After the walkthrough you get a written fix-or-skip list, so you only spend money on what will come back to you."
+      },
+      {
+        "q": "How do you decide the listing price?",
+        "a": "We put recent nearby sales next to your home on one page and decide together. You will understand the number before it goes on the listing."
+      },
+      {
+        "q": "How much disruption will showings be?",
+        "a": "The showing schedule is part of the ten-day plan, agreed before launch, so you know when people are coming through."
+      },
+      {
+        "q": "How will I know what is happening once it is listed?",
+        "a": "You get a short written update every week: who came through, what they said, and the next step."
+      },
+      {
+        "q": "Do you work with buyers too?",
+        "a": "Yes, especially first-time buyers in Elk Grove and South Sacramento who want each step explained."
+      }
+    ],
+    "contact": {
+      "headline": "Let's talk about your home",
+      "sub": "A quick note is enough to start.",
+      "text": "Tell me where your home is and what you are thinking. I will reply with what I would look at first."
+    }
+  },
+  "leadMagnet": {
+    "navLabel": "Free checklist",
+    "title": "The Before-You-List Checklist",
+    "subtitle": "What to fix, what to skip, and what to do in the 30 days before your Sacramento home goes on the market.",
+    "format": "checklist",
+    "hook": "The money most sellers waste is spent before the listing goes live. This checklist shows where.",
+    "bullets": [
+      "The repairs that usually pay you back, and the ones that rarely do",
+      "A 30-day countdown to listing day",
+      "The questions to ask any agent before you sign"
+    ],
+    "formHeadline": "Where should I send your checklist?",
+    "buttonText": "Send me the checklist",
+    "thankYou": "Your checklist is ready below. A copy is on its way to your inbox.",
+    "sections": [
+      {
+        "heading": "1. Walk it like a buyer",
+        "body": "Start at the curb and walk in the way a buyer would. Write down the first five things you notice. Those are the five things a buyer notices too."
+      },
+      {
+        "heading": "2. Fix: what usually pays",
+        "body": "Fresh paint in tired rooms, working light fixtures, doors that close properly, and a tidy front entry. Small, cheap, and seen in every photo."
+      },
+      {
+        "heading": "3. Skip: what rarely pays",
+        "body": "Full kitchen remodels, new flooring throughout, and anything that takes longer than the listing timeline. Buyers often want to choose those themselves."
+      },
+      {
+        "heading": "4. The 30-day countdown",
+        "body": "Day 30: walkthrough and fix-or-skip list.\nDay 21: repairs booked.\nDay 10: declutter and deep clean.\nDay 3: photos.\nDay 0: listing goes live."
+      },
+      {
+        "heading": "5. Questions to ask any agent",
+        "body": "What happens in the first ten days? How will you price it, and can I see the numbers? How often will I hear from you, and how?"
+      },
+      {
+        "heading": "6. Your paperwork pile",
+        "body": "Gather permits for past work, utility costs for the last year, and any warranties. Having them ready answers buyer questions before they are asked."
+      }
+    ],
+    "closing": "Want the walkthrough done with you? Reply to the email this came with and we will find a time.",
+    "socialPost": "Thinking about selling in East Sac or Land Park next year?\n\nThe money most sellers waste is spent before the house is even listed. I put together a free checklist: what to fix, what to skip, and a 30-day countdown to listing day.\n\nComment CHECKLIST and I'll send it over.",
+    "emails": [
+      {
+        "day": 0,
+        "subject": "Your Before-You-List Checklist",
+        "body": "Here's the checklist you asked for.\n\nStart with step 1: walk in from the curb like a buyer and write down the first five things you notice. It takes ten minutes and tells you more than any list.\n\nJordan"
+      },
+      {
+        "day": 2,
+        "subject": "The repair that usually isn't worth it",
+        "body": "The most common money-waster I see before listing is a big remodel right before selling.\n\nBuyers often want to pick their own finishes. Paint, lighting and a tidy entry usually do more for less.\n\nWant me to tell you which list your home's projects belong on? Just reply.\n\nJordan"
+      },
+      {
+        "day": 5,
+        "subject": "What happens in the first ten days?",
+        "body": "If you're talking to agents, ask every one of them this: what happens in the first ten days?\n\nYou should get an answer in writing. If you'd like to see mine for your home, reply and we'll set up a walkthrough.\n\nJordan"
+      }
+    ]
+  },
+  "audit": {
+    "summary": "Sellers are looking for you online, and right now there is nowhere for them to land, and nothing to catch them when they do.",
+    "opportunities": [
+      {
+        "title": "No way to capture leads",
+        "why": "Referrals are great, but the sellers who are a year out are searching quietly. Without a free offer, they never become a name you can follow up with.",
+        "evidence": "You told us you have no free guide or opt-in, and new clients come from referrals and open houses.",
+        "whatChanges": "Every month, the people thinking about selling raise their hand by asking for your checklist.",
+        "bossDoes": "Lead magnets, landing pages and funnels built from one set of answers, connected to follow-up that sends itself."
+      },
+      {
+        "title": "Invisible to Google and AI assistants",
+        "why": "With only a brokerage profile, an AI assistant asked for an East Sac listing agent has nothing of yours to recommend.",
+        "evidence": "You have no website of your own. The competitor site we checked has structured data on none of its pages and no Equal Housing statement.",
+        "whatChanges": "A site of your own, built to the launch bar, that Google and AI assistants can read and recommend.",
+        "bossDoes": "A site built to our launch bar, structured data on every page, checked and fixed automatically, with articles written to be recommended by AI."
+      },
+      {
+        "title": "Leads go cold",
+        "why": "Sellers often take months to decide. Inconsistent follow-up means someone else is there when they are ready.",
+        "evidence": "You said follow-up with people who are not ready yet is inconsistent.",
+        "whatChanges": "Everyone who asks for the checklist hears from you on day 0, 2 and 5 without you lifting a finger.",
+        "bossDoes": "Follow-up sequences in your voice that run on their own."
+      }
+    ],
+    "plan": [
+      {
+        "day": 1,
+        "title": "Make your checklist yours",
+        "do": "Read your checklist and change one section to something only you would say.",
+        "prompt": "In my Summit AI Preview, rewrite section 3 of my checklist in my own voice and leave a [blank] where a real example from my listings should go."
+      },
+      {
+        "day": 2,
+        "title": "Post it once",
+        "do": "Copy your social post and put it in one neighborhood group.",
+        "prompt": "In my Summit AI Preview, write two more versions of my social post: one for Nextdoor and one for Instagram."
+      },
+      {
+        "day": 3,
+        "title": "Check a competitor",
+        "do": "Grade the site of one agent you compete with and compare it to yours.",
+        "prompt": "In my Summit AI Preview, grade this website and compare it to my sample site: "
+      },
+      {
+        "day": 4,
+        "title": "Plan a second magnet",
+        "do": "Make a second free guide for first-time buyers in Elk Grove.",
+        "prompt": "In my Summit AI Preview, make a second lead magnet for first-time buyers in Elk Grove and add it to my site."
+      }
+    ]
+  },
+  "prompts": [
+    {
+      "group": "Change your website",
+      "label": "New headline",
+      "prompt": "In my Summit AI Preview, change my home page headline to something that speaks to people downsizing."
+    },
+    {
+      "group": "Change your website",
+      "label": "New colors",
+      "prompt": "In my Summit AI Preview, try my site in navy and copper instead."
+    },
+    {
+      "group": "Change your website",
+      "label": "Different photos",
+      "prompt": "In my Summit AI Preview, swap my home page photos for more modern homes."
+    },
+    {
+      "group": "Change your website",
+      "label": "Warmer tone",
+      "prompt": "In my Summit AI Preview, rewrite my About page to sound a little warmer and more personal."
+    },
+    {
+      "group": "Make more lead magnets",
+      "label": "A buyer guide",
+      "prompt": "In my Summit AI Preview, make a lead magnet for first-time buyers in Elk Grove and add it to my site."
+    },
+    {
+      "group": "Create content",
+      "label": "Posts for Nextdoor and Instagram",
+      "prompt": "In my Summit AI Preview, write a Nextdoor and an Instagram version of my checklist post."
+    },
+    {
+      "group": "Check any website",
+      "label": "Grade a competitor",
+      "prompt": "In my Summit AI Preview, grade this website and compare it to my sample site: "
+    },
+    {
+      "group": "Create content",
+      "label": "A week of posts",
+      "prompt": "In my Summit AI Preview, write a week of social posts that send people to my checklist."
+    }
+  ],
+  "moreMagnets": [
+    {
+      "slug": "first-time-buyers",
+      "navLabel": "First-time buyer guide",
+      "title": "The First-Time Buyer's Elk Grove Starter Guide",
+      "subtitle": "Every step from your first lender call to the keys, explained in plain words.",
+      "format": "guide",
+      "hook": "Most first-time buyers are not short on homes to look at. They are short on someone explaining what happens next.",
+      "bullets": [
+        "The questions to ask a lender before you look at a single home",
+        "What an offer actually includes",
+        "A written timeline from inspection to keys"
+      ],
+      "formHeadline": "Where should I send your guide?",
+      "buttonText": "Send me the guide",
+      "thankYou": "Your guide is ready below.",
+      "sections": [
+        {
+          "heading": "1. Before you look",
+          "body": "Talk to a lender first, and ask:\n- What monthly payment am I comfortable with, not just approved for?\n- What will closing cost me, roughly?\n- How long is my pre-approval good for?"
+        },
+        {
+          "heading": "2. Looking at homes",
+          "body": "Bring a short list of must-haves and a shorter list of deal-breakers. Photos do not show noise, smells or light: visit at two different times of day."
+        },
+        {
+          "heading": "3. Making an offer",
+          "body": "An offer is more than a price. It covers deposits, inspection time, financing time and closing date. You should understand every term before you sign."
+        },
+        {
+          "heading": "4. Inspection to keys",
+          "body": "[ ] Inspection booked\n[ ] Appraisal ordered\n[ ] Insurance quote\n[ ] Final walkthrough\n[ ] Keys"
+        }
+      ],
+      "closing": "Want this walked through for your situation? Reply to the email this came with.",
+      "socialPost": "Buying your first home in Elk Grove? I wrote a plain-English starter guide: the lender questions, what an offer includes, and a checklist from inspection to keys. Comment GUIDE and I'll send it.",
+      "emails": [
+        {
+          "day": 0,
+          "subject": "Your first-time buyer guide",
+          "body": "Here it is. Start with step 1: the three lender questions.\n\nJordan"
+        },
+        {
+          "day": 2,
+          "subject": "Approved for vs. comfortable with",
+          "body": "The number a lender approves is not always the number that lets you sleep at night. Worth working out both.\n\nJordan"
+        },
+        {
+          "day": 5,
+          "subject": "What an offer really includes",
+          "body": "Price is one line of it. Want me to walk you through the rest? Just reply.\n\nJordan"
+        }
+      ]
+    }
+  ],
+  "posts": [
+    {
+      "platform": "Nextdoor",
+      "text": "Neighbors in East Sac and Land Park: thinking about selling next year? I put together a free checklist of what to fix, what to skip, and a 30-day countdown to listing day. Happy to send it, just reply here.",
+      "magnet": "main"
+    },
+    {
+      "platform": "Instagram",
+      "text": "The money most sellers waste is spent before the house is listed.\n\nFree checklist: what to fix, what to skip, and a 30-day countdown.\n\nComment CHECKLIST and I'll send it.",
+      "magnet": "main"
+    }
+  ]
+}

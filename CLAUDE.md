@@ -13,6 +13,10 @@ type commands. `PY` below is `/usr/bin/python3` on a Mac (Windows: see START-HER
      - Grading their OWN site: `--out app/data/grade.json`. Any OTHER site (a competitor,
        one they admire): `--out app/data/grades/<domain>.json`, so their own report card
        is never overwritten. Use `--profile` from content.json and a plain `--label`.
+     - "My sample site" means the new preview site this folder built.
+     - Colors: the first color they name is `primary`, the second is `accent`. If the
+       accent they name is white or near-white, keep it out of the accent slot (it would
+       vanish on the page): use a deeper shade of their main color, and say so.
      - Anything the file cannot hold (reviews, a quiz, a booking system, publishing): say
        plainly that the preview does not do that, and what the full system does instead.
      - Reviews, stats or stories they did not give: never write them; add a `[blank]`.

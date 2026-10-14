@@ -59,9 +59,18 @@ def main() -> int:
 
     # The new site is measured the same way their old one was. Detached, so the
     # dashboard opens now and the result appears on it within a minute.
-    stale = ROOT / "app" / "data" / "grade-preview.json"
-    if stale.exists():
-        stale.unlink()
+    # Re-measure only when the site's content changed, and never delete the last
+    # result first: the report card keeps showing it until the new one replaces it.
+    import hashlib
+    digest = hashlib.sha1((ROOT / "app" / "data" / "content.json").read_bytes()).hexdigest()
+    stamp = ROOT / "app" / "data" / ".measured"
+    have = (ROOT / "app" / "data" / "grade-preview.json").exists()
+    if have and stamp.exists() and stamp.read_text().strip() == digest + str(port):
+        url = base + "/"
+        where = None if "--no-open" in sys.argv else serve.open_in_chrome(url)
+        print(json.dumps({"url": url, "openedIn": where, "measuring": False}))
+        return 0
+    stamp.write_text(digest + str(port))
     kwargs = {"creationflags": 0x00000008} if os.name == "nt" else {"start_new_session": True}
     with open(ROOT / ".preview-audit.log", "w") as log:
         subprocess.Popen([PY, "scripts/grade_site.py", base + "/site/", "--local", "--profile", profile,

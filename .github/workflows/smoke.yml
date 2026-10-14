@@ -1,0 +1,41 @@
+name: Smoke test on every kind of computer
+
+# The whole pipeline a student's machine runs (find the workbook file, fetch Node,
+# check, build, serve, load every page, Lighthouse, restart), on Windows, both Mac
+# chips and Linux, with the Python a Mac ships (3.9) and a current one.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest, python: "3.12" }
+          - { os: windows-latest, python: "3.9" }
+          - { os: macos-15, python: "3.9" }        # Apple silicon, the Python Apple's tools install
+          - { os: macos-15-intel, python: "3.9" }  # Intel Mac
+          - { os: ubuntu-latest, python: "3.12" }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Run the smoke test
+        run: python tests/smoke.py
+      - name: Keep what the new site's audit wrote
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-${{ matrix.os }}-py${{ matrix.python }}
+          path: |
+            app/data/grade-preview.json
+            .preview-audit.log
+            .preview-server.log
+          if-no-files-found: ignore

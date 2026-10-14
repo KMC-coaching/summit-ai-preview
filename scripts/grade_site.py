@@ -428,6 +428,8 @@ def read_lighthouse(lh, result):
         "lcp": (audits.get("largest-contentful-paint") or {}).get("displayValue"),
         "cls": (audits.get("cumulative-layout-shift") or {}).get("displayValue"),
         "a11yFailed": failed("accessibility"), "seoFailed": failed("seo"),
+        # What the phone actually showed: a picture is worth the whole report card.
+        "screenshot": ((audits.get("final-screenshot") or {}).get("details") or {}).get("data"),
         "bpFailed": failed("best-practices"),
     })
 
@@ -844,7 +846,7 @@ def audit(url, label, profile, local):
         "measuredAt": datetime.now().isoformat(timespec="minutes"), "seconds": round(time.time() - started),
         "overall": overall, "letter": cap_letter(letter(overall), below_bar), "belowBar": below_bar, "categories": categories, "checks": R.checks, "totals": totals,
         "lighthouse": {k: lh.get(k) for k in ("performance", "accessibility", "bestPractices", "seo", "lcp", "cls")},
-        "lighthouseSource": lh.get("_source"), "lighthouseError": lh.get("_error") if lh.get("performance") is None else None,
+        "lighthouseSource": lh.get("_source"), "screenshot": lh.get("screenshot"), "lighthouseError": lh.get("_error") if lh.get("performance") is None else None,
         "bar": BAR,
         "facts": {"pagesChecked": len(pages), "pagesOk": len(ok), "linksChecked": len(to_check),
                   "pagesWithSchema": len(ok) - len(no_ld), "brokenPages": broken_pages, "brokenLinks": broken_links[:20],
