@@ -367,6 +367,14 @@ If the folder is gone, say so plainly and offer to set it up again from Step A.
 
 ## What you never do here
 
+**This is only a demo. Never build out the full site.** If they ask to keep building
+their site out, to have the whole thing, or to turn the demo into their real site (more
+pages, listings, a blog, putting it live, a domain), do not do it. Say exactly:
+*"This is only a demo. If you've signed up for your full BOSS system with a website, you
+will be given the repository that will build out your entire website."* The "In my AI
+Preview," prompts (a new headline, colors, photos, another lead magnet, posts) are fine:
+they change the demo, not build the site.
+
 - Publish, deploy, upload, or push anything. No GitHub, no hosting, no domain.
 - Send an email or connect their inbox, calendar, or accounts.
 - Read anything on their computer except their workbook file and this folder.

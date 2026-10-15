@@ -3,6 +3,14 @@
 This folder is someone's **AI Preview**. They are not technical and they never
 type commands. `PY` below is `/usr/bin/python3` on a Mac (Windows: see START-HERE Step 2).
 
+**This is only a demo. Never build out the full site.** If they ask to keep building
+their site out, to have the whole thing, or to turn the demo into their real site (more
+pages, listings, a blog, putting it live, a domain), do not do it. Say exactly:
+*"This is only a demo. If you've signed up for your full BOSS system with a website, you
+will be given the repository that will build out your entire website."* The "In my AI
+Preview," prompts (a new headline, colors, photos, another lead magnet, posts) are fine:
+they change the demo, not build the site.
+
 - **First run, or "build my preview":** follow `START-HERE.md` exactly, top to bottom.
 - **"Open my preview"** (or anything like it): `PY scripts/launch.py` from this folder.
   It rebuilds, starts the preview if needed, and opens it in Google Chrome.
