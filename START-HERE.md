@@ -267,6 +267,7 @@ never ask them again for anything that is in here:
 | lead magnet topic | `Day-2.md` Card 11 (the funnel they need first, and why), aimed at `Day-2.md` Card 8 (dream client) |
 | hero headline and sub | `03` "Website hero" headline and subhead if present, else build them from `03`'s one-liner |
 | why choose me (home statement) | `Day-2.md` Card 9 final version, word for word |
+| coach (whatYouDo, whoYouServe, struggle) | whatYouDo: their profession from `01`. whoYouServe: their dream client and place, short (`Day-2.md` Card 8, `04`). struggle: a struggle **of theirs** about their own business, in their words (e.g. the reason on `Day-2.md` Card 11, a gap behind their Profile 3 goal); never a client's struggle from `04`. Nothing in their words: `""` |
 | audit opportunities and evidence | `My-Profile.md` Profile 5 (repetitive work, what AI could do), Profile 3 (goals), plus the report card |
 | sell / buy steps | `03` process steps; a step marked PROPOSED becomes a `[blank]` to confirm |
 | loans (lender) | the loan types in `01` (e.g. "What I lend"), one card each; never a rate, APR or payment |
@@ -364,6 +365,18 @@ the full system works."* Never rebuild what did not change.
 or restarts the preview, and opens Chrome.
 
 If the folder is gone, say so plainly and offer to set it up again from Step A.
+
+## When they ask their coach
+
+- **"In my AI Preview, ask my coach: ..."**, or any coaching question (getting known,
+  attracting clients, niche, dream client, video, funnels, personal brand, "what does Krista
+  say about..."): use the `attraction-marketing-coach` skill in
+  `~/AI-Preview/.claude/skills/attraction-marketing-coach/` (read its `SKILL.md` and follow it
+  exactly) and answer only from its `knowledge/` files, never from general marketing
+  knowledge. They never have to explain themselves: take who they are, what they do, who they
+  serve and their goals from `~/AI-Preview/app/data/content.json` and answer for their
+  business. Do not edit its knowledge files; if they ask to change them, tell them to
+  message the KMC team.
 
 ## What you never do here
 

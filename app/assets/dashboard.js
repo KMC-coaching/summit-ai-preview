@@ -233,17 +233,29 @@
   }
 
   /* ---------------------------------------------------------- the coach (a VIP gift) */
+  // Chelsea's starter, filled in with what the preview already knows about them, so
+  // every question they copy is about their business. It is installed in their AI
+  // Preview folder (.claude/skills/attraction-marketing-coach) and answers in Claude.
   function coachView() {
     const co = (D.settings || {}).coach || {};
-    const starter = co.starter || "";
+    const me = D.c.coach || {};
+    const plain = (x) => String(x || "").trim();
+    const what = plain(me.whatYouDo) || plain(D.c.business && D.c.business.profession).toLowerCase() || "[what you do]";
+    const who = plain(me.whoYouServe) || "[who you serve]";
+    const struggle = plain(me.struggle) || "[your struggle]";
+    const an = /^[aeiou]/i.test(what) ? "an" : "a";
+    const intro = `I’m ${an} ${what} who focuses on ${who}. Here’s what I’m struggling with: ${struggle}.`;
+    const ask = (q) => `In my AI Preview, ask my coach: ${intro} ${q}`;
+    const blanks = /\[[^\]]+\]/.test(intro);
     return topbar("gifts") + `<section class="view"><div class="wrap">
-      <p class="kicker">VIP gift</p><h1>Client Attraction &amp; Authority Coach</h1>
-      <p class="lede">Ask questions about getting known, attracting clients, and building your personal brand, and get answers straight from Krista's teaching, with the area of her teaching each one came from.</p>
-      <div class="panel" style="margin-top:22px"><p class="kicker">Start your first message like this</p>
-        <div class="quote">${t(starter)}</div>
-        <p class="muted" style="margin-top:14px">Then add one of these, and paste it into Claude in your AI Preview session:</p>
-        <div class="finishes">${(co.finishes || []).map((f, k) => `<div class="prompt"><b>${k + 1}. ${esc(f.text)}</b>${copyBtn(starter + " " + f.text, "Copy")}${f.note ? `<span class="muted" style="font-size:13.5px">${esc(f.note)}</span>` : ""}</div>`).join("")}</div></div>
-      ${co.example ? `<div class="panel"><p class="kicker">An example of a finished message</p><div class="quote">${esc(co.example)}</div>${copyBtn(co.example, "Copy the example")}</div>` : ""}
+      <p class="kicker">VIP gift · already installed</p><h1>Your Client Attraction &amp; Authority Coach</h1>
+      <p class="lede">It's already set up in your AI Preview, and it already knows your business. Ask it anything about getting known and attracting clients. It answers from Krista's teaching, tells you which part of her teaching the answer comes from, and gives you one next step.</p>
+      <div class="how"><div><b>1. Copy a question</b><span class="muted">Each one below already says who you are.</span></div><div><b>2. Paste it into Claude</b><span class="muted">In the Claude window where you built your preview. Press Enter.</span></div><div><b>3. Ask "What's my next step?"</b><span class="muted">Do that one step before your next question.</span></div></div>
+      <div class="panel" style="margin-top:22px"><p class="kicker">Questions to start with</p>
+        <p class="muted" style="margin-top:6px">Your coach reads this as: “${t(intro)}”${blanks ? " Fill in the blank after you paste it." : ""}</p>
+        <div class="finishes">${(co.finishes || []).map((f) => `<div class="prompt"><b>${esc(f.text)}</b>${copyBtn(ask(f.text), "Copy")}${f.note ? `<span class="muted" style="font-size:13.5px">${esc(f.note)}</span>` : ""}</div>`).join("")}</div></div>
+      <div class="panel"><p class="kicker">Or ask in your own words</p><p class="muted" style="margin-top:6px">Start with "In my AI Preview, ask my coach:" and then anything you want to know.</p>${copyBtn("In my AI Preview, ask my coach: ", "Copy the start")}</div>
+      ${(co.topics || []).length ? `<div class="panel"><p class="kicker">What your coach knows</p><p class="muted" style="margin:6px 0 10px">Krista's frameworks and trainings on:</p><div class="chips">${co.topics.map((x) => `<span>${esc(x)}</span>`).join("")}</div></div>` : ""}
       <p style="margin-top:22px"><a class="btn ghost sm" href="#/gifts">&larr; All your gifts</a></p>
     </div></section>`;
   }

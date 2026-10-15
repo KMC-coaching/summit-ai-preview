@@ -153,7 +153,7 @@ def main() -> int:
             if v not in digits.split():
                 problems.append("business.stats[%d]: %s is not in their workbook file. Only their own numbers." % (i, v))
 
-    known = {"profile", "meta", "business", "brand", "avatar", "differentiator", "images", "site", "leadMagnet", "moreMagnets", "posts", "audit", "prompts"}
+    known = {"profile", "meta", "business", "brand", "avatar", "differentiator", "images", "site", "leadMagnet", "moreMagnets", "posts", "audit", "prompts", "coach"}
     unknown = sorted(set(c) - known)
     if unknown:
         problems.append("unknown top-level keys %s: nothing reads them, so they would never show. See CONTENT-SPEC.md." % unknown)

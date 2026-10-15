@@ -96,7 +96,7 @@
   },
   "site": {
     "home": {
-      "heroEyebrow": "Real estate \u00b7 East Sacramento, Land Park and Elk Grove",
+      "heroEyebrow": "Real estate · East Sacramento, Land Park and Elk Grove",
       "heroLead": "Sell your Sacramento home",
       "heroAccent": "with a plan",
       "heroSub": "You see the first ten days of your listing in writing before you sign a thing. No surprises, no guessing.",
@@ -449,5 +449,10 @@
       "text": "The money most sellers waste is spent before the house is listed.\n\nFree checklist: what to fix, what to skip, and a 30-day countdown.\n\nComment CHECKLIST and I'll send it.",
       "magnet": "main"
     }
-  ]
+  ],
+  "coach": {
+    "whatYouDo": "real estate agent",
+    "whoYouServe": "long-time owners in East Sacramento and Land Park",
+    "struggle": "sellers a year out never raise their hand"
+  }
 }
