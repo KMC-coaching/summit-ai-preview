@@ -641,6 +641,14 @@ def audit(url, label, profile, local):
 
     log("Waiting for Lighthouse to finish...")
     lh_thread.join(timeout=max(5, 300 - (time.time() - started)))
+    # Whatever stopped it (an error, or still running at the time limit), a local run on
+    # Windows without a score is the known Windows limit and is labelled as one.
+    if lh.get("performance") is None:
+        if local and os.name == "nt":
+            lh["_log"] = (lh.get("_log") or "") + "\n" + (lh.get("_error") or "still running at the time limit")
+            lh["_error"], lh["_limit"] = WINDOWS_LIMIT, "windows"
+        elif lh_thread.is_alive() and not lh.get("_error"):
+            lh["_error"] = "Lighthouse did not finish in time"
 
     R = Report()
     re_profile = profile == "real-estate"
