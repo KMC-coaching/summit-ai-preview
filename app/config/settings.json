@@ -1,5 +1,5 @@
 {
-  "_readme": "Ours, not theirs. Ships with the repo. exampleSites: top students' sites, shown under the report card (Krista named Ronnie, Doug, Alisha Collins, Chris Vanette; URLs still to be confirmed and graded before they go in). next: the 'what's next' panel. vipGifts: the VIP & Fast Action gifts menu, from Chelsea's list (Slack, 2026-10-14). Every url must open without a login; Top Producer Secrets is left out until its Drive file is shared publicly (it returned 401).",
+  "_readme": "Ours, not theirs. Ships with the repo. exampleSites: top students' sites, shown under the report card (Krista named Ronnie, Doug, Alisha Collins, Chris Vanette; URLs still to be confirmed and graded before they go in). next: the 'what's next' panel. vipGifts: the VIP & Fast Action gifts menu, from Chelsea's list (Slack, 2026-10-14). Every url must open without a login; Top Producer Secrets is left out until its Drive file is shared publicly (it returned 401). A gift with 'view' opens a page inside the dashboard instead of a link. coach: Chelsea's starter for the Client Attraction & Authority Coach (.claude/skills/attraction-marketing-coach).",
   "exampleSites": [
     {
       "name": "Ronnie",
@@ -28,23 +28,28 @@
   },
   "vipGifts": [
     {
+      "title": "Client Attraction & Authority Coach",
+      "kind": "AI coach",
+      "view": "coach"
+    },
+    {
       "title": "The Thinking Effect",
-      "kind": "Book \u00b7 PDF",
+      "kind": "Book · PDF",
       "url": "https://drive.google.com/file/d/1G5sp8RUckj5ebLSpVgbWTYg6LyEIuBzx/view?usp=sharing"
     },
     {
       "title": "Be Known or Go Broke",
-      "kind": "Book \u00b7 PDF",
+      "kind": "Book · PDF",
       "url": "https://drive.google.com/file/d/18yAiZeGvsMO55NWs-0MGOW6jAsDMhIgf/view?usp=sharing"
     },
     {
       "title": "Sell 100+ Homes",
-      "kind": "Book \u00b7 PDF",
+      "kind": "Book · PDF",
       "url": "https://drive.google.com/file/d/1HlcdvlcXt90iOrVj9WfqI7jmkWxc7iUq/view?usp=sharing"
     },
     {
       "title": "Stop, Snap & Switch",
-      "kind": "Book \u00b7 PDF",
+      "kind": "Book · PDF",
       "url": "https://drive.google.com/file/d/1IqgzKORqmkFudOGCgFvb2ONDVZpFYhgl/view?usp=sharing"
     },
     {
@@ -52,5 +57,28 @@
       "kind": "Web page",
       "url": "https://kristamashore.com/Mindset"
     }
-  ]
+  ],
+  "coach": {
+    "_from": "Chelsea, Slack 2026-10-14 DM: her starter, word for word.",
+    "starter": "I’m a [what you do] who focuses on [who you serve]. Here’s what I’m struggling with: [your struggle].",
+    "finishes": [
+      {
+        "text": "Where should I start?",
+        "note": "This is for anyone who isn’t sure what to do first."
+      },
+      {
+        "text": "Why do people choose my competitors over me, and how do I become the obvious choice?"
+      },
+      {
+        "text": "Help me narrow my niche and describe my dream client."
+      },
+      {
+        "text": "I hate being on camera. How do I start with video?"
+      },
+      {
+        "text": "I get some attention but not enough clients. What’s missing?"
+      }
+    ],
+    "example": "I’m a mortgage lender who focuses on first-time homebuyers. Here’s what I’m struggling with: nobody knows who I am online. Where should I start?"
+  }
 }

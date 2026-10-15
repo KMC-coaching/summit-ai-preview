@@ -271,3 +271,6 @@ footer.foot { color: var(--muted); font-size: 13px; text-align: center; padding:
   .gift-cover .t { font-size: 1.15rem; }
   .gift-cover .tag { font-size: 10px; padding: 4px 8px; }
 }
+.finishes { display: grid; gap: 10px; margin-top: 12px; }
+.finishes .prompt { display: grid; grid-template-columns: 1fr auto; gap: 6px 14px; align-items: center; background: var(--panel2); border-radius: 12px; padding: 12px 14px; }
+.finishes .prompt .muted { grid-column: 1 / -1; }
