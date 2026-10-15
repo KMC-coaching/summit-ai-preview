@@ -215,7 +215,7 @@
       <p class="kicker">Your AI opportunity audit</p><h1 style="font-size:clamp(1.5rem,1rem+1.4vw,2.15rem)">${t(a.summary)}</h1>
       <div class="plan">${(a.opportunities || []).map((o, i) => `<div class="opp"><span class="n">${i + 1}</span><h3>${t(o.title)}</h3>
         <dl><div><dt>Why it matters</dt><dd>${t(o.why)}</dd></div><div><dt>What we saw</dt><dd>${t(o.evidence)}</dd></div><div><dt>What the full system does</dt><dd>${t(o.bossDoes)}</dd></div></dl></div>`).join("")}</div>
-      <div class="days">${(a.plan || []).map((d) => `<div class="day"><span class="d">Day ${esc(d.day)}</span><b>${t(d.title)}</b><span class="muted" style="font-size:13.5px">${t(d.do)}</span>${d.prompt ? copyBtn(d.prompt, "Copy the prompt") : ""}</div>`).join("")}</div>
+      <div class="days">${(a.plan || []).map((d) => `<div class="day"><span class="d">Day ${esc(d.day)}</span><b>${t(d.title)}</b><span class="muted" style="font-size:13.5px">${t(d.do)}</span>${d.prompt ? copyBtn(d.prompt, "Copy the prompt") + `<details class="full"><summary>See the full message</summary><code>${esc(d.prompt)}</code></details>` : ""}</div>`).join("")}</div>
     </div></section>`;
   }
 
