@@ -150,7 +150,13 @@ the invented-proof checks (testimonials, star ratings, stats not in their file).
     "plan": [ { "day": 1, "title": "", "do": "", "prompt": "In my AI Preview, ..." } ]   // 3-5 days
   },
 
-  "prompts": [ { "group": "Change your website", "label": "New headline", "prompt": "In my AI Preview, ..." } ]  // 5-10
+  "prompts": [ { "group": "Change your website", "label": "New headline", "prompt": "In my AI Preview, ..." } ],  // 5-10
+
+  "coach": {                                     // fills in the coach's starter questions with who they are
+    "whatYouDo": "real estate agent",            // their profession, lower case, as they'd say it
+    "whoYouServe": "long-time owners in East Sacramento and Land Park",   // their dream client and place, short
+    "struggle": "sellers a year out never raise their hand"              // THEIR struggle in their own words, or "" (never their clients' struggle)
+  }
 }
 ```
 
