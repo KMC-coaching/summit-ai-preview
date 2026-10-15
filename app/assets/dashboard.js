@@ -221,14 +221,30 @@
 
   /* ---------------------------------------------------------- brand */
   /* ---------------------------------------------------------- VIP gifts */
-  function gifts() { return ((D.settings || {}).vipGifts || []).filter((x) => x.title && x.url); }
+  function gifts() { return ((D.settings || {}).vipGifts || []).filter((x) => x.title && (x.url || x.view)); }
   function giftsView() {
     return topbar("gifts") + `<section class="view"><div class="wrap">
       <p class="kicker">VIP gifts</p><h1>Your VIP gifts</h1>
-      <p class="lede">Click any gift to open it. It opens in a new tab.</p>
-      <div class="gifts">${gifts().map((x, k) => `<a class="gift" href="${esc(x.url)}" target="_blank" rel="noopener">
+      <p class="lede">Click any gift to open it.</p>
+      <div class="gifts">${gifts().map((x, k) => `<a class="gift" href="${x.view ? "#/" + esc(x.view) : esc(x.url)}"${x.view ? "" : ' target="_blank" rel="noopener"'}>
         <div class="gift-cover" style="--k:${k}"><span class="tag">${esc(x.kind || "Gift")}</span><span class="t">${esc(x.title)}</span><span class="by">Krista Mashore</span></div>
         <span class="go">Open &rarr;</span></a>`).join("")}</div>
+    </div></section>`;
+  }
+
+  /* ---------------------------------------------------------- the coach (a VIP gift) */
+  function coachView() {
+    const co = (D.settings || {}).coach || {};
+    const starter = co.starter || "";
+    return topbar("gifts") + `<section class="view"><div class="wrap">
+      <p class="kicker">VIP gift</p><h1>Client Attraction &amp; Authority Coach</h1>
+      <p class="lede">Ask questions about getting known, attracting clients, and building your personal brand, and get answers straight from Krista's teaching, with the area of her teaching each one came from.</p>
+      <div class="panel" style="margin-top:22px"><p class="kicker">Start your first message like this</p>
+        <div class="quote">${t(starter)}</div>
+        <p class="muted" style="margin-top:14px">Then add one of these, and paste it into Claude in your AI Preview session:</p>
+        <div class="finishes">${(co.finishes || []).map((f, k) => `<div class="prompt"><b>${k + 1}. ${esc(f.text)}</b>${copyBtn(starter + " " + f.text, "Copy")}${f.note ? `<span class="muted" style="font-size:13.5px">${esc(f.note)}</span>` : ""}</div>`).join("")}</div></div>
+      ${co.example ? `<div class="panel"><p class="kicker">An example of a finished message</p><div class="quote">${esc(co.example)}</div>${copyBtn(co.example, "Copy the example")}</div>` : ""}
+      <p style="margin-top:22px"><a class="btn ghost sm" href="#/gifts">&larr; All your gifts</a></p>
     </div></section>`;
   }
 
@@ -268,12 +284,12 @@
   }
 
   /* ---------------------------------------------------------- router */
-  const VIEW_FN = { site: siteView, magnet: magnetView, report: reportView, plan: planView, brand: brandView, gifts: giftsView, play: playView };
+  const VIEW_FN = { site: siteView, magnet: magnetView, report: reportView, plan: planView, brand: brandView, gifts: giftsView, coach: coachView, play: playView };
   function render() {
     const key = (location.hash.match(/^#\/(\w+)/) || [])[1];
     const app = document.getElementById("app");
     app.innerHTML = (VIEW_FN[key] || landing)();
-    document.title = (key ? VIEWS.find((v) => v[0] === key)[1] + " · " : "") + (D.c.business.name || "Your AI Preview");
+    document.title = (key ? (VIEWS.find((v) => v[0] === key) || [key, key === "coach" ? "Your coach" : "Your AI Preview"])[1] + " · " : "") + (D.c.business.name || "Your AI Preview");
     window.scrollTo(0, 0);
     // Big page thumbnails: size the 1440px page to the card, load them one by one.
     const frames = [...app.querySelectorAll(".pagecard iframe[data-src]")];

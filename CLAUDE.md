@@ -11,6 +11,12 @@ will be given the repository that will build out your entire website."* The "In 
 Preview," prompts (a new headline, colors, photos, another lead magnet, posts) are fine:
 they change the demo, not build the site.
 
+- **A coaching question** (getting known, attracting clients, niche, dream client, video,
+  funnels, personal brand, "what does Krista say about...", or a message that starts "I'm a
+  [what you do] who focuses on..."): use the `attraction-marketing-coach` skill in
+  `.claude/skills/attraction-marketing-coach/` and answer only from its `knowledge/` files,
+  following that skill's rules exactly. Never answer from general marketing knowledge. Do
+  not edit its knowledge files; if they ask to change them, tell them to message the KMC team.
 - **First run, or "build my preview":** follow `START-HERE.md` exactly, top to bottom.
 - **"Open my preview"** (or anything like it): `PY scripts/launch.py` from this folder.
   It rebuilds, starts the preview if needed, and opens it in Google Chrome.
