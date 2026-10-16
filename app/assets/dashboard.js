@@ -283,14 +283,14 @@
     const groups = {};
     for (const p of (D.c.prompts || [])) (groups[p.group || "Try these"] = groups[p.group || "Try these"] || []).push(p);
     const n = (D.settings || {}).next || {};
-    let video = `<div class="video">${esc(n.videoPlaceholder || "A short video goes here.")}</div>`;
+    let video = "";
     if (n.videoUrl) video = /\.(mp4|webm|mov)(\?|$)/i.test(n.videoUrl) ? `<div class="video"><video src="${esc(n.videoUrl)}" controls playsinline></video></div>` : `<div class="video"><iframe src="${esc(n.videoUrl)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="What's next"></iframe></div>`;
     return topbar("play") + `<section class="view"><div class="wrap">
       <p class="kicker">Make it yours</p><h1>You're doing great. Now change anything.</h1>
       <p class="lede">This is exactly how the full system works: you say what you want, it builds it. Pick anything below.</p>
       <div class="how"><div><b>1. Copy</b><span class="muted">Click Copy on anything below.</span></div><div><b>2. Paste into Claude</b><span class="muted">Go back to the Claude window, paste, press Enter.</span></div><div><b>3. Refresh this page</b><span class="muted">When Claude says it's done, refresh and see your change.</span></div></div>
       <div class="groups">${Object.entries(groups).map(([gname, ps]) => `<div class="pgroup"><h2>${esc(gname)}</h2>${ps.map((p) => `<div class="prompt"><b>${t(p.label)}</b>${copyBtn(p.prompt)}<code>${esc(p.prompt)}</code></div>`).join("")}</div>`).join("")}</div>
-      <div class="next"><div><p class="kicker">What's next</p><h2 style="font-size:1.9rem;margin:8px 0">${esc(n.headline || "This is a glimpse.")}</h2><p class="muted">${esc(n.text || "")}</p>
+      <div class="next${video ? "" : " next--solo"}"><div><p class="kicker">What's next</p><h2 style="font-size:1.9rem;margin:8px 0">${esc(n.headline || "This is a glimpse.")}</h2><p class="muted">${esc(n.text || "")}</p>
         ${n.ctaUrl ? `<p style="margin-top:16px"><a class="btn" href="${esc(n.ctaUrl)}" target="_blank" rel="noopener">${esc(n.ctaText || "See how")}</a></p>` : ""}</div>${video}</div>
     </div></section>`;
   }
