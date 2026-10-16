@@ -127,7 +127,7 @@ the invented-proof checks (testimonials, star ratings, stats not in their file).
   },
 
   "leadMagnet": {
-    "navLabel": "Free checklist", "title": "...", "subtitle": "...", "format": "checklist",   // checklist | guide (quizzes are not built yet)
+    "navLabel": "Free checklist", "title": "...", "subtitle": "...", "format": "checklist",   // checklist | guide | book (a mini book) | companion (an AI companion: also needs "prompt", the text the visitor pastes into ChatGPT or Claude)
     "hook": "Why someone stops scrolling for this.", "bullets": ["3 to 5"],
     "formHeadline": "...", "buttonText": "Send me the ...", "thankYou": "...",
     "sections": [ { "heading": "...", "body": "The real content, not an outline" } ],   // 4-7
