@@ -171,6 +171,7 @@
       "movement.com",
       "crosscountrymortgage.com",
       "fairwaymortgage.com"
-    ]
+    ],
+    "queryOnline": "mortgage lender <area> <city>"
   }
 }

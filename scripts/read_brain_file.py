@@ -45,7 +45,9 @@ def profile_for(profession: str) -> str:
     p = profession.lower()
     if re.search(r"lend|loan|mortgage|nmls", p):
         return "lender"
-    if re.search(r"real estate|realtor|agent|broker", p):
+    # "agent" and "broker" alone mean real estate at these events, but an insurance agent,
+    # a business broker or a talent agent is not: only real-estate words decide it.
+    if re.search(r"real[ -]?estate|realtor|realty", p) or p.strip(" .") in ("agent", "broker", "agent/broker"):
         return "real-estate"
     return "general"
 
