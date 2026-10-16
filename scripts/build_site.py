@@ -540,6 +540,13 @@ class Site:
         self.page(pg["file"], "%s | %s" % (plain(s.get("headline"))[:48], plain(self.b.get("name"))),
                   plain(s.get("sub") or s.get("intro"))[:160], im, body)
 
+    # What each kind of lead magnet is called on the page. "book" is a mini book, "companion"
+    # an AI companion: a prompt the visitor pastes into ChatGPT or Claude (Krista's bundle model).
+    KIND = {"checklist": "checklist", "guide": "guide", "book": "mini book", "companion": "AI companion"}
+
+    def kind(self, m):
+        return self.KIND.get(m.get("format") or "guide", "guide")
+
     def magnets(self):
         """The main lead magnet, then any more they asked for: [(magnet, free page, guide page)]."""
         out = [(self.c.get("leadMagnet", {}), "free-guide.html", "guide.html")]
@@ -563,19 +570,24 @@ class Site:
 <p class="fine">Preview: this saves only in this browser. Nothing is sent.</p></form>
 <div class="done" id="leadDone" tabindex="-1"><p class="h3">You're all set!</p><p style="margin-top:10px">%s</p>
 <div class="links"><a class="pill pill--accent" href="%s">Read your %s now</a></div></div>
-</div></div></div></section>""" % (img(im, eager=True), esc(m.get("format") or "guide"), t(m.get("title")), t(m.get("subtitle")), bullets,
+</div></div></div></section>""" % (img(im, eager=True), esc(self.kind(m)), t(m.get("title")), t(m.get("subtitle")), bullets,
                                    t(m.get("formHeadline")), esc(m.get("buttonText") or "Send it to me"),
-                                   t(m.get("thankYou") or "Your guide is ready. Read it now; a copy is on its way to your inbox."), guide_file, esc(m.get("format") or "guide"))
+                                   t(m.get("thankYou") or "Your guide is ready. Read it now; a copy is on its way to your inbox."), guide_file, esc(self.kind(m)))
         self.page(free_file, "%s | %s" % (plain(m.get("title")), plain(self.b.get("name"))), plain(m.get("subtitle") or m.get("hook"))[:160], im, body)
 
         sections = "".join("<section><h3>%s</h3>%s</section>" % (t(s.get("heading")), paras(s.get("body"))) for s in (m.get("sections") or []))
         mails = "".join(  # shown on the dashboard, not on this public page; kept for reference
 '<div class="mail reveal"><p class="day">Day %s</p><div class="body"><p class="subj">%s</p>%s</div></div>' % (esc(e.get("day")), t(e.get("subject")), t(e.get("body")))
                         for e in (m.get("emails") or []))
-        body = self.pagehero("Your free %s" % plain(m.get("format") or "guide"), m.get("title"), m.get("subtitle"), self.pick.slot("magnet")[0]) + \
-            '<section class="section"><div class="wrap"><p class="body" style="margin-bottom:24px">Thanks, <span data-lead-name>there</span>. Here it is.</p><div class="doc">%s<p style="margin-top:30px"><strong>%s</strong></p></div></div></section>' % (sections, t(m.get("closing"))) + \
+        # An AI companion's page leads with the prompt itself, ready to copy and paste.
+        prompt = ""
+        if m.get("format") == "companion" and m.get("prompt"):
+            prompt = ('<div class="companion"><p class="eyebrow">Your companion</p><pre id="companionPrompt">%s</pre>'
+                      '<button class="pill pill--accent" type="button" data-copy-target="companionPrompt">Copy the companion</button></div>') % esc(m.get("prompt"))
+        body = self.pagehero("Your free %s" % self.kind(m), m.get("title"), m.get("subtitle"), self.pick.slot("magnet")[0]) + \
+            '<section class="section"><div class="wrap"><p class="body" style="margin-bottom:24px">Thanks, <span data-lead-name>there</span>. Here it is.</p><div class="doc">%s%s<p style="margin-top:30px"><strong>%s</strong></p></div></div></section>' % (sections, prompt, t(m.get("closing"))) + \
             self.inquire(get(self.c, "site.home.closingHeadline"), get(self.c, "site.home.closingText"))
-        self.page(guide_file, "%s, the full %s | %s" % (plain(m.get("title"))[:40], plain(m.get("format") or "guide"), plain(self.b.get("name"))),
+        self.page(guide_file, "%s, the full %s | %s" % (plain(m.get("title"))[:40], self.kind(m), plain(self.b.get("name"))),
                   plain(m.get("hook"))[:160], im, body)
 
     def build_contact(self):

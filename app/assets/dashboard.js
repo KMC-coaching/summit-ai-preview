@@ -84,7 +84,7 @@
           <h2>Your demo website</h2><p>A demo of what your website could look like: ${D.s ? D.s.pages.filter((p) => p.file !== "privacy.html").length : 6} pages in your words and your colors, with photos, video and motion. Click to see every page.</p><span class="go">See your website &rarr;</span></a>
         <a class="tile tile--magnet" href="#/magnet"><div class="mini-cover" aria-hidden="true"><em>FREE</em>${t(m.title)}</div><div class="shade"></div>
           <span class="badge">Your first lead magnet</span>
-          <h2>${t(m.title)}</h2><p>The free ${esc(m.format || "guide")}, the sign-up page, the post that promotes it, and ${(m.emails || []).length} follow-up emails.${(c.moreMagnets || []).length ? ` Plus ${(c.moreMagnets || []).length} more you made.` : ""}</p><span class="go">See your lead magnet &rarr;</span></a>
+          <h2>${t(m.title)}</h2><p>The free ${esc(kind(m))}, the sign-up page, the post that promotes it, and ${(m.emails || []).length} follow-up emails.${(c.moreMagnets || []).length ? ` Plus ${(c.moreMagnets || []).length} more you made.` : ""}</p><span class="go">See your lead magnet &rarr;</span></a>
         <a class="tile tile--report" href="#/report">
           <div class="vs">${g && g.reachable ? `<div class="g" style="background:${color(g.overall)};color:#111">${esc(g.letter)}</div><span class="arrow">&rarr;</span>` : ""}<div class="g" style="background:${gp ? color(gp.overall) : "rgba(255,255,255,.1)"};color:#111">${gp ? esc(gp.letter) : "…"}</div></div>
           <h2>Your website report card</h2><p>${g && g.reachable ? `${esc(host(g.url))} against your demo site, on every check our sites must pass.` : "Your demo site, measured on every check our sites must pass."}</p><span class="go">See the report &rarr;</span></a>
@@ -114,6 +114,8 @@
   }
 
   /* ---------------------------------------------------------- magnet */
+  const KIND = { checklist: "checklist", guide: "guide", book: "mini book", companion: "AI companion" };
+  const kind = (m) => KIND[m.format] || "guide";
   function magnetView() {
     const all = [D.c.leadMagnet || {}].concat(D.c.moreMagnets || []);
     const files = (D.s && D.s.magnets) || [{ free: "free-guide.html", guide: "guide.html" }];
@@ -125,13 +127,13 @@
     return topbar("magnet") + `<section class="view"><div class="wrap">
       <p class="kicker">${k ? "Another lead magnet you made" : "Your first lead magnet"}</p><h1>${t(m.title)}</h1><p class="lede">${t(m.hook)}</p>${switcher}
       <div class="mag">
-        <div><div class="bigcover"><em>FREE ${esc((m.format || "guide").toUpperCase())}</em><span>${t(m.title)}</span><small>${esc(D.c.business.name)}</small></div>
-          <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn" href="site/${esc(f.free)}">Try signing up yourself</a><a class="btn ghost" href="site/${esc(f.guide)}">Read the ${esc(m.format || "guide")}</a></div></div>
+        <div><div class="bigcover"><em>FREE ${esc(kind(m).toUpperCase())}</em><span>${t(m.title)}</span><small>${esc(D.c.business.name)}</small></div>
+          <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn" href="site/${esc(f.free)}">Try signing up yourself</a><a class="btn ghost" href="site/${esc(f.guide)}">Read the ${esc(kind(m))}</a></div></div>
         <div>
           <div class="panel"><p class="kicker">How it works</p><div class="flow">
-            <div class="m"><span class="d">1</span><span>A post sends people to your free ${esc(m.format || "guide")}.</span></div>
+            <div class="m"><span class="d">1</span><span>A post sends people to your free ${esc(kind(m))}.</span></div>
             <div class="m"><span class="d">2</span><span>They give their name and email on your sign-up page.</span></div>
-            <div class="m"><span class="d">3</span><span>They get the ${esc(m.format || "guide")} right away, in your words.</span></div>
+            <div class="m"><span class="d">3</span><span>They get the ${esc(kind(m))} right away, in your words.</span></div>
             ${(m.emails || []).map((e) => `<div class="m"><span class="d">Day ${esc(e.day)}</span><span><b>${t(e.subject)}</b></span></div>`).join("")}
           </div></div>
           <div class="panel"><p class="kicker">The post that brings them in</p><div class="quote">${t(m.socialPost)}</div>${copyBtn(m.socialPost || "", "Copy the post")}</div>

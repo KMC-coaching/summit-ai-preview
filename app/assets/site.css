@@ -289,3 +289,7 @@ ul.checks { list-style: none; padding: 0; margin: 14px 0; display: grid; gap: 12
 ul.checks li { padding-left: 34px; position: relative; }
 ul.checks li::before { content: ""; position: absolute; left: 0; top: .2em; width: 18px; height: 18px; border: 1.5px solid var(--accent-ink); border-radius: 4px; }
 .doc ul.ticks { margin: 14px 0; }
+
+/* AI companion: the prompt, ready to copy */
+.companion { margin-top: 34px; padding: clamp(18px, 3vw, 28px); border: 1px solid var(--rule); background: var(--alt); }
+.companion pre { white-space: pre-wrap; font: 400 14px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; max-height: 420px; overflow: auto; margin: 12px 0 18px; padding: 16px; background: var(--bg); border: 1px solid var(--rule); }

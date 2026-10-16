@@ -127,8 +127,10 @@ def main() -> int:
             for k in MAG + ["slug"]:
                 if m.get(k) in (None, "", []):
                     problems.append("empty: %s.%s" % (where, k))
-        if m.get("format") and m["format"] not in ("checklist", "guide"):
-            problems.append('%s.format must be "checklist" or "guide" (quizzes and scorecards are not built yet)' % where)
+        if m.get("format") and m["format"] not in ("checklist", "guide", "book", "companion"):
+            problems.append('%s.format must be "checklist", "guide", "book" or "companion" (quizzes and scorecards are not built yet)' % where)
+        if m.get("format") == "companion" and not str(m.get("prompt") or "").strip():
+            problems.append("%s.prompt: an AI companion needs the prompt the visitor pastes into ChatGPT or Claude" % where)
     slugs = [m.get("slug") for m in (c.get("moreMagnets") or [])]
     if len(slugs) != len(set(slugs)):
         problems.append("moreMagnets: every slug must be different")

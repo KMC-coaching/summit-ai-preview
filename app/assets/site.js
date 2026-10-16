@@ -139,4 +139,13 @@
   });
   const who = document.querySelector("[data-lead-name]");
   if (who) { try { const d = JSON.parse(localStorage.getItem("aipreview.lastLead") || "{}"); if (d.first) who.textContent = d.first; } catch (e) { /* fine */ } }
+  // Copy a block of text (the AI companion's prompt) with one click.
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-copy-target]");
+    if (!b) return;
+    const el = document.getElementById(b.dataset.copyTarget);
+    const text = el ? el.textContent : "";
+    const done = () => { const was = b.textContent; b.textContent = "Copied. Now paste it into ChatGPT or Claude"; setTimeout(() => { b.textContent = was; }, 2600); };
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, () => {}); else done();
+  });
 })();
