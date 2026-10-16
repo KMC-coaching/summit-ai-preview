@@ -197,6 +197,15 @@ competitor or site they admire that their file names; else **find a competitor y
 In a BOSS file it is `Website to grade` under `## Preview answers`, and `Which site that is`
 gives the label. Pass the bare address (the grader adds `https://`).
 
+**Never invent, anywhere in the preview.** Every claim comes from their file: anything about
+them, their process, their clients, their market, their results, their prices, and any
+advice or tip. Generic advice they never gave ("ask to see a sample report", "I see it
+often") is invention, and so is anything taken from `04`, which is BOSS's picture, not
+theirs. Where their file is silent, write a `[blank]` naming what they would put there.
+Plain scaffolding that claims nothing is fine to write: headings, button and form text,
+thank-you lines, email greetings and sign-offs, the companion's intake questions, plan days
+and prompts that point at their own preview.
+
 **First check their address answers:** `curl -sI -m 10 https://<address>`. If it does not,
 go straight to "If their site does not answer" below; do not tell them you are checking it.
 
@@ -204,7 +213,9 @@ go straight to "If their site does not answer" below; do not tell them you are c
 until you have one; a report card with nothing beside it is the case to avoid.
 
 1. Search with your web search tool using the profile's `competitorSearch`: its `query`
-   with their main area and city filled in (e.g. `realtor East Sacramento Sacramento`), and
+   with their main area and city filled in (e.g. `realtor East Sacramento Sacramento`), or
+   `queryOnline` if they work online with no place (e.g. `business coach for founders`;
+   label it `A competitor in <their niche>`), and
    its whole `block` list as the search's blocked domains. **The block list is what makes
    this work:** without it, portals, directories and press releases fill every result;
    with it, local businesses' own sites come first.
@@ -267,7 +278,7 @@ never ask them again for anything that is in here:
 | lead magnet topic | `Day-2.md` Card 11 (the funnel they need first, and why), aimed at `Day-2.md` Card 8 (dream client) |
 | hero headline and sub | `03` "Website hero" headline and subhead if present, else build them from `03`'s one-liner |
 | why choose me (home statement) | `Day-2.md` Card 9 final version, word for word |
-| coach (whatYouDo, whoYouServe, struggle) | whatYouDo: their profession from `01`. whoYouServe: their dream client and place, short (`Day-2.md` Card 8, `04`). struggle: a struggle **of theirs** about their own business, in their words (e.g. the reason on `Day-2.md` Card 11, a gap behind their Profile 3 goal); never a client's struggle from `04`. Nothing in their words: `""` |
+| coach (whatYouDo, whoYouServe, struggle) | whatYouDo: their profession from `01`. whoYouServe: their dream client and place, short (`Day-2.md` Card 8, `04`). struggle: a struggle **of theirs** about their own business, in their words (e.g. the reason on `Day-2.md` Card 11, a gap behind their Profile 3 goal); never a client's struggle from `04`, and never a struggle you infer. Nothing in their words: `""` |
 | audit opportunities and evidence | `My-Profile.md` Profile 5 (repetitive work, what AI could do), Profile 3 (goals), plus the report card |
 | sell / buy steps | `03` process steps; a step marked PROPOSED becomes a `[blank]` to confirm |
 | loans (lender) | the loan types in `01` (e.g. "What I lend"), one card each; never a rate, APR or payment |
@@ -290,6 +301,29 @@ pronouns are never assumed: write the site in first person.
   `app/assets/img/library/library.json` by category for the `images` slots.
 - **The lead magnet:** the format that fits their client. Real content, not an outline,
   that leads naturally to booking them.
+- **Two more lead magnets, for everyone** (`moreMagnets`, in this order), shaped like
+  Krista's own bundle:
+  1. **A mini book** (`"format": "book"`, slug `12-questions`): her Twelve Authority Answers,
+     answered as them for their client. Title: "12 Questions [their clients] Ask, Answered".
+     Twelve sections, headings numbered "1." to "12.", each one question reworded for their
+     field and market (their place if they work locally, their niche if they work online):
+     is now a good time; what does it actually cost; what just changed in your field; how
+     to choose the right [profession]; what are the options and who is each right for; new
+     to this? start here; what can your budget get; a first-timer's guide; how the whole
+     process works, start to finish; the biggest mistakes; what most people get wrong; do
+     you need this now, or can it wait. Answer only from their file (their steps, their
+     why-choose-me, their FAQs and objections, their stories). Anything their file does not
+     say (prices, timing, numbers, opinions) is a `[blank]` for them to fill: never invent.
+     If a question does not fit their business, reword it to the nearest one that does;
+     keep twelve, and keep two questions from asking the same thing.
+  2. **An AI companion** (`"format": "companion"`, with `prompt`): a prompt their client
+     pastes into ChatGPT or Claude that walks them through the student's own process. Fill
+     `templates/companion-prompt.md` exactly, keeping every rule. Its `sections` are "How to
+     use it" (open ChatGPT or Claude, the free version works; start a new chat; copy, paste,
+     press Enter) and "What it will and won't do" (gets them ready; never prices, results
+     or professional advice; that is what a consult is for).
+  Each one also gets its own `hook`, `bullets`, `formHeadline`, `buttonText`, `socialPost`
+  and three `emails`, like the first lead magnet.
 - **The audit:** use the menu below. 2 or 3 opportunities that their file and the report
   card clearly point at, with the evidence in their words or the report's numbers. Only
   rows that honestly fit; if their biggest time drain fits none, say so in the summary.

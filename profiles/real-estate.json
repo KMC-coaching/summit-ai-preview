@@ -176,6 +176,7 @@
       "exprealty.com",
       "sothebysrealty.com",
       "activerain.com"
-    ]
+    ],
+    "queryOnline": "realtor <area> <city>"
   }
 }

@@ -71,6 +71,13 @@ def main():
     except Exception as e:
         ok, a = False, str(e)
     step("reads the file BOSS makes (answers, files, gaps)", ok, "" if ok else str(a)[:300])
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import read_brain_file as rbf
+    cases = {"real estate agent": "real-estate", "Realtor": "real-estate", "agent": "real-estate", "loan officer": "lender",
+             "mortgage broker": "lender", "independent life and health insurance agent": "general", "business broker": "general",
+             "financial advisor": "general", "interior designer": "general", "online fitness and nutrition coach": "general"}
+    wrong = {k: rbf.profile_for(k) for k, v in cases.items() if rbf.profile_for(k) != v}
+    step("picks the right profile for each profession", not wrong, str(wrong))
 
     # 2. Node from nodejs.org into the home folder, no admin.
     t0 = time.time()

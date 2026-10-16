@@ -1,5 +1,5 @@
 {
-  "_contract": "See profiles/real-estate.json. Same keys, everything else is shared. fullSite: what the full seed site adds beyond the preview, shown on the report card; every line must be something the seed really ships. competitorSearch: the query shape and the domains to block when START-HERE looks for a local competitor (portals, directories, press releases, national brands), so the business's own sites rise to the top.",
+  "_contract": "See profiles/real-estate.json. Same keys, everything else is shared. fullSite: what the full seed site adds beyond the preview, shown on the report card; every line must be something the seed really ships. competitorSearch: the query shape and the domains to block when START-HERE looks for a local competitor (portals, directories, press releases, national brands), so the business's own sites rise to the top. competitorSearch.queryOnline: the query for a business that works online with no place.",
   "id": "general",
   "label": "Any other business",
   "pages": [
@@ -66,9 +66,6 @@
     ],
     "guide": [
       "gen-notebook"
-    ],
-    "video": [
-      "re-aerial"
     ]
   },
   "professionImages": {
@@ -77,16 +74,12 @@
     "plumb|electric|roof|hvac|contract|repair|handyman": "gen-tools",
     "cafe|coffee|restaurant|bakery": "gen-cafe"
   },
-  "video": {
-    "src": "https://assets.mixkit.co/videos/48394/48394-720.mp4",
-    "license": "Mixkit Free License",
-    "label": "Aerial footage over the neighborhoods you serve",
-    "screened": "2026-10-14: rooftops and streets only, no faces, no readable signs"
-  },
+  "video": null,
   "compliance": [
     "No testimonials, client counts, rankings, awards or results that are not in their file.",
     "No medical, legal or financial outcome promises. Describe the service, not a guaranteed result.",
-    "FTC: no '#1', 'best in town', 'guaranteed', 'risk-free', 'cheapest' unless their file proves it."
+    "FTC: no '#1', 'best in town', 'guaranteed', 'risk-free', 'cheapest' unless their file proves it.",
+    "Licensed fields (insurance, financial advice, legal, health): no quotes, premiums, rates, returns or 'you're covered/approved' claims, no fear-based copy; their license or registration number is a [blank] if they did not give it."
   ],
   "disclosure": null,
   "fullSite": {
@@ -141,39 +134,64 @@
   "competitorSearch": {
     "query": "<profession> <area> <city>",
     "block": [
-      "yelp.com",
+      "accessnewswire.com",
+      "amazon.com",
+      "ameriprise.com",
+      "angi.com",
+      "bbb.org",
+      "birdeye.com",
+      "businesswire.com",
+      "clutch.co",
+      "coach.me",
+      "designrush.com",
+      "edwardjones.com",
+      "einpresswire.com",
+      "expertise.com",
       "facebook.com",
+      "finance.yahoo.com",
+      "fiverr.com",
+      "glassdoor.com",
+      "globenewswire.com",
+      "goodfirms.co",
+      "groupon.com",
+      "healthcare.gov",
+      "healthgrades.com",
+      "homeadvisor.com",
+      "houzz.com",
+      "indeed.com",
       "instagram.com",
       "linkedin.com",
-      "youtube.com",
-      "tiktok.com",
-      "x.com",
-      "twitter.com",
-      "nextdoor.com",
       "mapquest.com",
-      "yellowpages.com",
-      "bbb.org",
-      "provenexpert.com",
+      "medium.com",
+      "napfa.org",
       "newswire.com",
-      "accessnewswire.com",
-      "prnewswire.com",
-      "einpresswire.com",
-      "globenewswire.com",
-      "businesswire.com",
-      "finance.yahoo.com",
-      "wikipedia.org",
-      "angi.com",
-      "homeadvisor.com",
-      "thumbtack.com",
-      "houzz.com",
-      "healthgrades.com",
-      "zocdoc.com",
-      "vitals.com",
-      "tripadvisor.com",
-      "groupon.com",
+      "nextdoor.com",
+      "noomii.com",
+      "policygenius.com",
       "porch.com",
-      "expertise.com",
-      "birdeye.com"
-    ]
+      "prnewswire.com",
+      "provenexpert.com",
+      "psychologytoday.com",
+      "quora.com",
+      "reddit.com",
+      "smartasset.com",
+      "thumbtack.com",
+      "tiktok.com",
+      "trainerize.me",
+      "tripadvisor.com",
+      "twitter.com",
+      "upcity.com",
+      "upwork.com",
+      "vitals.com",
+      "wikipedia.org",
+      "wiseradvisor.com",
+      "x.com",
+      "yellowpages.com",
+      "yelp.com",
+      "youtube.com",
+      "ziprecruiter.com",
+      "zocdoc.com"
+    ],
+    "queryOnline": "<profession> for <who they serve>"
   }
 }

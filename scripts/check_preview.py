@@ -129,6 +129,9 @@ def main() -> int:
                     problems.append("empty: %s.%s" % (where, k))
         if m.get("format") and m["format"] not in ("checklist", "guide", "book", "companion"):
             problems.append('%s.format must be "checklist", "guide", "book" or "companion" (quizzes and scorecards are not built yet)' % where)
+        secs = m.get("sections")
+        if secs is not None and (not isinstance(secs, list) or not all(isinstance(x, dict) and isinstance(x.get("heading", ""), str) and isinstance(x.get("body", ""), str) for x in secs)):
+            problems.append('%s.sections must be a list of {"heading": "...", "body": "..."}' % where)
         if m.get("format") == "companion" and not str(m.get("prompt") or "").strip():
             problems.append("%s.prompt: an AI companion needs the prompt the visitor pastes into ChatGPT or Claude" % where)
     slugs = [m.get("slug") for m in (c.get("moreMagnets") or [])]
