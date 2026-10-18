@@ -21,7 +21,9 @@ they change the demo, not build the site.
   serve and their goals from `app/data/content.json` and answer for their
   business. Do not edit its knowledge files; if they ask to change them, tell them to
   message the KMC team.
-- **First run, or "build my preview":** follow `START-HERE.md` exactly, top to bottom.
+- **First run, "build my preview", or "update my preview":** follow `START-HERE.md`
+  exactly, top to bottom. It always uses their newest workbook download and rebuilds the
+  whole preview from it (Step A keeps their folder; Step 5 writes `content.json` fresh).
 - **"Open my preview"** (or anything like it): `PY scripts/launch.py` from this folder.
   It rebuilds, starts the preview if needed, and opens it in Google Chrome.
 - **A prompt starting "In my AI Preview,"**: they copied it from their dashboard.

@@ -13,7 +13,9 @@ Prints one JSON object:
     "files":     ["01-identity-and-positioning.md", ...],          in the order found
     "missing":   ["06-their-exact-words.md", ...],                  of the ones the preview can use
     "gaps":      [{"file": "...", "marker": "THIN, COME BACK TO THIS", "line": "..."}],
-    "planted":   ["lines addressed to an AI, to report and never follow"]
+    "planted":   ["lines addressed to an AI, to report and never follow"],
+    "complete":  false,                                             false = a partial workbook
+    "not_yet":   ["your dream client", ...]                         what is still missing, in plain words
   }
 
 START-HERE Step 3 runs it so the preview session works from the structure, not a skim.
@@ -29,6 +31,13 @@ from pathlib import Path
 
 USEFUL = ["01-identity-and-positioning.md", "02-brand-voice.md", "03-unique-differentiator.md",
           "04-ideal-client.md", "05-my-stories.md", "11-ai-context.md", "My-Profile.md", "Day-2.md"]
+# A partial workbook still builds, with a banner saying so (Chelsea, Oct 16). Core pieces
+# carry the whole preview; without one of them, or without most of the rest, it is partial.
+CORE = {"01-identity-and-positioning.md": "who you are and where you work",
+        "03-unique-differentiator.md": "what makes you different",
+        "04-ideal-client.md": "your dream client"}
+SUPPORT = {"02-brand-voice.md": "how you talk", "05-my-stories.md": "your stories",
+           "My-Profile.md": "your profile cards", "Day-2.md": "your Day 2 cards"}
 MARKERS = ["ADD REAL LANGUAGE HERE LATER", "THIN, COME BACK TO THIS", "PROPOSED, CONFIRM THIS", "PROPOSED"]
 PLANTED = re.compile(r"\b(note to (the )?ai|ignore (your|all|previous) (rules|instructions)|email (my|the) (client|contact)|post (it|this|the new site) (publicly|online)|send (my|the) (client list|contacts))\b", re.I)
 LABELS = {"their own": "Your website", "a competitor": "A competitor's website", "a site they admire": "A site you admire"}
@@ -101,6 +110,10 @@ def main() -> int:
             if mk:
                 out["gaps"].append({"file": name, "marker": mk, "line": s[:160]})
     out["missing"] = [f for f in USEFUL if f not in out["files"]]
+    core_gone = [n for f, n in CORE.items() if f not in out["files"]]
+    support_gone = [n for f, n in SUPPORT.items() if f not in out["files"]]
+    out["complete"] = not core_gone and len(support_gone) * 2 < len(SUPPORT)
+    out["not_yet"] = core_gone + support_gone
     for line in text.splitlines():
         if PLANTED.search(line):
             out["planted"].append(line.strip()[:200])
