@@ -35,7 +35,16 @@
     return `<div class="topbar"><div class="wrap">
       <a class="btn ghost sm" href="#/">&larr; Dashboard</a>
       <nav class="tabs" aria-label="Sections">${VIEWS.map(([k, l]) => `<a href="#/${k}"${k === active ? ' aria-current="page"' : ""}>${l}</a>`).join("")}</nav>
-    </div></div>`;
+    </div></div>${partialBanner(true)}`;
+  }
+
+  // A partial workbook (Chelsea, Oct 16): build anyway, and say plainly what is still to come.
+  function partialBanner(slim) {
+    const meta = (D.c && D.c.meta) || {};
+    if (!meta.partial) return "";
+    const list = (meta.notYet || []).filter(Boolean);
+    const still = list.length ? ` Still to come: ${esc(list.join(", "))}.` : "";
+    return `<div class="partial${slim ? " partial--slim" : ""}" role="note"><div class="wrap"><b>This preview is built from what you've given us so far.</b>${slim ? "" : still} <span>Finish your workbook, download it again, and paste the same message into Claude: your preview rebuilds with everything.</span></div></div>`;
   }
 
   const ring = (g, small) => `<div class="ring" style="--v:${g && g.overall || 0};--c:${color(g && g.overall)}${small ? ";width:64px;height:64px" : ""}"><div${small ? ' style="width:50px;height:50px"' : ""}><span><b${small ? ' style="font-size:1.3rem"' : ""}>${esc(g && g.letter || "–")}</b>${small ? "" : `<small>${g && g.overall != null ? g.overall + " / 100" : ""}</small>`}</span></div></div>`;
@@ -74,7 +83,7 @@
     const col = (c.brand || {}).colors || {};
     const g = D.g, gp = D.gp;
     const minutes = D.minutes ? ` in ${D.minutes} minutes` : "";
-    return `<section class="landing"><div class="wrap" style="display:flex;flex-direction:column;flex:1">
+    return partialBanner(false) + `<section class="landing"><div class="wrap" style="display:flex;flex-direction:column;flex:1">
       <p class="kicker">Built from your answers${minutes}</p>
       <h1>${esc(first())}, you just built all of this.</h1>
       <p class="lede">You answered the questions once. Your AI took it from there: a website in your words, your first lead magnet, a report card and a plan. Pick where to start.</p>

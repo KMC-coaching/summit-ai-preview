@@ -283,3 +283,10 @@ footer.foot { color: var(--muted); font-size: 13px; text-align: center; padding:
 code.start { margin: 10px 0 12px; }
 .day .full code { font-size: 13px; }
 .next--solo { grid-template-columns: 1fr; }
+
+/* partial workbook banner */
+.partial { background: linear-gradient(90deg, rgba(216,173,90,.22), rgba(216,173,90,.08)); border-bottom: 1px solid rgba(216,173,90,.45); color: var(--fg); }
+.partial .wrap { padding: 14px 0; font-size: 15px; line-height: 1.5; }
+.partial b { color: var(--gold); margin-right: 6px; }
+.partial--slim .wrap { padding: 9px 0; font-size: 13.5px; }
+.partial--slim span { color: var(--muted); }

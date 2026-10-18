@@ -25,6 +25,7 @@ from pathlib import Path
 
 # The contracted name first, then looser shapes of it, most specific first.
 PATTERNS = [
+    re.compile(r"^AIDR-Workbook", re.I),             # Krista's Workbook Hub "Save and Download"
     re.compile(r"^ai-brain", re.I),
     re.compile(r"ai[-_ ]?brain", re.I),
     re.compile(r"summit.*(brain|workbook)", re.I),   # the old name, still accepted
