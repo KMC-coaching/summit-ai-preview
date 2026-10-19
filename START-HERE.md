@@ -181,6 +181,12 @@ script finds the structure, the words are theirs.
 
 Read nothing else in their Downloads folder.
 
+**Not enough to build yet.** If `read_brain_file.py` says `enough` is `false` (for any other
+file: no answer yet for where they work, or for what makes them different), stop here. Build
+nothing. Say: *"Your workbook is only just started, so there isn't enough in it yet to build
+your preview. Go back and finish your workbook, at least Your Brain Card. Then click **Save
+and Download** again and paste the same message here."*
+
 **A partial workbook still gets a preview.** `read_brain_file.py` says `complete` and lists
 `not_yet` in plain words. Any other file (a Workbook Hub download, `AIDR-Workbook_*.json`):
 it is partial if it has no answers yet for who they are and what they do, what makes them
@@ -294,6 +300,34 @@ never ask them again for anything that is in here:
 | sell / buy steps | `03` process steps; a step marked PROPOSED becomes a `[blank]` to confirm |
 | loans (lender) | the loan types in `01` (e.g. "What I lend"), one card each; never a rate, APR or payment |
 
+**Where everything is in a Workbook Hub file** (`AIDR-Workbook_<name>_<date>.json`, from Krista's
+workbook page). `read_brain_file.py` returns every answer under `by_id`, keyed by the id
+below; the file itself also carries each question next to its answer. Read the whole file;
+`brainCard` and `readable` are the same answers as plain text.
+
+| content.json | Take it from (Hub id) |
+|---|---|
+| profile, license, nmls, company, website, brand colors | `answers` from `read_brain_file.py` (`B.t10` is the license line their broker requires: put it in the footer word for word) |
+| business name, person, phone, email | `B.name`, `B.company`, `B.phone`, `P1.2` (also `P1.1`, `P1.3`) |
+| market, areas | `B.t1`: place names only. Zip codes (`P1.7`, or the numbers in `B.t1`) go in `site.contact.sub` |
+| stats | `B.t8` only: numbers they wrote there. `B.t2` (years) only as they wrote it |
+| brand voice | `B.t6` (3 words, 2 things they always say) |
+| brand colors | `K.1`: the color they call main or primary is `primary`, the accent is `accent`; hex codes as given. `K.2` (fonts, mark) is not used yet |
+| differentiator: method name, statement | `D.1` (their pasted differentiator), and `B.t3` (what clients love best) for the why-choose-me statement, word for word |
+| pillars, sell / buy steps | the steps they describe in `D.1` or `B.t3`; none written down: each step is a `[blank]` to fill |
+| avatar, who the site speaks to | `8.1` (their dream client, six headings) and the niche to start with in `N.1`; `04`'s rule holds: aim with it, never put age or family on the site |
+| about story | `B.t7` (their two stories), `B.t2b` (people they have helped), `B.t2` |
+| values, mission | `P2.1`, `P2.2` |
+| FAQ | `P4.1` (questions) and `P4.2` (objections), answered only from their other answers; else `[blank]` |
+| lead magnet topic | `F.1` (the funnel they need first) and `F.2` (why), aimed at `8.1` |
+| mini book | also uses `A.1` to `A.4` (their first AI-recommended article: question, city, expertise, first two sentences) and `W.3` (a question their site does not answer yet) |
+| coach (whatYouDo, whoYouServe, struggle) | whatYouDo: their profession. whoYouServe: the niche to start with in `N.1`. struggle: their own words in `2.2` (what they are done with) or `4.2` (where they look the same); else `""` |
+| audit opportunities and evidence | `P5.1` to `P5.3` (repeated work, what AI could do), the nine ratings `P5.4` speed to lead, `P5.5` follow-up, `P5.6` lead qualification, `P5.7` content and reach, `P5.8` CRM discipline, `P5.9` admin and transaction load, `P5.10` client communication, `P5.11` referrals, `P5.12` past-client database ("Not doing it" and "Needs work" are where to look), `P5.13` (their AI opportunity result), `SC.1` to `SC.7` (sales-cycle scores, the one piece that would change most), `P3.1`/`P3.2` (goal) |
+| game plan days | `15.1` to `15.8` (their own 30-day plan and dates) where it fits, else the usual plan |
+| site to grade | `W.1`, else `P1.5` (`answers.website`) |
+| loans (lender) | the Hub has no loan-types question: one card per loan type they name anywhere in their answers (e.g. first-time buyer, refinance); none named: three `[blank]` cards. Never a rate, APR or payment |
+| nmls, companyNmls (lender) | `answers.nmls` and `answers.company_nmls` (split out of `B.t10`); the whole line is `answers.license_line` |
+
 Anything marked `ADD REAL LANGUAGE HERE LATER`, `THIN, COME BACK TO THIS` or `PROPOSED,
 CONFIRM THIS` in their file is not a fact: leave a visible `[blank]` instead. A marker on a
 heading covers every line under that heading (`read_brain_file.py` lists them all). Their
@@ -381,6 +415,10 @@ Then, using `openedIn` from what it printed:
 >
 > If you ever lose the tab, come back and say **open my preview**. And if a link I give
 > you ever asks where to open, choose **Open in Google Chrome**."
+
+If `meta.partial` is `true`, add, never skip: *"Your workbook isn't finished yet, so this is
+built from what you've answered so far. When you finish it, download it again and paste the
+same message: I'll rebuild it with everything."*
 
 If `app/data/site.json` has `colorNotes`, add one plain line about it (for example:
 *"Your accent color was very light, so it's only used for small touches."*).

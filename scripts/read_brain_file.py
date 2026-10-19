@@ -61,6 +61,62 @@ def profile_for(profession: str) -> str:
     return "general"
 
 
+# Krista's Workbook Hub download (AIDR-Workbook_<name>_<date>.json): every answer carries its
+# own question id. Core and supporting answers decide "complete", as for a BOSS file.
+HUB_CORE = {("B.t1", "P1.7"): "who you are and where you work",
+            ("D.1", "B.t3"): "what makes you different",
+            ("8.1", "N.1"): "your dream client"}
+HUB_SUPPORT = {("B.t6",): "how you talk", ("B.t7",): "your stories", ("P4.1",): "your clients' questions",
+               ("P5.1", "P5.13"): "your AI opportunity answers", ("K.1",): "your brand kit", ("F.1",): "which funnel you need first"}
+
+
+def read_hub(d: dict) -> dict:
+    ans = {}
+    for s in d.get("sections") or []:
+        for a in s.get("answers") or []:
+            if a.get("id") and str(a.get("answer") or "").strip():
+                ans[a["id"]] = str(a["answer"]).strip()
+    # Only the identity answers decide it: an agent who "helps buyers get a mortgage" is not a lender.
+    who = " ".join(ans.get(i, "") for i in ("B.company", "B.credentials", "B.t10", "P1.1", "P1.8"))
+    lender = bool(re.search(r"\b(lender|lending|loan officer|mortgage (company|broker|banker|lender|advisor)|nmls)\b", who, re.I))
+    website = ans.get("W.1") or ans.get("P1.5") or str(d.get("website") or "")
+    website = website.split()[0].strip(",;") if website.strip() else ""
+    if website and not re.match(r"^https?://", website, re.I):
+        website = "https://" + website.strip("/")
+    license_line = ans.get("B.t10", "")
+    # A lender's line usually holds two NMLS numbers: theirs first, then the company's.
+    nmls_ids = re.findall(r"NMLS\s*(?:#|ID|No\.?)?\s*:?\s*(\d{3,})", license_line, re.I)
+    has = lambda ids: any(ans.get(i) for i in ids)
+    core_gone = [n for ids, n in HUB_CORE.items() if not has(ids)]
+    support_gone = [n for ids, n in HUB_SUPPORT.items() if not has(ids)]
+    return {
+        "made_by_boss": False, "made_by_hub": True,
+        "answers": {
+            "profession": "mortgage lender" if lender else "real estate agent",
+            "profile": "lender" if lender else "real-estate",
+            "license": "" if lender else license_line,
+            "brokerage": "",
+            "nmls": (nmls_ids[0] if nmls_ids else license_line) if lender else "",
+            "company": ans.get("B.company", "") or str(d.get("company") or ""),
+            "company_nmls": nmls_ids[1] if lender and len(nmls_ids) > 1 else "",
+            "license_line": license_line,
+            "brand_colors": ans.get("K.1", ""),
+            "brand_fonts": ans.get("K.2", ""),
+            "website": website,
+            "website_label": "Your website" if website else "",
+        },
+        "by_id": ans,
+        "files": sorted({k.split(".")[0] for k in ans}),
+        "missing": [], "gaps": [],
+        "planted": [v[:200] for v in ans.values() if PLANTED.search(v)],
+        "complete": not core_gone and len(support_gone) * 2 < len(HUB_SUPPORT),
+        "not_yet": core_gone + support_gone,
+        # The minimum to build at all: where they work and what makes them different (Day 1's
+        # Brain Card). Less than that would be a page of blanks with nothing to compare against.
+        "enough": has(("B.t1", "P1.7")) and has(("D.1", "B.t3")),
+    }
+
+
 def main() -> int:
     if len(sys.argv) < 2:
         print("usage: read_brain_file.py <file>")
@@ -71,6 +127,15 @@ def main() -> int:
     except OSError as e:
         print(json.dumps({"error": "cannot read %s: %s" % (path, e)}))
         return 1
+
+    if path.suffix.lower() == ".json":
+        try:
+            d = json.loads(text)
+        except ValueError:
+            d = None
+        if isinstance(d, dict) and d.get("tool") == "workbook-hub":
+            print(json.dumps(read_hub(d), indent=2))
+            return 0
 
     out = {"made_by_boss": "## Preview answers" in text, "answers": {}, "files": [], "missing": [], "gaps": [], "planted": []}
     m = re.search(r"^## Preview answers\s*$(.*?)(?=^---\s*$|^## FILE:)", text, re.M | re.S)
@@ -114,6 +179,7 @@ def main() -> int:
     support_gone = [n for f, n in SUPPORT.items() if f not in out["files"]]
     out["complete"] = not core_gone and len(support_gone) * 2 < len(SUPPORT)
     out["not_yet"] = core_gone + support_gone
+    out["enough"] = "01-identity-and-positioning.md" in out["files"] and "03-unique-differentiator.md" in out["files"]
     for line in text.splitlines():
         if PLANTED.search(line):
             out["planted"].append(line.strip()[:200])

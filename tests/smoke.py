@@ -79,6 +79,39 @@ def main():
     wrong = {k: rbf.profile_for(k) for k, v in cases.items() if rbf.profile_for(k) != v}
     step("picks the right profile for each profession", not wrong, str(wrong))
 
+    # Krista's Workbook Hub downloads, made by her real page (examples/hub/).
+    want = {"AIDR-Workbook_jordan-avery_20261018.json": ("real-estate", True),
+            "AIDR-Workbook_priya-natarajan_20261018.json": ("lender", True),
+            "AIDR-Workbook_sam-ortiz_20261018.json": ("real-estate", False),
+            "AIDR-Workbook_taylor-brooks_20261018.json": ("real-estate", False)}
+    bad = []
+    for name, (prof, done) in want.items():
+        code, out = run(["scripts/read_brain_file.py", str(ROOT / "examples" / "hub" / name)], env)
+        try:
+            r = json.loads(out)
+            enough_want = name != "AIDR-Workbook_taylor-brooks_20261018.json"
+            if r["answers"]["profile"] != prof or r["complete"] != done or not r.get("made_by_hub") or r.get("enough") != enough_want:
+                bad.append("%s: %s %s" % (name, r["answers"]["profile"], r["complete"]))
+        except Exception as e:
+            bad.append("%s: %s" % (name, e))
+    step("reads Workbook Hub files (profile, partial or complete)", not bad, "; ".join(bad))
+    # The .md twin is saved 0.6 s after the .json; a re-download gets " (1)". The newest .json wins.
+    dl = home / "Downloads"
+    for f in ("AIDR-Workbook_sam-ortiz_20261018.json", "AIDR-Workbook_sam-ortiz_20261018.md"):
+        shutil.copy(ROOT / "examples" / "hub" / f, dl / f)
+    time.sleep(1.1)
+    shutil.copy(ROOT / "examples" / "hub" / "AIDR-Workbook_jordan-avery_20261018.json", dl / "AIDR-Workbook_jordan-avery_20261018 (1).json")
+    time.sleep(1.1)
+    shutil.copy(ROOT / "examples" / "hub" / "AIDR-Workbook_jordan-avery_20261018.md", dl / "AIDR-Workbook_jordan-avery_20261018 (1).md")
+    code, out = run(["scripts/find_brain_file.py"], env)
+    try:
+        picked = Path(json.loads(out)["path"]).name
+    except Exception:
+        picked = out[-200:]
+    step("finder picks the newest Hub .json, never its .md twin", picked == "AIDR-Workbook_jordan-avery_20261018 (1).json", picked)
+    for f in dl.glob("AIDR-*"):
+        f.unlink()
+
     # 2. Node from nodejs.org into the home folder, no admin.
     t0 = time.time()
     code, out = run(["scripts/get_node.py"], env)
