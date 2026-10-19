@@ -95,6 +95,33 @@ def main():
         except Exception as e:
             bad.append("%s: %s" % (name, e))
     step("reads Workbook Hub files (profile, partial or complete)", not bad, "; ".join(bad))
+
+    # Half-done workbooks (real downloads, 2026-10-19). First half: builds, banner on, and the
+    # client FAQ and AI audit questions are offered. Skipped Day 1: not enough until asked.
+    def hub(name, extra):
+        code, out = run(["scripts/read_brain_file.py", str(ROOT / "examples" / "hub" / name), "--extra", str(extra)], env)
+        return json.loads(out)
+    none = home / "no-extra.json"
+    half = hub("AIDR-Workbook_jordan-avery-first-half_20261019.json", none)
+    asks = [a["id"] for a in half["ask"]]
+    step("first half: builds, shows the banner, offers the missing questions",
+         half["enough"] and half["partial"] and asks == ["P4.1", "P4.2", "P2.1", "P5.1"] and all(a["question"] for a in half["ask"]),
+         "%s %s %s" % (half["enough"], half["partial"], asks))
+    skip = hub("AIDR-Workbook_unnamed_20261019.json", none)
+    extra = home / "extra-answers.json"
+    extra.write_text(json.dumps({"B.name": "Jordan Avery", "D.1": "I write the plan down first.", "B.t3": "",
+                                 "8.1": "Long-time owners a year out.", "P1.7": "should never replace the file"}))
+    fixed = hub("AIDR-Workbook_unnamed_20261019.json", extra)
+    step("skipped Day 1: asks only the Day 1 questions, in plain words, then builds from the answers",
+         # The name is in My Profile (P1.1), so it is not asked again.
+         not skip["enough"] and [a["id"] for a in skip["ask"]][:3] == ["D.1", "B.t3", "8.1"]
+         and not any(w in a["question"] for a in skip["ask"] for w in ("Paste", "six colors"))
+         and fixed["enough"] and sorted(fixed["added_here"]) == ["8.1", "B.name", "D.1"]
+         and fixed["by_id"]["P1.7"] != "should never replace the file",
+         "%s %s" % ([a["id"] for a in skip["ask"]], fixed.get("added_here")))
+    full = hub("AIDR-Workbook_jordan-avery_20261018.json", none)
+    step("finished workbook: no banner, nothing to ask", not full["partial"] and full["ask"] == [],
+         "%s %s" % (full["partial"], full["ask"]))
     # The .md twin is saved 0.6 s after the .json; a re-download gets " (1)". The newest .json wins.
     dl = home / "Downloads"
     for f in ("AIDR-Workbook_sam-ortiz_20261018.json", "AIDR-Workbook_sam-ortiz_20261018.md"):

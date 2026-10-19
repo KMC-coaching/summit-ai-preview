@@ -18,6 +18,13 @@ Prints one JSON object:
     "not_yet":   ["your dream client", ...]                         what is still missing, in plain words
   }
 
+A Workbook Hub download (AIDR-Workbook_*.json) also returns, for the parts still missing:
+    "partial":    true when anything is still missing (the dashboard shows the banner),
+    "ask":        [{"id": "P4.1", "part": "your clients' questions", "question": "..."}],
+                  the questions to offer in chat, worded as in their workbook,
+    "added_here": ids answered in chat, read from app/data/extra-answers.json
+                  (or --extra <path>); the workbook file always wins.
+
 START-HERE Step 3 runs it so the preview session works from the structure, not a skim.
 A file written some other way (no "## Preview answers") still returns what it can.
 Runs on the Python that ships with macOS (3.9).
@@ -67,15 +74,49 @@ HUB_CORE = {("B.t1", "P1.7"): "who you are and where you work",
             ("D.1", "B.t3"): "what makes you different",
             ("8.1", "N.1"): "your dream client"}
 HUB_SUPPORT = {("B.t6",): "how you talk", ("B.t7",): "your stories", ("P4.1",): "your clients' questions",
+               ("P2.1",): "your values",
                ("P5.1", "P5.13"): "your AI opportunity answers", ("K.1",): "your brand kit", ("F.1",): "which funnel you need first"}
+# What to ask when a part is missing, in the order that removes the most blanks from the preview.
+# Each id is asked with the workbook's own question, taken from the file. Kept short on purpose:
+# a student who pasted one message should not face the whole workbook again.
+HUB_ASK = [("who you are and where you work", ["B.t1"]),
+           ("what makes you different", ["D.1", "B.t3"]),
+           ("your dream client", ["8.1"]),
+           ("your clients' questions", ["P4.1", "P4.2"]),
+           ("your values", ["P2.1"]),
+           ("which funnel you need first", ["F.1", "F.2"]),
+           ("your AI opportunity answers", ["P5.1"]),
+           ("your brand kit", ["K.1"]),
+           ("how you talk", ["B.t6"]),
+           ("your stories", ["B.t7"])]
+# Two workbook questions only make sense right after an exercise ("Paste your differentiator
+# here"). Asked cold in a chat they need plain words.
+HUB_ASK_WORDS = {"D.1": "In a sentence or two, what makes you different from everyone else who does what you do?",
+                 "B.t3": "What do your clients love best about working with you?",
+                 "8.1": "Who is your dream client? Where they are in life, what they want, and what worries them.",
+                 "K.1": "What are your brand colors? Color names or codes are both fine."}
+# Answers given in chat when the workbook had none (START-HERE Step 3). They live in the
+# preview folder, which an update keeps, and only ever fill a gap: the workbook file wins.
+EXTRA = Path(__file__).resolve().parent.parent / "app" / "data" / "extra-answers.json"
 
 
-def read_hub(d: dict) -> dict:
-    ans = {}
+def read_hub(d: dict, extra_path: Path = EXTRA) -> dict:
+    ans, asked = {}, {}
     for s in d.get("sections") or []:
         for a in s.get("answers") or []:
+            if a.get("id") and a.get("question"):
+                asked[a["id"]] = str(a["question"]).strip()
             if a.get("id") and str(a.get("answer") or "").strip():
                 ans[a["id"]] = str(a["answer"]).strip()
+    added = []
+    try:
+        extra = json.loads(extra_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        extra = {}
+    for k, v in (extra if isinstance(extra, dict) else {}).items():
+        if not ans.get(k) and str(v or "").strip():
+            ans[k] = str(v).strip()
+            added.append(k)
     # Only the identity answers decide it: an agent who "helps buyers get a mortgage" is not a lender.
     who = " ".join(ans.get(i, "") for i in ("B.company", "B.credentials", "B.t10", "P1.1", "P1.8"))
     lender = bool(re.search(r"\b(lender|lending|loan officer|mortgage (company|broker|banker|lender|advisor)|nmls)\b", who, re.I))
@@ -89,6 +130,13 @@ def read_hub(d: dict) -> dict:
     has = lambda ids: any(ans.get(i) for i in ids)
     core_gone = [n for ids, n in HUB_CORE.items() if not has(ids)]
     support_gone = [n for ids, n in HUB_SUPPORT.items() if not has(ids)]
+    gone = set(core_gone + support_gone)
+    # My Profile asks for the business name too (P1.1), so a student who skipped Day 1 has given it.
+    ask = [] if ans.get("B.name") or ans.get("P1.1") else [{"id": "B.name", "part": "your name", "question": asked.get("B.name", "Your name")}]
+    for part, ids in HUB_ASK:
+        if part in gone:
+            ask += [{"id": i, "part": part, "question": HUB_ASK_WORDS.get(i) or asked.get(i, "")}
+                    for i in ids if not ans.get(i) and (asked.get(i) or i in HUB_ASK_WORDS)]
     return {
         "made_by_boss": False, "made_by_hub": True,
         "answers": {
@@ -114,6 +162,11 @@ def read_hub(d: dict) -> dict:
         # The minimum to build at all: where they work and what makes them different (Day 1's
         # Brain Card). Less than that would be a page of blanks with nothing to compare against.
         "enough": has(("B.t1", "P1.7")) and has(("D.1", "B.t3")),
+        # Anything still missing shows the banner. "complete" alone let a half-done workbook
+        # through with no banner, because it tolerates a few missing supporting parts.
+        "partial": bool(core_gone or support_gone),
+        "ask": ask,
+        "added_here": added,
     }
 
 
@@ -134,7 +187,8 @@ def main() -> int:
         except ValueError:
             d = None
         if isinstance(d, dict) and d.get("tool") == "workbook-hub":
-            print(json.dumps(read_hub(d), indent=2))
+            extra = Path(sys.argv[sys.argv.index("--extra") + 1]) if "--extra" in sys.argv[2:-1] else EXTRA
+            print(json.dumps(read_hub(d, extra), indent=2))
             return 0
 
     out = {"made_by_boss": "## Preview answers" in text, "answers": {}, "files": [], "missing": [], "gaps": [], "planted": []}

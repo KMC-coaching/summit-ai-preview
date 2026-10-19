@@ -70,7 +70,7 @@ the invented-proof checks (testimonials, star ratings, stats not in their file).
 ```jsonc
 {
   "profile": "real-estate",                      // or "lender" or "general"
-  "meta": { "partial": false, "notYet": [],   // a partial workbook: true, plus what is still missing in plain words (START-HERE Step 3)
+  "meta": { "partial": false, "notYet": [],   // anything still missing: true, plus not_yet from read_brain_file.py (START-HERE Step 3)
            "brainFile": "ai-brain.md", "brainFilePath": "/Users/.../Downloads/ai-brain.md",  // the path the finder printed
             "startedAt": "2026-10-20T10:02", "generatedAt": "2026-10-20T10:11" },
 
