@@ -89,11 +89,16 @@ def main() -> int:
 
     hits.sort()
     best = hits[0][2]
+    # The Workbook Hub saves a .json for the machine and, 0.6 s later, a readable .md copy
+    # with the same name. The newer .md must never win over its own .json.
+    twin = best.with_suffix(".json")
+    if best.suffix.lower() != ".json" and twin.exists():
+        best = twin
     print(json.dumps({
         "found": True,
         "path": str(best),
         "modified": time.strftime("%Y-%m-%d %H:%M", time.localtime(best.stat().st_mtime)),
-        "others": [str(h[2]) for h in hits[1:6]],
+        "others": [str(h[2]) for h in hits if h[2] != best][:5],
     }, indent=2))
     return 0
 
