@@ -26,6 +26,8 @@ they change the demo, not build the site.
   whole preview from it (Step A keeps their folder; Step 5 writes `content.json` fresh).
 - **"Open my preview"** (or anything like it): `PY scripts/launch.py` from this folder.
   It rebuilds, starts the preview if needed, and opens it in Google Chrome.
+- **"Help me finish my answers"** (or anything like it): `START-HERE.md`, "Coming back
+  later". Ask the questions their workbook has no answers for, save them, rebuild.
 - **A prompt starting "In my AI Preview,"**: they copied it from their dashboard.
   1. Do what it asks by editing `app/data/content.json` (shape in `CONTENT-SPEC.md`).
      - Another lead magnet: add it to `moreMagnets` (never replace the first).

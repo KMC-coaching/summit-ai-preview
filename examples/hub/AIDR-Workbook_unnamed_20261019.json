@@ -1,0 +1,1054 @@
+{
+  "event": "AI Agent Digital Revolution",
+  "tool": "workbook-hub",
+  "version": 1,
+  "savedAt": "2026-10-19T12:20:57.640Z",
+  "fileName": "AIDR-Workbook_unnamed_20261019.json",
+  "name": "",
+  "company": "",
+  "website": "averyhomegroup.example",
+  "brainCard": "Read this first. Use it for every answer. Never make up a fact about me.\n\nYour name: \nYour company name: \nYour credentials and designations: \nYour business phone number: \nYour business address: \nWhere you work: \nHow long you have been doing this: \nA few examples of people you have helped and served: \nWhat makes you different: what your clients love best about you: \nHow you talk: 3 words that describe you, and 2 things you always say: \nTwo true stories you like to tell clients: \nReal reviews or numbers you are allowed to share: \nThe license line your broker says must be on your marketing: ",
+  "score": {
+    "score": 1,
+    "noes": [
+      1
+    ],
+    "lines": []
+  },
+  "trackers": {
+    "VT.1": "",
+    "VT.2": "",
+    "VT.3": "",
+    "SU.1": "",
+    "SU.2": "",
+    "SU.3": ""
+  },
+  "sections": [
+    {
+      "id": "RD1",
+      "title": "Where you're going",
+      "answers": []
+    },
+    {
+      "id": "SU1",
+      "title": "",
+      "answers": []
+    },
+    {
+      "id": "1",
+      "title": "Which one am I",
+      "answers": [
+        {
+          "id": "1.1",
+          "question": "Which one are you?",
+          "answer": ""
+        }
+      ]
+    },
+    {
+      "id": "Rm1",
+      "title": "Everything this week comes back to",
+      "answers": []
+    },
+    {
+      "id": "H1",
+      "title": "The AI Brain",
+      "answers": []
+    },
+    {
+      "id": "B",
+      "title": "Your Brain Card",
+      "answers": [
+        {
+          "id": "B.name",
+          "question": "Your name",
+          "answer": ""
+        },
+        {
+          "id": "B.company",
+          "question": "Your company name",
+          "answer": ""
+        },
+        {
+          "id": "B.credentials",
+          "question": "Your credentials and designations",
+          "answer": ""
+        },
+        {
+          "id": "B.phone",
+          "question": "Your business phone number",
+          "answer": ""
+        },
+        {
+          "id": "B.address",
+          "question": "Your business address",
+          "answer": ""
+        },
+        {
+          "id": "B.t1",
+          "question": "Where you work",
+          "answer": ""
+        },
+        {
+          "id": "B.t2",
+          "question": "How long you have been doing this",
+          "answer": ""
+        },
+        {
+          "id": "B.t2b",
+          "question": "A few examples of people you have helped and served",
+          "answer": ""
+        },
+        {
+          "id": "B.t3",
+          "question": "What makes you different: what your clients love best about you",
+          "answer": ""
+        },
+        {
+          "id": "B.t6",
+          "question": "How you talk: 3 words that describe you, and 2 things you always say",
+          "answer": ""
+        },
+        {
+          "id": "B.t7",
+          "question": "Two true stories you like to tell clients",
+          "answer": ""
+        },
+        {
+          "id": "B.t8",
+          "question": "Real reviews or numbers you are allowed to share",
+          "answer": ""
+        },
+        {
+          "id": "B.t10",
+          "question": "The license line your broker says must be on your marketing",
+          "answer": ""
+        }
+      ]
+    },
+    {
+      "id": "Rm2",
+      "title": "Same AI. Different input.",
+      "answers": []
+    },
+    {
+      "id": "Rm3",
+      "title": "The M.A.G.N.E.T. sales cycle: attract, don't chase",
+      "answers": []
+    },
+    {
+      "id": "SC",
+      "title": "Where are you in the sales cycle?",
+      "answers": [
+        {
+          "id": "SC.1",
+          "question": "Marketing & Awareness (Branding)",
+          "answer": ""
+        },
+        {
+          "id": "SC.2",
+          "question": "Attract (Lead Generation)",
+          "answer": ""
+        },
+        {
+          "id": "SC.3",
+          "question": "Grow Relationships (Lead Nurture)",
+          "answer": ""
+        },
+        {
+          "id": "SC.4",
+          "question": "Nail The Sale (Conversion)",
+          "answer": ""
+        },
+        {
+          "id": "SC.5",
+          "question": "Execute (Results)",
+          "answer": ""
+        },
+        {
+          "id": "SC.6",
+          "question": "Transform into Raving Fans (Refer, Retain, Resell)",
+          "answer": ""
+        },
+        {
+          "id": "SC.7",
+          "question": "The big question: looking at your scores, which one piece would change the most for your business?",
+          "answer": ""
+        }
+      ]
+    },
+    {
+      "id": "K",
+      "title": "Build your brand kit",
+      "answers": [
+        {
+          "id": "K.1",
+          "question": "Your six colors and what each one is for",
+          "answer": ""
+        },
+        {
+          "id": "K.2",
+          "question": "Your two fonts and your main mark",
+          "answer": ""
+        }
+      ]
+    },
+    {
+      "id": "Rm4",
+      "title": "Netflix or Blockbuster",
+      "answers": []
+    },
+    {
+      "id": "4",
+      "title": "Where am I Blockbuster today?",
+      "answers": [
+        {
+          "id": "4.1",
+          "question": "Where do you work one to one today, one person at a time, when one piece of marketing could reach your whole town?",
+          "answer": ""
+        },
+        {
+          "id": "4.2",
+          "question": "Where do you look the same as every other agent or lender in your market?",
+          "answer": ""
+        },
+        {
+          "id": "4.3",
+          "question": "What is one thing you could do that no other agent or lender in your town is doing?",
+          "answer": ""
+        }
+      ]
+    },
+    {
+      "id": "Rm5",
+      "title": "Commodity or celebrity",
+      "answers": []
+    },
+    {
+      "id": "D",
+      "title": "Your unique differentiator",
+      "answers": [
+        {
+          "id": "D.1",
+          "question": "Paste your differentiator here",
+          "answer": ""
+        }
+      ]
+    },
+    {
+      "id": "Rm6",
+      "title": "Your dream client and your niche",
+      "answers": []
+    },
+    {
+      "id": "N",
+      "title": "Find your niche",
+      "answers": [
+        {
+          "id": "N.1",
+          "question": "Paste your niche here",
+          "answer": ""
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "title": "Your dream client",
+      "answers": [
+        {
+          "id": "8.1",
+          "question": "Paste your dream client here",
+          "answer": ""
+        }
+      ]
+    },
+    {
+      "id": "H2",
+      "title": "The Multiplier + Authority Funnels",
+      "answers": []
+    },
+    {
+      "id": "Rm7",
+      "title": "Marketing is educating",
+      "answers": []
+    },
+    {
+      "id": "Rm8",
+      "title": "One to many: Facebook ads and seminars",
+      "answers": []
+    },
+    {
+      "id": "V",
+      "title": "Video text messages",
+      "answers": [
+        {
+          "id": "V.1",
+          "question": "Who are your first ten? Names only.",
+          "answer": ""
+        }
+      ]
+    },
+    {
+      "id": "Rm11",
+      "title": "Your course and your book",
+      "answers": []
+    },
+    {
+      "id": "2",
+      "title": "My pull and my push",
+      "answers": [
+        {
+          "id": "2.1",
+          "question": "What are you moving toward? That is your pull. For example: a bigger home, more time with your kids, never stressing about money.",
+          "answer": ""
+        },
+        {
+          "id": "2.2",
+          "question": "What are you done with? That is your push. For example: burnout, an income that jumps around, feeling behind.",
+          "answer": ""
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "I'm committed to. I'm done tolerating.",
+      "answers": [
+        {
+          "id": "3.1",
+          "question": "Finish this sentence: I am committed to ...",
+          "answer": ""
+        },
+        {
+          "id": "3.2",
+          "question": "Finish this sentence: I am done tolerating ...",
+          "answer": ""
+        }
+      ]
+    },
+    {
+      "id": "Rm12",
+      "title": "Will it make the boat go faster?",
+      "answers": []
+    },
+    {
+      "id": "Rm13",
+      "title": "Recency, relevancy and proximity",
+      "answers": []
+    },
+    {
+      "id": "G",
+      "title": "Your next post",
+      "answers": [
+        {
+          "id": "G.1",
+          "question": "What is one thing you can change so your next post has more recency, more relevancy, or more proximity?",
+          "answer": ""
+        }
+      ]
+    },
+    {
+      "id": "Rm14",
+      "title": "Time liability or time investment",
+      "answers": []
+    },
+    {
+      "id": "BT",
+      "title": "End of the day: will it make the boat go faster?",
+      "answers": [
+        {
+          "id": "BT.1",
+          "question": "If I use my brain in my marketing, will it make my boat go faster?",
+          "answer": ""
+        },
+        {
+          "id": "BT.2",
+          "question": "If I pick a niche and a dream client, will it make my boat go faster?",
+          "answer": ""
+        },
+        {
+          "id": "BT.3",
+          "question": "If I send video texts every day, will it make my boat go faster?",
+          "answer": ""
+        },
+        {
+          "id": "BT.4",
+          "question": "If I become the authority (my book, my authority funnels, my reviews, my seminar), will it make my boat go faster?",
+          "answer": ""
+        },
+        {
+          "id": "BT.5",
+          "question": "If I put Facebook ads behind my funnel, will it make my boat go faster?",
+          "answer": ""
+        },
+        {
+          "id": "BT.6",
+          "question": "Which one will you do first?",
+          "answer": ""
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "title": "Tonight",
+      "answers": []
+    },
+    {
+      "id": "RD2",
+      "title": "Where you're going",
+      "answers": []
+    },
+    {
+      "id": "SU2",
+      "title": "",
+      "answers": []
+    },
+    {
+      "id": "7",
+      "title": "What happened since yesterday",
+      "answers": [
+        {
+          "id": "7.2",
+          "question": "How many people answered?",
+          "answer": "Four of ten answered."
+        },
+        {
+          "id": "7.3",
+          "question": "One win from yesterday, in a sentence.",
+          "answer": "A past client in Land Park asked me to walk her house in March."
+        }
+      ]
+    },
+    {
+      "id": "H3",
+      "title": "Recommended by AI",
+      "answers": []
+    },
+    {
+      "id": "Rd1",
+      "title": "AI doesn't search. It selects.",
+      "answers": []
+    },
+    {
+      "id": "A",
+      "title": "Your first AI-recommended article",
+      "answers": [
+        {
+          "id": "A.1",
+          "question": "Pick your question: Is now a good time to buy in [city]? / Is now a good time to sell in [city]? / [City] housing market update / Cost of living in [city] / Pros and cons of living in [city] / Best neighborhoods in [city]",
+          "answer": "Is now a good time to sell in East Sacramento?"
+        },
+        {
+          "id": "A.2",
+          "question": "Your city",
+          "answer": "Sacramento"
+        },
+        {
+          "id": "A.3",
+          "question": "One sentence about your expertise",
+          "answer": "I have sold 31 homes, most of them for long-time owners in East Sacramento and Land Park."
+        },
+        {
+          "id": "A.4",
+          "question": "Write your first two sentences: the question as a full sentence with your city in it, then the answer.",
+          "answer": "Is now a good time to sell your East Sacramento home? If you have owned it fifteen years or more, the answer depends less on the market and more on what your house needs first."
+        }
+      ]
+    },
+    {
+      "id": "Rd2",
+      "title": "Your website is yours",
+      "answers": []
+    },
+    {
+      "id": "W",
+      "title": "Your website",
+      "answers": [
+        {
+          "id": "W.1",
+          "question": "Do you have a website? Paste the address.",
+          "answer": "averyhomegroup.example"
+        },
+        {
+          "id": "W.2",
+          "question": "In one sentence, what does it say about who you help?",
+          "answer": "It says I sell homes in Sacramento. It does not say I help long-time owners sell without surprises."
+        },
+        {
+          "id": "W.3",
+          "question": "What one question would a stranger have that it does not answer yet?",
+          "answer": "What do I actually need to fix before I sell?"
+        }
+      ]
+    },
+    {
+      "id": "Rd3",
+      "title": "Reviews and the authority funnels",
+      "answers": []
+    },
+    {
+      "id": "F",
+      "title": "Which funnel do I need first",
+      "answers": [
+        {
+          "id": "F.1",
+          "question": "Pick one",
+          "answer": "Neighborhood"
+        },
+        {
+          "id": "F.2",
+          "question": "Why that one first, in two sentences.",
+          "answer": "My sellers are a year out and never raise their hand."
+        }
+      ]
+    },
+    {
+      "id": "R",
+      "title": "Your first five review requests",
+      "answers": [
+        {
+          "id": "R.1",
+          "question": "Past client 1 (name only)",
+          "answer": "Linda"
+        },
+        {
+          "id": "R.2",
+          "question": "Past client 2 (name only)",
+          "answer": "Marcus"
+        },
+        {
+          "id": "R.3",
+          "question": "Past client 3 (name only)",
+          "answer": "Dee"
+        },
+        {
+          "id": "R.4",
+          "question": "Past client 4 (name only)",
+          "answer": "Paul"
+        },
+        {
+          "id": "R.5",
+          "question": "Past client 5 (name only)",
+          "answer": "Rosa"
+        }
+      ]
+    },
+    {
+      "id": "H4",
+      "title": "No Leads Left Behind",
+      "answers": []
+    },
+    {
+      "id": "Rd4",
+      "title": "Follow-up is the real problem",
+      "answers": []
+    },
+    {
+      "id": "L",
+      "title": "Ten old leads",
+      "answers": [
+        {
+          "id": "L.1",
+          "question": "Write the ten names, names only.",
+          "answer": "Tom, Grace, Victor, Nina, Sam, Ellen, Ray, Mia, Jon, Alma"
+        }
+      ]
+    },
+    {
+      "id": "S",
+      "title": "Street Secrets post",
+      "answers": [
+        {
+          "id": "S.1",
+          "question": "Where did you post it?",
+          "answer": "The East Sacramento neighborhood Facebook group."
+        },
+        {
+          "id": "S.2",
+          "question": "How many people responded?",
+          "answer": "12"
+        }
+      ]
+    },
+    {
+      "id": "12",
+      "title": "What I watched BOSS do",
+      "answers": [
+        {
+          "id": "12.1",
+          "question": "Which BOSS moment surprised you most?",
+          "answer": "It wrote my weekly seller update from three lines of notes."
+        },
+        {
+          "id": "12.2",
+          "question": "Which one would save you the most time this month?",
+          "answer": "Listing descriptions and weekly updates."
+        }
+      ]
+    },
+    {
+      "id": "14",
+      "title": "Score yourself",
+      "answers": [
+        {
+          "id": "14.1",
+          "question": "Winning before you arrive?",
+          "answer": "no"
+        },
+        {
+          "id": "14.2",
+          "question": "An unbeatable listing system?",
+          "answer": "yes"
+        },
+        {
+          "id": "14.3",
+          "question": "A market-proof buyer method?",
+          "answer": ""
+        },
+        {
+          "id": "14.4",
+          "question": "Innovative marketing?",
+          "answer": ""
+        },
+        {
+          "id": "14.5",
+          "question": "One-to-many marketing?",
+          "answer": ""
+        },
+        {
+          "id": "14.6",
+          "question": "Massive online exposure?",
+          "answer": ""
+        },
+        {
+          "id": "14.7",
+          "question": "Systems and processes?",
+          "answer": ""
+        },
+        {
+          "id": "14.8",
+          "question": "Community funnels?",
+          "answer": ""
+        },
+        {
+          "id": "14.9",
+          "question": "A mastermind community?",
+          "answer": ""
+        },
+        {
+          "id": "14.10",
+          "question": "An authority book?",
+          "answer": ""
+        }
+      ]
+    },
+    {
+      "id": "11",
+      "title": "Tonight",
+      "answers": [
+        {
+          "id": "11.2",
+          "question": "I sent five review requests",
+          "answer": "Done"
+        },
+        {
+          "id": "11.3",
+          "question": "I texted ten old leads",
+          "answer": "Done"
+        },
+        {
+          "id": "11.4",
+          "question": "I posted my Street Secrets post",
+          "answer": "Done"
+        }
+      ]
+    },
+    {
+      "id": "RD3",
+      "title": "Where you're going",
+      "answers": []
+    },
+    {
+      "id": "SU3",
+      "title": "",
+      "answers": []
+    },
+    {
+      "id": "13",
+      "title": "What happened since yesterday",
+      "answers": [
+        {
+          "id": "13.1",
+          "question": "How many people answered your ten old-lead texts?",
+          "answer": "Six of ten."
+        },
+        {
+          "id": "13.2",
+          "question": "How many review requests did you send?",
+          "answer": "Five."
+        },
+        {
+          "id": "13.3",
+          "question": "Did you post your Street Secrets post, and what happened?",
+          "answer": "Yes. Twelve comments and two messages."
+        },
+        {
+          "id": "13.4",
+          "question": "One win from yesterday, in a sentence.",
+          "answer": "Two old leads asked for a home value."
+        }
+      ]
+    },
+    {
+      "id": "VT3",
+      "title": "Ten video texts, every day",
+      "answers": []
+    },
+    {
+      "id": "H5",
+      "title": "The Authority Amplifier",
+      "answers": []
+    },
+    {
+      "id": "Re1",
+      "title": "The ten success traits",
+      "answers": []
+    },
+    {
+      "id": "T",
+      "title": "Your two success traits",
+      "answers": [
+        {
+          "id": "T.1",
+          "question": "Trait 1, and what you will do about it",
+          "answer": "Consistency. I will send ten video texts before 10am every day."
+        },
+        {
+          "id": "T.2",
+          "question": "Trait 2, and what you will do about it",
+          "answer": "Courage. I will ask every past client for a review this week."
+        }
+      ]
+    },
+    {
+      "id": "5S",
+      "title": "Where is my buyer?",
+      "answers": [
+        {
+          "id": "5S.1",
+          "question": "Which of the five stages are they in?",
+          "answer": "Solution aware"
+        },
+        {
+          "id": "5S.2",
+          "question": "What is the next thing they need to see from you?",
+          "answer": "My written ten-day plan, so they can see exactly how I work."
+        }
+      ]
+    },
+    {
+      "id": "Re2",
+      "title": "How a buyer decides",
+      "answers": []
+    },
+    {
+      "id": "R2",
+      "title": "Tonight's five review texts",
+      "answers": [
+        {
+          "id": "R2.1",
+          "question": "Past client 1 (name only), and the one thing you will ask them to mention",
+          "answer": "Linda: the walk-through"
+        },
+        {
+          "id": "R2.2",
+          "question": "Past client 2 (name only), and the one thing you will ask them to mention",
+          "answer": "Marcus: the weekly updates"
+        },
+        {
+          "id": "R2.3",
+          "question": "Past client 3 (name only), and the one thing you will ask them to mention",
+          "answer": "Dee: no surprises at closing"
+        },
+        {
+          "id": "R2.4",
+          "question": "Past client 4 (name only), and the one thing you will ask them to mention",
+          "answer": "Paul: how fast it sold"
+        },
+        {
+          "id": "R2.5",
+          "question": "Past client 5 (name only), and the one thing you will ask them to mention",
+          "answer": "Rosa: the fix-or-skip list"
+        }
+      ]
+    },
+    {
+      "id": "Re3",
+      "title": "Reviews multiply everything",
+      "answers": []
+    },
+    {
+      "id": "15",
+      "title": "My next 30 days",
+      "answers": [
+        {
+          "id": "15.1",
+          "question": "Week 1: the one thing you will finish",
+          "answer": "My seller lead magnet"
+        },
+        {
+          "id": "15.3",
+          "question": "Week 2: the one thing you will finish",
+          "answer": "Weekly market update email"
+        },
+        {
+          "id": "15.5",
+          "question": "Week 3: the one thing you will finish",
+          "answer": "Ten-day listing plan page"
+        },
+        {
+          "id": "15.7",
+          "question": "Week 4: the one thing you will finish",
+          "answer": "Seller video series, part one"
+        },
+        {
+          "id": "15.2",
+          "question": "Week 1: the date",
+          "answer": "2026-10-30"
+        },
+        {
+          "id": "15.4",
+          "question": "Week 2: the date",
+          "answer": "2026-11-06"
+        },
+        {
+          "id": "15.6",
+          "question": "Week 3: the date",
+          "answer": "2026-11-13"
+        },
+        {
+          "id": "15.8",
+          "question": "Week 4: the date",
+          "answer": "2026-11-20"
+        }
+      ]
+    },
+    {
+      "id": "X",
+      "title": "What I am taking with me",
+      "answers": [
+        {
+          "id": "X.1",
+          "question": "The one idea that changed how I will market.",
+          "answer": "Be the obvious answer before they are ready to sell."
+        },
+        {
+          "id": "X.2",
+          "question": "The one thing I will do in the next 24 hours.",
+          "answer": "Send ten video texts."
+        },
+        {
+          "id": "X.3",
+          "question": "Who I will tell I'm doing this.",
+          "answer": "My partner and my broker."
+        }
+      ]
+    },
+    {
+      "id": "I",
+      "title": "I'M NEXT",
+      "answers": [
+        {
+          "id": "I.1",
+          "question": "My 30-day plan",
+          "answer": "I'm next"
+        },
+        {
+          "id": "I.2",
+          "question": "My video texts",
+          "answer": "I'm next"
+        },
+        {
+          "id": "I.3",
+          "question": "My review texts",
+          "answer": "I'm next"
+        },
+        {
+          "id": "I.4",
+          "question": "Becoming a Community Market Leader",
+          "answer": "I'm next"
+        }
+      ]
+    },
+    {
+      "id": "P1",
+      "title": "Business Intelligence",
+      "answers": [
+        {
+          "id": "P1.1",
+          "question": "What name do you use in business, and what is your company or team name?",
+          "answer": "Jordan Avery, Avery Home Group"
+        },
+        {
+          "id": "P1.2",
+          "question": "What is your business email?",
+          "answer": "jordan@averyhomegroup.example"
+        },
+        {
+          "id": "P1.3",
+          "question": "What is your business phone number?",
+          "answer": "(916) 555-0187"
+        },
+        {
+          "id": "P1.4",
+          "question": "What is your business mailing address?",
+          "answer": "100 Sample Way, Suite 2, Sacramento, CA 95819"
+        },
+        {
+          "id": "P1.5",
+          "question": "What websites and web domains do you own or use?",
+          "answer": "averyhomegroup.example"
+        },
+        {
+          "id": "P1.6",
+          "question": "What are your social media handles? Facebook, Instagram, LinkedIn, YouTube, TikTok, and any other.",
+          "answer": "Instagram @averyhomegroup.example, Facebook Avery Home Group"
+        },
+        {
+          "id": "P1.7",
+          "question": "What areas do you serve? List the zip codes, or write N/A if you work online.",
+          "answer": "95819, 95818, 95758"
+        },
+        {
+          "id": "P1.8",
+          "question": "What designations do you hold?",
+          "answer": "REALTOR®, SRS"
+        },
+        {
+          "id": "P1.9",
+          "question": "What awards and certificates would you want people to know about? Only ones you are allowed to show in public.",
+          "answer": "31 homes sold."
+        }
+      ]
+    },
+    {
+      "id": "P2",
+      "title": "Brand Identity",
+      "answers": [
+        {
+          "id": "P2.1",
+          "question": "What are the three core values you run your business by? A word or a short phrase for each.",
+          "answer": "Honesty, preparation, calm"
+        },
+        {
+          "id": "P2.2",
+          "question": "Say your mission in one line: who you help, and what changes for them.",
+          "answer": "Help long-time owners in Sacramento sell without surprises."
+        }
+      ]
+    },
+    {
+      "id": "P3",
+      "title": "My goals",
+      "answers": [
+        {
+          "id": "P3.1",
+          "question": "What is the one number you want to reach in the next 12 months? Say what the number counts, such as homes closed, loans closed or income.",
+          "answer": "18 homes closed"
+        },
+        {
+          "id": "P3.2",
+          "question": "What are the three things that will get you to that number?",
+          "answer": "A seller lead magnet, weekly market updates, consistent follow-up."
+        }
+      ]
+    },
+    {
+      "id": "P4",
+      "title": "FAQs and objections",
+      "answers": [
+        {
+          "id": "P4.1",
+          "question": "What are the ten questions your clients ask you most? Give them in your clients' own words, one at a time. Stop when you have given ten, or say stop sooner.",
+          "answer": "What do I need to fix before we list? What is my house worth? How long will it take to sell?"
+        },
+        {
+          "id": "P4.2",
+          "question": "What are the three objections you hear most, in your clients' own words?",
+          "answer": "We will wait until spring. Another agent said they would list higher."
+        }
+      ]
+    },
+    {
+      "id": "P5",
+      "title": "AI opportunity audit",
+      "answers": [
+        {
+          "id": "P5.1",
+          "question": "What do you do over and over every week that feels repetitive?",
+          "answer": "Writing listing descriptions, weekly seller update emails, posting to Instagram."
+        },
+        {
+          "id": "P5.2",
+          "question": "Which of those could you hand to AI?",
+          "answer": "Listing descriptions, weekly updates, Instagram posts."
+        },
+        {
+          "id": "P5.3",
+          "question": "Which of those could you hand to a person?",
+          "answer": "Scheduling showings."
+        },
+        {
+          "id": "P5.4",
+          "question": "How is this going today: Response speed and speed to lead",
+          "answer": "Strong"
+        },
+        {
+          "id": "P5.5",
+          "question": "How is this going today: Follow-up consistency",
+          "answer": "Needs work"
+        },
+        {
+          "id": "P5.6",
+          "question": "How is this going today: Lead qualification",
+          "answer": "Needs work"
+        },
+        {
+          "id": "P5.7",
+          "question": "How is this going today: Content output and reach",
+          "answer": "Not doing it"
+        },
+        {
+          "id": "P5.8",
+          "question": "How is this going today: CRM discipline",
+          "answer": "Needs work"
+        },
+        {
+          "id": "P5.9",
+          "question": "How is this going today: Admin and transaction load",
+          "answer": "Needs work"
+        },
+        {
+          "id": "P5.10",
+          "question": "How is this going today: Client communication",
+          "answer": "Strong"
+        },
+        {
+          "id": "P5.11",
+          "question": "How is this going today: Referral activation",
+          "answer": "Not doing it"
+        },
+        {
+          "id": "P5.12",
+          "question": "How is this going today: Using your past-client database",
+          "answer": "Not doing it"
+        },
+        {
+          "id": "P5.13",
+          "question": "Paste your AI opportunity result here",
+          "answer": "Top opportunity: weekly seller updates and listing descriptions drafted from my notes. Second: follow-up with sellers who are a year out."
+        }
+      ]
+    }
+  ],
+  "readable": "# AI Agent Digital Revolution: my workbook\n\n## Which one am I\n\n**Which one are you?**\n\n(blank)\n\n## Your Brain Card\n\n**Your name**\n\n(blank)\n\n**Your company name**\n\n(blank)\n\n**Your credentials and designations**\n\n(blank)\n\n**Your business phone number**\n\n(blank)\n\n**Your business address**\n\n(blank)\n\n**Where you work**\n\n(blank)\n\n**How long you have been doing this**\n\n(blank)\n\n**A few examples of people you have helped and served**\n\n(blank)\n\n**What makes you different: what your clients love best about you**\n\n(blank)\n\n**How you talk: 3 words that describe you, and 2 things you always say**\n\n(blank)\n\n**Two true stories you like to tell clients**\n\n(blank)\n\n**Real reviews or numbers you are allowed to share**\n\n(blank)\n\n**The license line your broker says must be on your marketing**\n\n(blank)\n\n## Where are you in the sales cycle?\n\n**Marketing & Awareness (Branding)**\n\n(blank)\n\n**Attract (Lead Generation)**\n\n(blank)\n\n**Grow Relationships (Lead Nurture)**\n\n(blank)\n\n**Nail The Sale (Conversion)**\n\n(blank)\n\n**Execute (Results)**\n\n(blank)\n\n**Transform into Raving Fans (Refer, Retain, Resell)**\n\n(blank)\n\n**The big question: looking at your scores, which one piece would change the most for your business?**\n\n(blank)\n\n## Build your brand kit\n\n**Your six colors and what each one is for**\n\n(blank)\n\n**Your two fonts and your main mark**\n\n(blank)\n\n## Where am I Blockbuster today?\n\n**Where do you work one to one today, one person at a time, when one piece of marketing could reach your whole town?**\n\n(blank)\n\n**Where do you look the same as every other agent or lender in your market?**\n\n(blank)\n\n**What is one thing you could do that no other agent or lender in your town is doing?**\n\n(blank)\n\n## Your unique differentiator\n\n**Paste your differentiator here**\n\n(blank)\n\n## Find your niche\n\n**Paste your niche here**\n\n(blank)\n\n## Your dream client\n\n**Paste your dream client here**\n\n(blank)\n\n## Video text messages\n\n**Who are your first ten? Names only.**\n\n(blank)\n\n## My pull and my push\n\n**What are you moving toward? That is your pull. For example: a bigger home, more time with your kids, never stressing about money.**\n\n(blank)\n\n**What are you done with? That is your push. For example: burnout, an income that jumps around, feeling behind.**\n\n(blank)\n\n## I'm committed to. I'm done tolerating.\n\n**Finish this sentence: I am committed to ...**\n\n(blank)\n\n**Finish this sentence: I am done tolerating ...**\n\n(blank)\n\n## Your next post\n\n**What is one thing you can change so your next post has more recency, more relevancy, or more proximity?**\n\n(blank)\n\n## End of the day: will it make the boat go faster?\n\n**If I use my brain in my marketing, will it make my boat go faster?**\n\n(blank)\n\n**If I pick a niche and a dream client, will it make my boat go faster?**\n\n(blank)\n\n**If I send video texts every day, will it make my boat go faster?**\n\n(blank)\n\n**If I become the authority (my book, my authority funnels, my reviews, my seminar), will it make my boat go faster?**\n\n(blank)\n\n**If I put Facebook ads behind my funnel, will it make my boat go faster?**\n\n(blank)\n\n**Which one will you do first?**\n\n(blank)\n\n## What happened since yesterday\n\n**How many people answered?**\n\nFour of ten answered.\n\n**One win from yesterday, in a sentence.**\n\nA past client in Land Park asked me to walk her house in March.\n\n## Your first AI-recommended article\n\n**Pick your question: Is now a good time to buy in [city]? / Is now a good time to sell in [city]? / [City] housing market update / Cost of living in [city] / Pros and cons of living in [city] / Best neighborhoods in [city]**\n\nIs now a good time to sell in East Sacramento?\n\n**Your city**\n\nSacramento\n\n**One sentence about your expertise**\n\nI have sold 31 homes, most of them for long-time owners in East Sacramento and Land Park.\n\n**Write your first two sentences: the question as a full sentence with your city in it, then the answer.**\n\nIs now a good time to sell your East Sacramento home? If you have owned it fifteen years or more, the answer depends less on the market and more on what your house needs first.\n\n## Your website\n\n**Do you have a website? Paste the address.**\n\naveryhomegroup.example\n\n**In one sentence, what does it say about who you help?**\n\nIt says I sell homes in Sacramento. It does not say I help long-time owners sell without surprises.\n\n**What one question would a stranger have that it does not answer yet?**\n\nWhat do I actually need to fix before I sell?\n\n## Which funnel do I need first\n\n**Pick one**\n\nNeighborhood\n\n**Why that one first, in two sentences.**\n\nMy sellers are a year out and never raise their hand.\n\n## Your first five review requests\n\n**Past client 1 (name only)**\n\nLinda\n\n**Past client 2 (name only)**\n\nMarcus\n\n**Past client 3 (name only)**\n\nDee\n\n**Past client 4 (name only)**\n\nPaul\n\n**Past client 5 (name only)**\n\nRosa\n\n## Ten old leads\n\n**Write the ten names, names only.**\n\nTom, Grace, Victor, Nina, Sam, Ellen, Ray, Mia, Jon, Alma\n\n## Street Secrets post\n\n**Where did you post it?**\n\nThe East Sacramento neighborhood Facebook group.\n\n**How many people responded?**\n\n12\n\n## What I watched BOSS do\n\n**Which BOSS moment surprised you most?**\n\nIt wrote my weekly seller update from three lines of notes.\n\n**Which one would save you the most time this month?**\n\nListing descriptions and weekly updates.\n\n## Score yourself\n\nMy score: 1 noes out of 10\n\n\n**Winning before you arrive?**\n\nNo\n\n**An unbeatable listing system?**\n\nYes\n\n**A market-proof buyer method?**\n\nYes\n\n**Innovative marketing?**\n\nYes\n\n**One-to-many marketing?**\n\nYes\n\n**Massive online exposure?**\n\nYes\n\n**Systems and processes?**\n\nYes\n\n**Community funnels?**\n\nYes\n\n**A mastermind community?**\n\nYes\n\n**An authority book?**\n\nYes\n\n## Tonight\n\n**I sent five review requests**\n\nDone\n\n**I texted ten old leads**\n\nDone\n\n**I posted my Street Secrets post**\n\nDone\n\n## What happened since yesterday\n\n**How many people answered your ten old-lead texts?**\n\nSix of ten.\n\n**How many review requests did you send?**\n\nFive.\n\n**Did you post your Street Secrets post, and what happened?**\n\nYes. Twelve comments and two messages.\n\n**One win from yesterday, in a sentence.**\n\nTwo old leads asked for a home value.\n\n## Your two success traits\n\n**Trait 1, and what you will do about it**\n\nConsistency. I will send ten video texts before 10am every day.\n\n**Trait 2, and what you will do about it**\n\nCourage. I will ask every past client for a review this week.\n\n## Where is my buyer?\n\n**Which of the five stages are they in?**\n\nSolution aware\n\n**What is the next thing they need to see from you?**\n\nMy written ten-day plan, so they can see exactly how I work.\n\n## Tonight's five review texts\n\n**Past client 1 (name only), and the one thing you will ask them to mention**\n\nLinda: the walk-through\n\n**Past client 2 (name only), and the one thing you will ask them to mention**\n\nMarcus: the weekly updates\n\n**Past client 3 (name only), and the one thing you will ask them to mention**\n\nDee: no surprises at closing\n\n**Past client 4 (name only), and the one thing you will ask them to mention**\n\nPaul: how fast it sold\n\n**Past client 5 (name only), and the one thing you will ask them to mention**\n\nRosa: the fix-or-skip list\n\n## My next 30 days\n\n**Week 1: the one thing you will finish**\n\nMy seller lead magnet\n\n**Week 2: the one thing you will finish**\n\nWeekly market update email\n\n**Week 3: the one thing you will finish**\n\nTen-day listing plan page\n\n**Week 4: the one thing you will finish**\n\nSeller video series, part one\n\n**Week 1: the date**\n\n2026-10-30\n\n**Week 2: the date**\n\n2026-11-06\n\n**Week 3: the date**\n\n2026-11-13\n\n**Week 4: the date**\n\n2026-11-20\n\n## What I am taking with me\n\n**The one idea that changed how I will market.**\n\nBe the obvious answer before they are ready to sell.\n\n**The one thing I will do in the next 24 hours.**\n\nSend ten video texts.\n\n**Who I will tell I'm doing this.**\n\nMy partner and my broker.\n\n## I'M NEXT\n\n**My 30-day plan**\n\nI'm next\n\n**My video texts**\n\nI'm next\n\n**My review texts**\n\nI'm next\n\n**Becoming a Community Market Leader**\n\nI'm next\n\n## Business Intelligence\n\n**What name do you use in business, and what is your company or team name?**\n\nJordan Avery, Avery Home Group\n\n**What is your business email?**\n\njordan@averyhomegroup.example\n\n**What is your business phone number?**\n\n(916) 555-0187\n\n**What is your business mailing address?**\n\n100 Sample Way, Suite 2, Sacramento, CA 95819\n\n**What websites and web domains do you own or use?**\n\naveryhomegroup.example\n\n**What are your social media handles? Facebook, Instagram, LinkedIn, YouTube, TikTok, and any other.**\n\nInstagram @averyhomegroup.example, Facebook Avery Home Group\n\n**What areas do you serve? List the zip codes, or write N/A if you work online.**\n\n95819, 95818, 95758\n\n**What designations do you hold?**\n\nREALTOR®, SRS\n\n**What awards and certificates would you want people to know about? Only ones you are allowed to show in public.**\n\n31 homes sold.\n\n## Brand Identity\n\n**What are the three core values you run your business by? A word or a short phrase for each.**\n\nHonesty, preparation, calm\n\n**Say your mission in one line: who you help, and what changes for them.**\n\nHelp long-time owners in Sacramento sell without surprises.\n\n## My goals\n\n**What is the one number you want to reach in the next 12 months? Say what the number counts, such as homes closed, loans closed or income.**\n\n18 homes closed\n\n**What are the three things that will get you to that number?**\n\nA seller lead magnet, weekly market updates, consistent follow-up.\n\n## FAQs and objections\n\n**What are the ten questions your clients ask you most? Give them in your clients' own words, one at a time. Stop when you have given ten, or say stop sooner.**\n\nWhat do I need to fix before we list? What is my house worth? How long will it take to sell?\n\n**What are the three objections you hear most, in your clients' own words?**\n\nWe will wait until spring. Another agent said they would list higher.\n\n## AI opportunity audit\n\n**What do you do over and over every week that feels repetitive?**\n\nWriting listing descriptions, weekly seller update emails, posting to Instagram.\n\n**Which of those could you hand to AI?**\n\nListing descriptions, weekly updates, Instagram posts.\n\n**Which of those could you hand to a person?**\n\nScheduling showings.\n\n**How is this going today: Response speed and speed to lead**\n\nStrong\n\n**How is this going today: Follow-up consistency**\n\nNeeds work\n\n**How is this going today: Lead qualification**\n\nNeeds work\n\n**How is this going today: Content output and reach**\n\nNot doing it\n\n**How is this going today: CRM discipline**\n\nNeeds work\n\n**How is this going today: Admin and transaction load**\n\nNeeds work\n\n**How is this going today: Client communication**\n\nStrong\n\n**How is this going today: Referral activation**\n\nNot doing it\n\n**How is this going today: Using your past-client database**\n\nNot doing it\n\n**Paste your AI opportunity result here**\n\nTop opportunity: weekly seller updates and listing descriptions drafted from my notes. Second: follow-up with sellers who are a year out.\n"
+}
