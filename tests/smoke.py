@@ -112,9 +112,10 @@ def main():
     extra.write_text(json.dumps({"B.name": "Jordan Avery", "D.1": "I write the plan down first.", "B.t3": "",
                                  "8.1": "Long-time owners a year out.", "P1.7": "should never replace the file"}))
     fixed = hub("AIDR-Workbook_unnamed_20261019.json", extra)
-    step("skipped Day 1: asks name and Day 1 questions in plain words, then builds from the answers",
-         not skip["enough"] and [a["id"] for a in skip["ask"]][:3] == ["B.name", "D.1", "B.t3"]
-         and "Paste" not in skip["ask"][1]["question"]
+    step("skipped Day 1: asks only the Day 1 questions, in plain words, then builds from the answers",
+         # The name is in My Profile (P1.1), so it is not asked again.
+         not skip["enough"] and [a["id"] for a in skip["ask"]][:3] == ["D.1", "B.t3", "8.1"]
+         and not any(w in a["question"] for a in skip["ask"] for w in ("Paste", "six colors"))
          and fixed["enough"] and sorted(fixed["added_here"]) == ["8.1", "B.name", "D.1"]
          and fixed["by_id"]["P1.7"] != "should never replace the file",
          "%s %s" % ([a["id"] for a in skip["ask"]], fixed.get("added_here")))

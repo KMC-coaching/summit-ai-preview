@@ -185,16 +185,24 @@ Read nothing else in their Downloads folder.
 (`AIDR-Workbook_*.json`): if `read_brain_file.py` returns a non-empty `ask` list, those are the
 questions behind the parts still missing (`not_yet`), in the order that removes the most blanks.
 Offer them. Never send them back to the workbook first. Say, with `not_yet` in plain words and
-about one minute for every two questions:
+about one minute for each question in `ask`:
 
 > "Your workbook doesn't have answers yet for [not_yet]. I can ask you those questions right
 > here, about [N] minutes, and your preview comes out with far fewer blanks. Want me to? Or
 > say **just build it** and I'll build it now, with blanks you can fill in later."
 
+If `enough` is `false`, there is no building without some of them, so offer it this way instead:
+
+> "Your workbook doesn't have answers yet for [not_yet], and your preview needs at least where
+> you work and what makes you different. I can ask you those questions right here, about [N]
+> minutes. Want me to?"
+
 Then wait for their answer. This is the one place you wait before building.
 
 - **They say yes:** ask each `ask` item **one at a time**, in order, using its `question`
   exactly. Before the first one, tell them once: *"Say **skip** for any you'd rather leave."*
+  One reply is one answer: when a question asks for several things ("ten questions"), take
+  what they give and move on. Never ask for more.
   After each answer, save it at once into `app/data/extra-answers.json` as `{"<id>": "<their
   answer, word for word>"}`, adding to what is there. A skipped question saves nothing. When
   the list is done (or they say stop), run `read_brain_file.py` again and carry on with what it

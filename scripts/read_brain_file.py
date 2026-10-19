@@ -92,7 +92,9 @@ HUB_ASK = [("who you are and where you work", ["B.t1"]),
 # Two workbook questions only make sense right after an exercise ("Paste your differentiator
 # here"). Asked cold in a chat they need plain words.
 HUB_ASK_WORDS = {"D.1": "In a sentence or two, what makes you different from everyone else who does what you do?",
-                 "8.1": "Who is your dream client? Where they are in life, what they want, and what worries them."}
+                 "B.t3": "What do your clients love best about working with you?",
+                 "8.1": "Who is your dream client? Where they are in life, what they want, and what worries them.",
+                 "K.1": "What are your brand colors? Color names or codes are both fine."}
 # Answers given in chat when the workbook had none (START-HERE Step 3). They live in the
 # preview folder, which an update keeps, and only ever fill a gap: the workbook file wins.
 EXTRA = Path(__file__).resolve().parent.parent / "app" / "data" / "extra-answers.json"
@@ -129,7 +131,8 @@ def read_hub(d: dict, extra_path: Path = EXTRA) -> dict:
     core_gone = [n for ids, n in HUB_CORE.items() if not has(ids)]
     support_gone = [n for ids, n in HUB_SUPPORT.items() if not has(ids)]
     gone = set(core_gone + support_gone)
-    ask = [] if ans.get("B.name") else [{"id": "B.name", "part": "your name", "question": asked.get("B.name", "Your name")}]
+    # My Profile asks for the business name too (P1.1), so a student who skipped Day 1 has given it.
+    ask = [] if ans.get("B.name") or ans.get("P1.1") else [{"id": "B.name", "part": "your name", "question": asked.get("B.name", "Your name")}]
     for part, ids in HUB_ASK:
         if part in gone:
             ask += [{"id": i, "part": part, "question": HUB_ASK_WORDS.get(i) or asked.get(i, "")}

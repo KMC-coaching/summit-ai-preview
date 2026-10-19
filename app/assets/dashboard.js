@@ -44,7 +44,7 @@
     if (!meta.partial) return "";
     const list = (meta.notYet || []).filter(Boolean);
     const still = list.length ? ` Still to come: ${esc(list.join(", "))}.` : "";
-    return `<div class="partial${slim ? " partial--slim" : ""}" role="note"><div class="wrap"><b>This preview is built from what you've given us so far.</b>${slim ? "" : still} <span>Finish your workbook, download it again, and paste the same message into Claude: your preview rebuilds with everything.</span></div></div>`;
+    return `<div class="partial${slim ? " partial--slim" : ""}" role="note"><div class="wrap"><b>This preview is built from what you've given us so far.</b>${slim ? "" : still} <span>Say <b>help me finish my answers</b> in Claude and it asks you the rest here. Or finish your workbook, download it again, and paste the same message: your preview rebuilds with everything.</span></div></div>`;
   }
 
   const ring = (g, small) => `<div class="ring" style="--v:${g && g.overall || 0};--c:${color(g && g.overall)}${small ? ";width:64px;height:64px" : ""}"><div${small ? ' style="width:50px;height:50px"' : ""}><span><b${small ? ' style="font-size:1.3rem"' : ""}>${esc(g && g.letter || "–")}</b>${small ? "" : `<small>${g && g.overall != null ? g.overall + " / 100" : ""}</small>`}</span></div></div>`;
