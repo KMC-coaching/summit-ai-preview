@@ -126,6 +126,7 @@ def read_hub(d: dict, extra_path: Path = EXTRA) -> dict:
         website = "https://" + website.strip("/")
     license_line = ans.get("B.t10", "")
     # A lender's line usually holds two NMLS numbers: theirs first, then the company's.
+    lic_no = re.search(r"\b(DRE|BRE|License|Lic\.?)\s*(#|No\.?|number)?\s*:?\s*[A-Z]{0,4}[- ]?\d{4,}", license_line, re.I)
     nmls_ids = re.findall(r"NMLS\s*(?:#|ID|No\.?)?\s*:?\s*(\d{3,})", license_line, re.I)
     has = lambda ids: any(ans.get(i) for i in ids)
     core_gone = [n for ids, n in HUB_CORE.items() if not has(ids)]
@@ -142,7 +143,8 @@ def read_hub(d: dict, extra_path: Path = EXTRA) -> dict:
         "answers": {
             "profession": "mortgage lender" if lender else "real estate agent",
             "profile": "lender" if lender else "real-estate",
-            "license": "" if lender else license_line,
+            # Just the number for "license"; the whole line goes in the footer as licenseLine.
+            "license": "" if lender else (lic_no.group(0) if lic_no else ""),
             "brokerage": "",
             "nmls": (nmls_ids[0] if nmls_ids else license_line) if lender else "",
             "company": ans.get("B.company", "") or str(d.get("company") or ""),

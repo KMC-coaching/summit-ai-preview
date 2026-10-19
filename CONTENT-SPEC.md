@@ -82,6 +82,7 @@ the invented-proof checks (testimonials, star ratings, stats not in their file).
     "phone": "", "email": "",                                   // only if given
     "website": "",                                              // their own site, or ""
     "license": "", "brokerage": "",                             // real estate: ONLY if given. Blank = placeholder in footer
+    "licenseLine": "",                                          // the line their broker requires, word for word (Hub B.t10). Set: the footer shows it instead of license + brokerage
     "nmls": "", "company": "", "companyNmls": "",               // lender: ONLY if given. Blank = placeholder in footer
     "schemaType": "",                                           // optional, e.g. "Dentist"; the profile has a default
     "stats": []                                                 // ONLY real numbers from their file: [{ "value": 120, "suffix": "+", "label": "homes sold" }]
