@@ -341,7 +341,12 @@ class Site:
         b = self.b
         kind = self.p.get("disclosure")
         lic = ""
-        if kind == "real-estate":
+        # The line their broker (or company) requires, exactly as they wrote it. It already
+        # holds the name, number and company, so it replaces the pieced-together version
+        # rather than sitting next to it with "License #" and blanks.
+        if b.get("licenseLine") and kind in ("real-estate", "lender"):
+            lic = '<p>Brokerage and license<br>%s</p>' % t(b["licenseLine"])
+        elif kind == "real-estate":
             lic = '<p>%s<br>License # %s<br>%s</p>' % (esc(b.get("person")), t(b.get("license") or "[Your license number]"),
                                                      t(b.get("brokerage") or "[Your brokerage]"))
         elif kind == "lender":

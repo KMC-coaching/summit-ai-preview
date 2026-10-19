@@ -343,7 +343,7 @@ below; the file itself also carries each question next to its answer. Read the w
 
 | content.json | Take it from (Hub id) |
 |---|---|
-| profile, license, nmls, company, website, brand colors | `answers` from `read_brain_file.py` (`B.t10` is the license line their broker requires: put it in the footer word for word) |
+| profile, license, nmls, company, website, brand colors | `answers` from `read_brain_file.py` (`B.t10` is the license line their broker requires: `answers.license_line` goes in `business.licenseLine` word for word, and the footer shows it in place of license and brokerage) |
 | business name, person, phone, email | `B.name`, `B.company`, `B.phone`, `P1.2` (also `P1.1`, `P1.3`) |
 | market, areas | `B.t1`: place names only. Zip codes (`P1.7`, or the numbers in `B.t1`) go in `site.contact.sub` |
 | stats | `B.t8` only: numbers they wrote there. `B.t2` (years) only as they wrote it |

@@ -100,6 +100,13 @@ FH_WARN = [
     (r"\b(good|great|best|top|top[- ]rated|excellent) (schools|school districts?)\b", "school-quality claims can steer; name the schools or district factually"),
     (r"\b(quiet|established|desirable) " + PLACE + r"\b", "can read as coded; prefer concrete detail"),
     (r"\bhandicapped\b", "use 'accessible' or person-first language"),
+    # Added 2026-10-19, not in the seed's list: a stage test carried a student's own story
+    # ("the house they raised their kids in", "a widow in Land Park") onto the site untouched.
+    # People's family or marital status, even a past client's, is not for an ad. The preview's
+    # checker blocks these; the report card warns.
+    (r"\b(raised|raising|raise) (their |his |her |our |your |my |the )?(kids|children|family|families)\b", "familial status: tell the story without who lived there"),
+    (r"\b(young|growing|new) famil(y|ies)\b", "familial status"),
+    (r"\b(widow|widowed|widower|divorcee|divorced|newlyweds?|empty[- ]nesters?|single (mom|mother|dad|father|parents?))\b", "marital or familial status: describe the situation, not the person"),
 ]
 COMMISSION = [
     (r"\b(standard|customary|typical|usual|going)\s+(commission|rate|fee)s?\b", "implies fees are set rather than negotiated"),

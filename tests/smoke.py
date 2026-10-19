@@ -162,6 +162,12 @@ def main():
     (data / "content.json").write_text(json.dumps(bad), encoding="utf-8")
     code, out = run(["scripts/check_preview.py"], env)
     step("checker blocks Fair Housing language", code != 0 and "Fair Housing" in out, out[-300:])
+    # A student's own story, word for word, once reached the site this way (2026-10-19).
+    bad["site"]["home"]["statement"] = "A widow in Land Park, selling the house she raised her kids in."
+    (data / "content.json").write_text(json.dumps(bad), encoding="utf-8")
+    code, out = run(["scripts/check_preview.py"], env)
+    step("checker blocks a client story about family or marital status",
+         code != 0 and "widow" in out and "raised her kids" in out, out[-300:])
     (data / "content.json").write_text(json.dumps(c, indent=1), encoding="utf-8")
 
     # 5. Build, serve, measure. Never opens a browser here.
@@ -224,6 +230,17 @@ def main():
         again = ""
     step("restart keeps the same address", again == url, "%s -> %s" % (url, again))
     run(["scripts/serve.py", "--stop"], env)
+
+    # The broker's required line, word for word, replaces "License #" and the brokerage blank,
+    # and still counts as license + brokerage on every page.
+    c = json.loads((data / "content.json").read_text(encoding="utf-8"))
+    c["business"]["licenseLine"] = "Jordan Avery, REALTOR® | DRE #01234567 | Avery Home Group"
+    (data / "content.json").write_text(json.dumps(c, indent=1), encoding="utf-8")
+    code, out = run(["scripts/build_site.py", "--base", "http://127.0.0.1:9/"], env)
+    page = (ROOT / "app" / "site" / "index.html").read_text(encoding="utf-8")
+    step("broker's license line shows word for word, no blanks beside it",
+         code == 0 and "DRE #01234567 | Avery Home Group" in page and "[Your brokerage]" not in page and "License # " not in page,
+         out[-300:])
     return finish()
 
 
