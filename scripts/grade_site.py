@@ -911,15 +911,12 @@ def audit(url, label, profile, local):
               "Uses %s%s" % (", ".join(sorted(found_trackers)), "; not mentioned in the privacy policy: " + ", ".join(undisclosed) if undisclosed else ""))
 
     # ---- 7b. The software behind the site (security.py, shared byte-identical with the
-    # website-health skill). Scored rows only for versions the site states; this report card has
-    # no "What your site is built on" box, so that line and the host questions are an unscored row,
-    # and each fix leads the explanation under the check's name.
+    # website-health skill). Scored rows only for versions the site states. What the site is built
+    # on is an unscored row; a PHP site's red flag is returned as "platform" and the dashboard shows
+    # it as a red "Red Flags" panel (owner decision 2026-10-23). Each fix leads the explanation.
     G = "Security of the software behind the site"
     sec_checks, platform = security.assess(home_headers, ok)
-    note = platform.get("phpNote")
-    R.add(G, "What your site is built on", "notMeasured",
-          platform.get("line", "") + ((" %s. %s Ask whoever hosts the site: %s" % (
-              note["title"], note["detail"], " ".join("(%d) %s" % (i + 1, q) for i, q in enumerate(note["questions"])))) if note else ""),
+    R.add(G, "What your site is built on", "notMeasured", platform.get("line", ""),
           why="Read from the page and its headers. Never part of the grade.")
     for nm, st, detail, why, fix in sec_checks:
         R.add(G, nm, st, detail, why=("Fix: %s %s" % (fix, why)) if fix else why)
@@ -973,7 +970,7 @@ def audit(url, label, profile, local):
         "lighthouse": {k: lh.get(k) for k in ("performance", "accessibility", "bestPractices", "seo", "lcp", "cls")},
         "lighthouseSource": lh.get("_source"), "screenshot": lh.get("screenshot"), "lighthouseLog": lh.get("_log"), "lighthouseError": lh.get("_error") if lh.get("performance") is None else None,
         "lighthouseLimit": lh.get("_limit"),
-        "bar": BAR,
+        "bar": BAR, "platform": platform,
         "facts": {"pagesChecked": len(pages), "pagesOk": len(ok), "linksChecked": len(to_check),
                   "pagesWithSchema": len(ok) - len(no_ld), "brokenPages": broken_pages, "brokenLinks": broken_links[:20],
                   "sitemapPages": len(sm_pages), "trackers": sorted(found_trackers)},
