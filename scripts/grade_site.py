@@ -60,6 +60,9 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin, urlparse, urldefrag, quote
 from urllib.request import Request, urlopen
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import security  # noqa: E402  (shared with the website-health skill, byte-identical)
+
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36 AIPreviewSiteGrader"
 MAX_PAGES = 25
 MAX_LINKS = 60
@@ -174,13 +177,17 @@ FAIR_LENDING = [
 
 # --------------------------------------------------------------------- fetching
 _ctx = ssl.create_default_context()
+# The last answer's headers, lowercased: security.py reads the home page's (X-Powered-By, cookies).
+LAST_HEADERS = {}
 
 
 def fetch(url, method="GET", limit=3_000_000):
     """(status, final_url, text). status 0 = never answered."""
+    LAST_HEADERS.clear()
     req = Request(url, method=method, headers={"User-Agent": UA, "Accept": "text/html,*/*"})
     try:
         with urlopen(req, timeout=TIMEOUT, context=_ctx) as r:
+            LAST_HEADERS.update({k.lower(): v for k, v in r.headers.items()})
             body = r.read(limit) if method == "GET" else b""
             return r.status, r.geturl(), body.decode("utf-8", "replace")
     except HTTPError as e:
@@ -589,6 +596,7 @@ def audit(url, label, profile, local):
                 "measuredAt": datetime.now().isoformat(timespec="minutes"),
                 "message": "The site did not answer, so nothing could be measured."}
     home = final
+    home_headers = dict(LAST_HEADERS)
     host = urlparse(home).netloc.lower()
     hp = PageParser()
     hp.feed(html)
@@ -902,8 +910,20 @@ def audit(url, label, profile, local):
         R.add(G, "Tracking tools disclosed", "pass" if not undisclosed else "fail",
               "Uses %s%s" % (", ".join(sorted(found_trackers)), "; not mentioned in the privacy policy: " + ", ".join(undisclosed) if undisclosed else ""))
 
+    # ---- 7b. The software behind the site: PHP and the site builder (security.py, shared
+    # with the website-health skill). This report card has no separate fix line, so the
+    # fix leads the explanation under the check's name.
+    G = "Security of the software behind the site"
+    sec_checks, software = security.assess(home_headers, ok)
+    for nm, st, detail, why, fix in sec_checks:
+        R.add(G, nm, st, detail, why=("Fix: %s %s" % (fix, why)) if fix else why)
+
     # ---- 8. Not measured, said out loud
     G = "Not measured here"
+    if software.get("wordpress"):
+        R.add(G, "Every WordPress plugin's own updates", "notMeasured",
+              "WordPress plugins get hundreds of new security flaws a week; only the critical, attacked ones on our "
+              "list (updated %s) were checked. Keep every plugin updated." % software["listUpdated"])
     for nm, why in (("Dark-mode contrast", "needs a scripted browser; the seed runs it before launch"),
                     ("Overlapping text", "needs a scripted browser"),
                     ("Keyboard focus rings", "needs a scripted browser"),
