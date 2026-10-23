@@ -910,20 +910,32 @@ def audit(url, label, profile, local):
         R.add(G, "Tracking tools disclosed", "pass" if not undisclosed else "fail",
               "Uses %s%s" % (", ".join(sorted(found_trackers)), "; not mentioned in the privacy policy: " + ", ".join(undisclosed) if undisclosed else ""))
 
-    # ---- 7b. The software behind the site: PHP and the site builder (security.py, shared
-    # with the website-health skill). This report card has no separate fix line, so the
-    # fix leads the explanation under the check's name.
+    # ---- 7b. The software behind the site (security.py, shared byte-identical with the
+    # website-health skill). Scored rows only for versions the site states; this report card has
+    # no "What your site is built on" box, so that line and the host questions are an unscored row,
+    # and each fix leads the explanation under the check's name.
     G = "Security of the software behind the site"
-    sec_checks, software = security.assess(home_headers, ok)
+    sec_checks, platform = security.assess(home_headers, ok)
+    note = platform.get("phpNote")
+    R.add(G, "What your site is built on", "notMeasured",
+          platform.get("line", "") + ((" %s. %s Ask whoever hosts the site: %s" % (
+              note["title"], note["detail"], " ".join("(%d) %s" % (i + 1, q) for i, q in enumerate(note["questions"])))) if note else ""),
+          why="Read from the page and its headers. Never part of the grade.")
     for nm, st, detail, why, fix in sec_checks:
         R.add(G, nm, st, detail, why=("Fix: %s %s" % (fix, why)) if fix else why)
 
     # ---- 8. Not measured, said out loud
     G = "Not measured here"
-    if software.get("wordpress"):
+    if platform.get("php") and not platform.get("phpVersion"):
+        R.add(G, "Your PHP version", "notMeasured",
+              "The site does not show it, so whether it has the 21 Oct 2026 PHP security fix is for your host to confirm.")
+    if "Elementor Pro" in (platform.get("builders") or []) and not any(c[0].endswith("Elementor Pro") for c in sec_checks):
+        R.add(G, "Elementor Pro's version", "notMeasured",
+              "The site hides it, so we could not tell whether it has the fix for CVE-2026-32475 (version 4.2.2 or newer).")
+    if platform.get("platform") == "WordPress":
         R.add(G, "Every WordPress plugin's own updates", "notMeasured",
               "WordPress plugins get hundreds of new security flaws a week; only the critical, attacked ones on our "
-              "list (updated %s) were checked. Keep every plugin updated." % software["listUpdated"])
+              "list (updated %s) were checked. Keep every plugin updated." % security.LIST_UPDATED)
     for nm, why in (("Dark-mode contrast", "needs a scripted browser; the seed runs it before launch"),
                     ("Overlapping text", "needs a scripted browser"),
                     ("Keyboard focus rings", "needs a scripted browser"),
