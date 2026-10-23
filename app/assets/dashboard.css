@@ -71,6 +71,11 @@ button { font: inherit; }
 .view .lede { color: var(--muted); max-width: 820px; font-size: 1.05rem; }
 .notice { display: flex; gap: 12px; align-items: flex-start; background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--gold); border-radius: 12px; padding: 14px 16px; margin-top: 18px; max-width: 900px; color: var(--muted); }
 
+.redflags { background: rgba(239,106,90,.10); border: 1px solid rgba(239,106,90,.45); border-radius: 18px; padding: 22px; margin-top: 22px; }
+.redflags h2 { color: var(--bad); font-size: 1.4rem; margin: 0 0 14px; }
+.redflags .flag { background: var(--panel); border-left: 3px solid var(--bad); border-radius: 12px; padding: 14px 16px; }
+.redflags .flag p { margin: 6px 0 0; }
+
 /* site view: big page thumbnails */
 .pages { display: grid; gap: 22px; margin-top: 28px; grid-template-columns: repeat(2, 1fr); }
 @media (max-width: 900px) { .pages { grid-template-columns: 1fr; } }

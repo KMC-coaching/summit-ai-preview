@@ -209,6 +209,7 @@
       ${g && !g.reachable ? `<div class="notice">We tried to check ${esc(host(g.url))} and it did not answer. If the address is wrong, tell Claude the right one and say <b>&nbsp;grade my website again</b>.</div>` : ""}
       ${have ? `<div class="notice">${esc(g.label || "This site")}: ${esc(host(g.url))}. ${g.label && /competitor/i.test(g.label) ? "A competitor in your area, measured the same way. This is who you are up against." : g.label && /admire/i.test(g.label) ? "You do not have a site of your own yet, so we measured this one instead." : ""}</div>` : ""}
       <div class="duel">${have ? side(g, g.label || "Your current website", "", "") : ""}${side(gp, "A demo, built just now from your answers", "side--new", "Your demo site")}</div>
+      ${have && g.platform && g.platform.phpNote ? `<section class="redflags"><h2>Red Flags</h2><div class="flag"><b>${esc(g.platform.phpNote.title)}</b><p class="muted">${esc(g.platform.line)}</p><p>${esc(g.platform.phpNote.detail)}</p></div></section>` : ""}
       ${cats}
       ${full}
       <h2 style="margin-top:34px;font-size:1.6rem">Every check, side by side</h2>

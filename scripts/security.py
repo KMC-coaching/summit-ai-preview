@@ -4,13 +4,15 @@ published security flaw. Read from the outside only: response headers, the gener
 addresses of the files a page actually loads. Nothing is probed, tried or attacked, and nothing
 here touches the network.
 
-    detect(html, headers)         -> the "What your site is built on" box (never part of the grade)
+    detect(html, headers)         -> what the site is built on, plus the PHP red flag (never part of the grade)
     assess(home_headers, pages)   -> scored checks, only for facts the site itself states
 
 ONE MODULE, TWO ORIGINS (merged 2026-10-23)
   Krista's platform_detect.py (kits, 2026-10-23): read only the files a page loads, never words in
   its text; a version the site does not show is "not measured", never safe; a fixed version is
-  still "ask the host to confirm"; three plain questions for the host; the box is not graded.
+  still "ask the host to confirm"; the box is not graded.
+  Red flag (owner decision 2026-10-23): a PHP site gets one fixed red flag that says PHP sites carry
+  a risk other sites do not. It names no versions and gives no host questions or fixes.
   Jerry's security.py (engine, 2026-10-23): a dated, sourced advisory list; builders and hosted
   platforms; a PHP version the server states and that is unpatched or past end of life fails;
   Elementor Pro's attacked CVE-2026-32475.
@@ -32,14 +34,11 @@ LIST_UPDATED = "2026-10-23"
 # Sources: CISA alert 2026-10-21 "Critical Vulnerabilities in PHP Require Immediate Patching";
 # php.net/supported-versions.php (read 2026-10-23: 8.2 is the oldest branch still fixed).
 FIXED = {(8, 5): 12, (8, 4): 27, (8, 3): 36, (8, 2): 35}
-FIXED_TEXT = "8.5.12, 8.4.27, 8.3.36 and 8.2.35"
 OLDEST_SUPPORTED = (8, 2)
-TITLE = "PHP emergency security update, 21 Oct 2026"
-QUESTIONS = (
-    "What PHP version does the site run right now?",
-    "Is it updated to 8.5.12, 8.4.27, 8.3.36 or 8.2.35?",
-    "Does the site sit behind a firewall rule that can block this until it is updated?",
-)
+TITLE = "Your site runs on PHP"
+FLAG = ("There have been security issues and breaches tied to PHP websites, most recently an emergency PHP "
+        "security update on 21 Oct 2026 for two critical flaws, and attacks have been seen. This weakness is not "
+        "present on sites that are not built on PHP, like BOSS-built sites that you own 100%.")
 
 PLUGIN_ADVISORIES = [
     {
@@ -181,15 +180,9 @@ def _verdict(version):
                     % (v, version[0], version[1], fixed))
 
 
-def _note(version):
-    base = ("The PHP project released an emergency security update on 21 Oct 2026 for two critical flaws "
-            "(CVE-2026-109618 and CVE-2026-109619), and attacks have been seen. The fixed versions are %s. " % FIXED_TEXT)
-    if version is None:
-        detail = (base + "The PHP version is not measured: the site does not show it, and a site can hide it, so only the "
-                  "host can say. Send the three questions below to whoever hosts the site.")
-    else:
-        detail = base + _verdict(version)[1]
-    return {"title": TITLE, "detail": detail, "fixedVersions": ["8.5.12", "8.4.27", "8.3.36", "8.2.35"], "questions": list(QUESTIONS)}
+def _note():
+    """The PHP red flag. The same words for every PHP site, whatever version it states."""
+    return {"title": TITLE, "detail": FLAG}
 
 
 def detect(html, headers):
@@ -257,7 +250,7 @@ def detect(html, headers):
         line = "Platform not recognised: nothing on the page or in its headers names one."
     return {"measured": True, "platform": platform, "builders": builders, "hosted": hosted, "php": php,
             "phpVersion": _vtext(version) if version else None, "evidence": ev, "line": line,
-            "phpNote": _note(version) if php else None}
+            "phpNote": _note() if php else None}
 
 
 class _VerMatch:
@@ -285,7 +278,7 @@ def assess(home_headers, pages):
     php_pages = sorted({u for p in pages[:25] for u in (p.get("internal") or [])
                         if isinstance(u, str) and re.search(r"\.php$", u.split("?")[0].split("#")[0], re.I)})
     if php_pages and not platform["php"] and not platform["hosted"] and platform["measured"]:
-        platform = dict(platform, php=True, phpNote=_note(None), evidence=platform["evidence"] + ["its own pages end in .php"],
+        platform = dict(platform, php=True, phpNote=_note(), evidence=platform["evidence"] + ["its own pages end in .php"],
                         line="Runs on PHP: the site's own pages end in .php." if not platform["platform"] else platform["line"])
     out = []
     named, version = _php({str(k).lower(): str(v) for k, v in (home_headers or {}).items()})
