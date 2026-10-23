@@ -319,3 +319,60 @@ def assess(home_headers, pages):
                         why, "Update %s to %s or newer (WordPress, then Plugins), then ask whoever runs the site to check the uploads "
                              "folder for .php files that should not be there." % (adv["label"], adv["fixed"])))
     return out, platform
+
+
+# ---- Red flags (owner decision 2026-10-23) -------------------------------------------------
+# Things worth worrying about, said in one plain sentence each. Not advice and not a to-do list:
+# no steps, no versions, no fixes beyond "an upgrade fixes it". Only failed checks become flags
+# (and, for the software behind the site, warnings too); a blank to fill in never does.
+RED_FLAG_CHECKS = {
+    "Secure connection (https)": ("No padlock", "Browsers tell visitors this site is not secure."),
+    "Valid security certificate": ("Broken security certificate", "Browsers show visitors a full-page warning before the site opens."),
+    "Search engines allowed in": ("Hidden from Google", "The site tells search engines not to list it."),
+    "Fair Housing language": ("Possible Fair Housing problem", "Some wording on the site can read as favoring or excluding certain people."),
+    "Fair lending language": ("Possible fair lending problem", "Some wording on the site can read as favoring or excluding certain people."),
+    "License number on every page": ("License number missing", "Advertising rules require it, and some pages do not show it."),
+    "NMLS number on every page": ("NMLS number missing", "Lending ads must show it, and some pages do not."),
+    "Company NMLS number on every page": ("Company NMLS number missing", "Lending ads must show it, and some pages do not."),
+    "Equal Housing Lender on every page": ("Equal Housing Lender missing", "Lending ads must carry it, and some pages do not."),
+    "Privacy policy page": ("No privacy policy", "Privacy laws expect one on a site that collects names or emails."),
+}
+
+
+# Rules that only apply to one trade. Their flags need the trade to be known, not guessed from a
+# word count: wix.com's home page says "real estate" ten times and it needs no license number.
+TRADE_FLAG_CHECKS = {"Fair Housing language", "Fair lending language", "License number on every page",
+                     "NMLS number on every page", "Company NMLS number on every page", "Equal Housing Lender on every page"}
+
+
+def _flag_for(c, trade_sure):
+    name, status = c.get("name", ""), c.get("status")
+    trade_rule = name in TRADE_FLAG_CHECKS or (name.startswith("Claims ") and name.endswith(" does not allow"))
+    if trade_rule and not trade_sure:
+        return None
+    if status == "fail" and name in RED_FLAG_CHECKS:
+        return RED_FLAG_CHECKS[name]
+    if status == "fail" and name.startswith("Claims ") and name.endswith(" does not allow"):
+        return ("Claims the state does not allow", "Some wording makes claims the state's advertising rules do not allow.")
+    if status in ("fail", "warn") and (c.get("group") or "").startswith("Security of the software"):
+        if name.startswith("No known attacked flaw in "):
+            return ("%s has a known security flaw" % name[len("No known attacked flaw in "):],
+                    "The version on this site has a published, critical security flaw. An upgrade fixes it.")
+        if name.startswith("PHP is up to date"):
+            return ("Out-of-date PHP", "The site reports a PHP version without the latest security fixes. An upgrade fixes it.")
+    return None
+
+
+def red_flags(checks, platform, trade_sure=True):
+    """The report's Red Flags: the PHP flag first, then one per worrying check, in check order.
+    Each is {"title", "detail", "check"} ("line" too for PHP: what the site is built on).
+    trade_sure: False when the trade was only guessed from words, which drops trade-rule flags."""
+    out = []
+    note = (platform or {}).get("phpNote")
+    if note:
+        out.append({"title": note["title"], "line": platform.get("line", ""), "detail": note["detail"], "check": None})
+    for c in checks or []:
+        f = _flag_for(c, trade_sure)
+        if f:
+            out.append({"title": f[0], "detail": f[1], "check": c["name"]})
+    return out

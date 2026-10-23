@@ -912,8 +912,8 @@ def audit(url, label, profile, local):
 
     # ---- 7b. The software behind the site (security.py, shared byte-identical with the
     # website-health skill). Scored rows only for versions the site states. What the site is built
-    # on is an unscored row; a PHP site's red flag is returned as "platform" and the dashboard shows
-    # it as a red "Red Flags" panel (owner decision 2026-10-23). Each fix leads the explanation.
+    # on is an unscored row; red flags (PHP, attacked flaws, legal and visibility problems) are returned
+    # as "redFlags" and the dashboard shows them in a red "Red Flags" panel (owner decision 2026-10-23). Each fix leads the explanation.
     G = "Security of the software behind the site"
     sec_checks, platform = security.assess(home_headers, ok)
     R.add(G, "What your site is built on", "notMeasured", platform.get("line", ""),
@@ -970,7 +970,7 @@ def audit(url, label, profile, local):
         "lighthouse": {k: lh.get(k) for k in ("performance", "accessibility", "bestPractices", "seo", "lcp", "cls")},
         "lighthouseSource": lh.get("_source"), "screenshot": lh.get("screenshot"), "lighthouseLog": lh.get("_log"), "lighthouseError": lh.get("_error") if lh.get("performance") is None else None,
         "lighthouseLimit": lh.get("_limit"),
-        "bar": BAR, "platform": platform,
+        "bar": BAR, "platform": platform, "redFlags": security.red_flags(R.checks, platform),
         "facts": {"pagesChecked": len(pages), "pagesOk": len(ok), "linksChecked": len(to_check),
                   "pagesWithSchema": len(ok) - len(no_ld), "brokenPages": broken_pages, "brokenLinks": broken_links[:20],
                   "sitemapPages": len(sm_pages), "trackers": sorted(found_trackers)},

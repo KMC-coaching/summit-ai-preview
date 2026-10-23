@@ -75,6 +75,7 @@ button { font: inherit; }
 .redflags h2 { color: var(--bad); font-size: 1.4rem; margin: 0 0 14px; }
 .redflags .flag { background: var(--panel); border-left: 3px solid var(--bad); border-radius: 12px; padding: 14px 16px; }
 .redflags .flag p { margin: 6px 0 0; }
+.redflags .flag + .flag { margin-top: 10px; }
 
 /* site view: big page thumbnails */
 .pages { display: grid; gap: 22px; margin-top: 28px; grid-template-columns: repeat(2, 1fr); }
