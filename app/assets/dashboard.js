@@ -15,6 +15,15 @@
 (function () {
   "use strict";
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  // Red flags: what we found that is worth worrying about, one sentence each, never a to-do list.
+  // A report card saved before 2026-10-23 has only the PHP note, so that is read as the one flag.
+  const redFlags = (rep) => {
+    if (!rep) return "";
+    const p = rep.platform || {};
+    const flags = rep.redFlags || (p.phpNote ? [{ title: p.phpNote.title, line: p.line, detail: p.phpNote.detail }] : []);
+    if (!flags.length) return "";
+    return `<section class="redflags"><h2>Red Flags</h2>${flags.map((f) => `<div class="flag"><b><span aria-hidden="true">&#x1F6A9;</span> ${esc(f.title)}</b>${f.line ? `<p class="muted">${esc(f.line)}</p>` : ""}<p>${esc(f.detail)}</p></div>`).join("")}</section>`;
+  };
   const t = (s) => esc(s).replace(/\[([^\]]{2,300})\]/g, '<span class="ph">[$1]</span>');
   const get = (u) => fetch(u, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return u || ""; } };
@@ -209,7 +218,7 @@
       ${g && !g.reachable ? `<div class="notice">We tried to check ${esc(host(g.url))} and it did not answer. If the address is wrong, tell Claude the right one and say <b>&nbsp;grade my website again</b>.</div>` : ""}
       ${have ? `<div class="notice">${esc(g.label || "This site")}: ${esc(host(g.url))}. ${g.label && /competitor/i.test(g.label) ? "A competitor in your area, measured the same way. This is who you are up against." : g.label && /admire/i.test(g.label) ? "You do not have a site of your own yet, so we measured this one instead." : ""}</div>` : ""}
       <div class="duel">${have ? side(g, g.label || "Your current website", "", "") : ""}${side(gp, "A demo, built just now from your answers", "side--new", "Your demo site")}</div>
-      ${have && g.platform && g.platform.phpNote ? `<section class="redflags"><h2>Red Flags</h2><div class="flag"><b>${esc(g.platform.phpNote.title)}</b><p class="muted">${esc(g.platform.line)}</p><p>${esc(g.platform.phpNote.detail)}</p></div></section>` : ""}
+      ${redFlags(have ? g : null)}
       ${cats}
       ${full}
       <h2 style="margin-top:34px;font-size:1.6rem">Every check, side by side</h2>
