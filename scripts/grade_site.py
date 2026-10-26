@@ -958,15 +958,20 @@ def audit(url, label, profile, local):
         counts = {s: sum(1 for c in R.checks if c["group"] == g and c["status"] == s) for s in ("pass", "warn", "fail", "local", "todo", "notMeasured")}
         categories.append({"name": g, "score": score, "counts": counts})
     vals = [c["score"] for c in categories if c["score"] is not None]
-    overall = round(sum(vals) / len(vals)) if vals else None
+    raw_overall = round(sum(vals) / len(vals)) if vals else None
     below_bar = [k for k in names if lh.get(k) is not None and lh.get(k) < BAR[k]
                  and not (local and k == "seo" and all(f["id"] in ("is-crawlable", "canonical") for f in lh.get("seoFailed", [])))]
+    # Same grade as the website-health skill and ranker.kristamashore.com (owner decision
+    # 2026-10-26): the average minus a quarter point per point a Google score is under target.
+    shortfall = google_shortfall(lh, below_bar)
+    overall = None if raw_overall is None else max(0, round(raw_overall - shortfall))
 
     totals = {s: sum(1 for c in R.checks if c["status"] == s) for s in ("pass", "warn", "fail", "local", "todo", "notMeasured")}
     return {
         "url": home, "label": label, "profile": profile, "local": local, "reachable": True,
         "measuredAt": datetime.now().isoformat(timespec="minutes"), "seconds": round(time.time() - started),
-        "overall": overall, "letter": cap_letter(letter(overall), below_bar), "belowBar": below_bar, "categories": categories, "checks": R.checks, "totals": totals,
+        "overall": overall, "letter": letter(overall), "belowBar": below_bar,
+        "averageBeforeGoogle": raw_overall, "googleShortfall": round(shortfall, 1), "categories": categories, "checks": R.checks, "totals": totals,
         "lighthouse": {k: lh.get(k) for k in ("performance", "accessibility", "bestPractices", "seo", "lcp", "cls")},
         "lighthouseSource": lh.get("_source"), "screenshot": lh.get("screenshot"), "lighthouseLog": lh.get("_log"), "lighthouseError": lh.get("_error") if lh.get("performance") is None else None,
         "lighthouseLimit": lh.get("_limit"),
@@ -978,9 +983,13 @@ def audit(url, label, profile, local):
     }
 
 
-def cap_letter(l, below_bar):
-    """Below a Lighthouse floor, the seed will not launch it: no A, whatever the average."""
-    return "B" if below_bar and l == "A" else l
+SHORTFALL_RATE = 0.25  # points off the grade per point a Google score is under its target
+
+
+def google_shortfall(lh, below_bar):
+    """Points off the grade for Google's test: a quarter point for every point a measured score
+    falls under its launch target. Identical to the website-health skill's grader."""
+    return sum(BAR[k] - lh[k] for k in below_bar if isinstance(lh.get(k), (int, float))) * SHORTFALL_RATE
 
 
 def letter(score):
