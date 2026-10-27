@@ -54,6 +54,18 @@ def main():
     env = dict(os.environ, HOME=str(home), USERPROFILE=str(home), AI_PREVIEW_FRESH_NODE="1")
     print("platform: %s, python %s, home %s" % (sys.platform, sys.version.split()[0], home), flush=True)
 
+    # 0. One engine everywhere: grader.py, packs.py and security.py are byte-identical with
+    #    KMC-coaching/website-health-ci (scripts/ENGINE-SHA256SUMS is its skill/SHA256SUMS).
+    import hashlib
+    want = {}
+    for line in (ROOT / "scripts" / "ENGINE-SHA256SUMS").read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            digest, path = line.split(None, 1)
+            want[path.rsplit("/", 1)[-1]] = digest
+    drift = [f for f in ("grader.py", "packs.py", "security.py")
+             if hashlib.sha256((ROOT / "scripts" / f).read_bytes()).hexdigest() != want.get(f)]
+    step("the grading engine is byte-identical with website-health-ci (fix it there, copy it here)", not drift, drift)
+
     # 1. The workbook file, as a browser saves a second download.
     shutil.copy(ROOT / "examples" / "ai-brain-realtor.md", home / "Downloads" / "ai-brain (1).md")
     code, out = run(["scripts/find_brain_file.py"], env)
