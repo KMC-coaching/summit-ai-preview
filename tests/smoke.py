@@ -62,9 +62,10 @@ def main():
         if line.strip():
             digest, path = line.split(None, 1)
             want[path.rsplit("/", 1)[-1]] = digest
+    # Git on Windows checks files out with CRLF line endings; the canonical sums are of LF files.
     drift = [f for f in ("grader.py", "packs.py", "security.py")
-             if hashlib.sha256((ROOT / "scripts" / f).read_bytes()).hexdigest() != want.get(f)]
-    step("the grading engine is byte-identical with website-health-ci (fix it there, copy it here)", not drift, drift)
+             if hashlib.sha256((ROOT / "scripts" / f).read_bytes().replace(b"\r\n", b"\n")).hexdigest() != want.get(f)]
+    step("the grading engine is byte-identical with website-health-ci (fix it there, copy it here)", not drift, ", ".join(drift))
 
     # 1. The workbook file, as a browser saves a second download.
     shutil.copy(ROOT / "examples" / "ai-brain-realtor.md", home / "Downloads" / "ai-brain (1).md")
