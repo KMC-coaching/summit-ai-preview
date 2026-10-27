@@ -83,6 +83,11 @@ MAX_PAGES = 25
 MAX_LINKS = 60
 PAUSE = 0.35
 TIMEOUT = 20
+# Seconds an audit may spend reading pages and following links. None everywhere a person runs it;
+# a front door with a hard time limit (the web checker) sets it, so a slow site is read in part,
+# said out loud, instead of the whole check timing out. The page and link caps are the same
+# everywhere, so every version reads the same site the same way.
+CRAWL_SECONDS = None
 LIGHTHOUSE = "lighthouse@12.8.2"
 
 # The launch-gate floors from realtor-site-seed/scripts/audit-compare.mjs:337.
@@ -1773,12 +1778,16 @@ def audit(url, label="Your website", industry="auto", state="", local=False, lig
     log("Reading %d pages, one at a time..." % len(targets))
     pages, all_links = [], {}
     walled, in_a_row = 0, 0
+    out_of_time = False
     for i, p in enumerate(targets):
         if i == 0:
             s, body = status, html
         else:
             if in_a_row >= 3:
                 break  # the shield has noticed us: stop rather than push
+            if CRAWL_SECONDS and time.time() - started > CRAWL_SECONDS:
+                out_of_time = True
+                break
             time.sleep(PAUSE)
             s, _, body = fetch(p)
             if is_bot_wall(s, body, STATE["headers"]):
@@ -1834,7 +1843,11 @@ def audit(url, label="Your website", industry="auto", state="", local=False, lig
                 and "/cdn-cgi/" not in u][:MAX_LINKS]
     log("Following %d more links to look for dead ends..." % len(to_check))
     broken_links, refused = [], 0
-    for u in to_check:
+    for j, u in enumerate(to_check):
+        if CRAWL_SECONDS and time.time() - started > CRAWL_SECONDS:
+            out_of_time = True
+            to_check = to_check[:j]  # only what was really followed is counted
+            break
         time.sleep(PAUSE / 2)
         s = check_status(u)
         if s in (-1, 401, 403, 429):
@@ -2273,6 +2286,10 @@ def audit(url, label="Your website", industry="auto", state="", local=False, lig
     if len(pages) >= MAX_PAGES:
         R.add(G, "Pages beyond the first %d" % MAX_PAGES, "notMeasured",
               "A sample of %d pages was read, spread across the sitemap, to stay polite to the site" % MAX_PAGES, fix="")
+    if out_of_time:
+        R.add(G, "Pages and links past the time limit", "notMeasured",
+              "This site answered slowly, so the check stopped after %d pages and %d links to finish in time; "
+              "the rest were not read" % (len(pages), len(to_check)), fix="")
 
     # ---- scores
     groups = []
