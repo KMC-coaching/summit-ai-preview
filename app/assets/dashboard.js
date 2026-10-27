@@ -161,6 +161,16 @@
   }
 
   /* ---------------------------------------------------------- report */
+  // A site whose security turned the checker away is not in trouble: the engine's report
+  // (report_html.BLOCKED_OK and RUN_IT_YOURSELF) says the same words.
+  const BLOCKED_OK = "Don't worry, that just means your site has good security and is blocking bots. The benefits outweigh the fact that we couldn't run this.";
+  const blockedNote = (why) => `<div class="notice"><div>${why ? `<p>${esc(why)}</p>` : ""}<p class="ok"><b>${esc(BLOCKED_OK)}</b></p>
+    <details class="howto"><summary><span aria-hidden="true">&#9432;</span> How to run Google&rsquo;s test yourself</summary>
+    <ol><li>Open your site in Google Chrome on a computer.</li><li>Right-click anywhere on the page and choose <b>Inspect</b>.</li>
+    <li>In the panel that opens, click the <b>Lighthouse</b> tab (it may be behind the <b>&raquo;</b> arrows).</li>
+    <li>Choose <b>Mobile</b>, then click <b>Analyze page load</b>.</li></ol>
+    <p>It runs from your own computer, so your security lets it in. The PageSpeed website runs from Google&rsquo;s servers and may be blocked the same way.</p></details></div></div>`;
+
   function reportView() {
     const g = D.g, gp = D.gp;
     const have = g && g.reachable;
@@ -215,7 +225,9 @@
       <p class="kicker">Your website report card</p><h1>${have ? `${esc(host(g.url))}, against what we just built` : "Your demo site, measured"}</h1>
       <p class="lede">The same checks a site has to pass before we let it launch: Google's own Lighthouse test, how AI assistants read it, broken pages, the words on the page${D.c.profile === "real-estate" ? ", Fair Housing and licensing rules" : D.c.profile === "lender" ? ", fair lending and NMLS rules" : ""}, and privacy. Nothing here is estimated: every number was measured today.</p>
       ${gp && gp.lighthouseLimit === "windows" ? `<div class="notice">On Windows, Google's speed test can't run from here, so your demo site's speed shows as "Not measured". That is a Windows limit, not a problem with your site. Everything else was checked.</div>` : ""}
-      ${g && !g.reachable ? `<div class="notice">We tried to check ${esc(host(g.url))} and it did not answer. If the address is wrong, tell Claude the right one and say <b>&nbsp;grade my website again</b>.</div>` : ""}
+      ${g && !g.reachable && g.blocked ? blockedNote(g.message) : ""}
+      ${g && !g.reachable && !g.blocked ? `<div class="notice">We tried to check ${esc(host(g.url))} and it did not answer. If the address is wrong, tell Claude the right one and say <b>&nbsp;grade my website again</b>.</div>` : ""}
+      ${have && (g.lighthouseUnavailable || {}).cause === "blocked" ? blockedNote(g.lighthouseUnavailable.reason) : ""}
       ${have ? `<div class="notice">${esc(g.label || "This site")}: ${esc(host(g.url))}. ${g.label && /competitor/i.test(g.label) ? "A competitor in your area, measured the same way. This is who you are up against." : g.label && /admire/i.test(g.label) ? "You do not have a site of your own yet, so we measured this one instead." : ""}</div>` : ""}
       <div class="duel">${have ? side(g, g.label || "Your current website", "", "") : ""}${side(gp, "A demo, built just now from your answers", "side--new", "Your demo site")}</div>
       ${redFlags(have ? g : null)}
